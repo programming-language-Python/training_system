@@ -1,0 +1,34 @@
+<section class="form__setting setting">
+    <h1>Задача № 1</h1>
+    <div class="setting__title">
+        {{ task_setting_form.title.label }}
+        {{ task_setting_form.title }}
+    </div>
+    <div class="setting__weight">
+        <label for="setting-weight">вес</label>
+        {{ task_setting_form.weight.label }}
+        {{ task_setting_form.weight }}
+    </div>
+    <div class="setting__is-if-operator">
+        {{ task_setting_form.is_if_operator.label }}
+        {{ task_setting_form.is_if_operator }}
+    </div>
+    <div class="setting__condition-of-if-operator">
+        {{ task_setting_form.condition_of_if_operator.label }}
+        {{ task_setting_form.condition_of_if_operator }}
+    </div>
+    <div class="setting__availability-of-cycles">
+        {{ task_setting_form.availability_of_cycles.label }}
+        {{ task_setting_form.availability_of_cycles }}
+    </div>
+    <div class="setting__cycle-condition">
+        {{ task_setting_form.cycle_condition.label }}
+        {{ task_setting_form.cycle_condition }}
+    </div>
+    <div class="setting__operator-nesting">
+        <label for="setting-operator-nesting">Вложенность операторов:
+        </label>
+        {{ task_setting_form.operator_nesting.label }}
+        {{ task_setting_form.operator_nesting }}
+    </div>
+</section>

@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <section class="content__testing-update testing-update">
+        <a href="{% url 'testing:create_task_setting_form' %}">Добавить настройку</a>
+        <form action="{% url 'testing:add_testing' %}" method="POST" class="testing-update__form form">
+            {% csrf_token %}
+            <section class="form__testing testing">
+                <div class="testing__title">
+                    {{ testing_form.title.label }}
+                    {{ testing_form.title }}
+                </div>
+                <div class="testing__student-group">
+                    {{ testing_form.student_group.label }}
+                    {{ testing_form.student_group }}
+                </div>
+            </section>
+            <section class="form__setting setting">
+                <h1>Задача № 1</h1>
+                <div class="setting__title">
+                    {{ task_setting_form.title.label }}
+                    {{ task_setting_form.title }}
+                </div>
+                <div class="setting__weight">
+                    <label for="setting-weight">вес</label>
+                    {{ task_setting_form.weight.label }}
+                    {{ task_setting_form.weight }}
+                </div>
+                <div class="setting__is-if-operator">
+                    {{ task_setting_form.is_if_operator.label }}
+                    {{ task_setting_form.is_if_operator }}
+                </div>
+                <div class="setting__condition-of-if-operator">
+                    {{ task_setting_form.condition_of_if_operator.label }}
+                    {{ task_setting_form.condition_of_if_operator }}
+                </div>
+                <div class="setting__availability-of-cycles">
+                    {{ task_setting_form.availability_of_cycles.label }}
+                    {{ task_setting_form.availability_of_cycles }}
+                </div>
+                <div class="setting__cycle-condition">
+                    {{ task_setting_form.cycle_condition.label }}
+                    {{ task_setting_form.cycle_condition }}
+                </div>
+                <div class="setting__operator-nesting">
+                    <label for="setting-operator-nesting">Вложенность операторов:
+                    </label>
+                    {{ task_setting_form.operator_nesting.label }}
+                    {{ task_setting_form.operator_nesting }}
+                </div>
+            </section>
+            <section class="form__setting setting">
+                <h1>Задача № 1</h1>
+                <div class="setting__title">
+                    {{ task_setting_form.title.label }}
+                    {{ task_setting_form.title }}
+                </div>
+                <div class="setting__weight">
+                    <label for="setting-weight">вес</label>
+                    {{ task_setting_form.weight.label }}
+                    {{ task_setting_form.weight }}
+                </div>
+                <div class="setting__is-if-operator">
+                    {{ task_setting_form.is_if_operator.label }}
+                    {{ task_setting_form.is_if_operator }}
+                </div>
+                <div class="setting__condition-of-if-operator">
+                    {{ task_setting_form.condition_of_if_operator.label }}
+                    {{ task_setting_form.condition_of_if_operator }}
+                </div>
+                <div class="setting__availability-of-cycles">
+                    {{ task_setting_form.availability_of_cycles.label }}
+                    {{ task_setting_form.availability_of_cycles }}
+                </div>
+                <div class="setting__cycle-condition">
+                    {{ task_setting_form.cycle_condition.label }}
+                    {{ task_setting_form.cycle_condition }}
+                </div>
+                <div class="setting__operator-nesting">
+                    {{ task_setting_form.operator_nesting.label }}
+                    {{ task_setting_form.operator_nesting }}
+                </div>
+            </section>
+
+            <button class="form__button" type="submit">Создать</button>
+        </form>
+    </section>
+{% endblock %}
+<script>
+    let form_count = Number($("[name=is_if_operator]").val());
+    // get extra form count so we know what index to use for the next item.
+
+    $("#add-another").click(function () {
+        form_count++;
+
+        let element = $('<input type="text"/>');
+        element.attr('name', 'extra_field_' + form_count);
+        $("#forms").append(element);
+        // build element and append it to our forms container
+
+        $("[name=extra_field_count]").val(form_count);
+        // increment form count so our view knows to populate
+        // that many fields for validation
+    })
+</script>

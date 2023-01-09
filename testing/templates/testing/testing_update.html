@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <section class="content__testing-update testing-update">
+        <form action="" method="POST" class="testing-update__form form">
+            {% csrf_token %}
+
+            <label for="testing-title">Наименование:</label>
+            <input type="text" name="testing-title" value="{{ testing.title }}" maxlength="25" required=""
+                   id="testing-title">
+
+            <label for="setting">Настройки:</label>
+            {% for setting in testing.setting.all %}
+                <input type="checkbox" name="pasta" id="{{ setting.id }}" class="checkbox-input"/>
+                <label for="{{ setting.id }}" class="checkbox-label">
+                    <div class="checkbox-text">
+                        <p class="checkbox-text--title">{{ setting }}</p>
+                        <p class="checkbox-text--description">Click to <span class="un">un</span>check it!</p>
+                        <p class="checkbox-text--description">
+                            Вес: <input type="text" value="{{ setting.weight }}">
+                        </p>
+                        <p class="checkbox-text--description">Наличие оператора if:
+                        {% for is_if_stateman in setting.is_if_statement.choices %}
+                        {{ is_if_stateman }}
+                        {% endfor %}
+                        </p>
+                        <p class="checkbox-text--description">Условие оператора if: {{ setting.is_if_statement }}</p>
+                        <label for="user">Пользователь:</label>
+                        <select name="user" required="" id="id_user">
+                            <option value="">---------</option>
+                            <option value="6">teacher</option>
+                            <option value="1" selected="">Roman</option>
+                            <option value="5">test1</option>
+                        </select>
+                    </div>
+                </label>
+            {% endfor %}
+
+            <label for="student-group">Группы студентов:</label>
+            <select name="student-group" required="" id="student-group" multiple="">
+                {% for student_group in testing.student_group.all %}
+                    <option value="{{ student_group }}" selected="">{{ student_group }}</option>
+                {% endfor %}
+            </select>
+
+
+            {#            <label for="user">Пользователь:</label>#}
+            {#            <select name="user" required="" id="id_user">#}
+            {#                <option value="">---------</option>#}
+            {#                <option value="6">teacher</option>#}
+            {#                <option value="1" selected="">Roman</option>#}
+            {#                <option value="5">test1</option>#}
+            {#            </select>#}
+
+            <button class="form__button" type="submit">Обновить</button>
+        </form>
+    </section>
+{% endblock %}
