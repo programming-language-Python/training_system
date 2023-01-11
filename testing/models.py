@@ -11,7 +11,7 @@ app_name = 'testing'
 class Testing(models.Model):
     title = models.CharField(max_length=25,
                              verbose_name='Наименование')
-    setting = models.ForeignKey('TaskSetting', on_delete=models.CASCADE, verbose_name='Настройки')
+    # setting = models.ForeignKey('TaskSetting', on_delete=models.CASCADE, verbose_name='Настройки')
     student_group = models.ManyToManyField(StudentGroup, verbose_name='Группы студентов')
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name='Пользователь')
 
@@ -32,6 +32,7 @@ class TaskSetting(models.Model):
         simple = 'Простое', _('Простое')
         composite = 'Составное', _('Составное')
 
+    testing = models.ForeignKey('Testing', on_delete=models.PROTECT, verbose_name='Тестирование')
     weight = models.IntegerField(verbose_name='Вес')
     is_if_operator = models.CharField(max_length=25,
                                       choices=IsOperator.choices,

@@ -4,32 +4,45 @@ from django.forms import CheckboxSelectMultiple
 from . import models
 
 
-class TestingInLineAdmin(admin.TabularInline):
-    model = models.Testing
+#
+# class TestingInLineAdmin(admin.TabularInline):
+#     model = models.Testing
+
+
+class TaskSettingInLineAdmin(admin.TabularInline):
+    model = models.TaskSetting
 
 
 @admin.register(models.Testing)
 class TestingAdmin(admin.ModelAdmin):
-    def setting(self, user) -> str:
-        settings = []
-        for setting in user.settings.all():
-            settings.append(setting.name)
-        return ' '.join(settings)
-
-    setting.short_description = 'settings'
+    # def setting(self, user) -> str:
+    #     settings = []
+    #     for setting in user.settings.all():
+    #         settings.append(setting.name)
+    #     return ' '.join(settings)
+    #
+    # setting.short_description = 'settings'
 
     # filter_vertical = [TaskSettingInLineAdmin]
-    list_display = ('id', 'title', 'setting')
+    inlines = [TaskSettingInLineAdmin]
+    list_display = ('id', 'title',)
     list_display_links = ('id',)
-    search_fields = ('title', 'setting')
-    list_editable = ('title', 'setting')
-    list_filter = ('title', 'setting')
+    search_fields = ('title',)
+    list_editable = ('title',)
+    list_filter = ('title',)
     save_on_top = True
 
 
 @admin.register(models.TaskSetting)
 class TaskSettingAdmin(admin.ModelAdmin):
-    inlines = [TestingInLineAdmin]
+    def testing(self, user) -> str:
+        testings = []
+        for testing in user.testings.all():
+            testings.append(testing.name)
+        return ' '.join(testings)
+
+    testing.short_description = 'testings'
+    # inlines = [TestingInLineAdmin]
     availability_of_cycles = {
         models.Cycle: {'widget': CheckboxSelectMultiple},
     }

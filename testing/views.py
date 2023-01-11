@@ -3,10 +3,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
 from django.views.generic import ListView, UpdateView
 
+from config import settings
 from testing.forms import TestingForm, TaskSettingForm
-from testing.models import Testing
+from testing.models import Testing, TaskSetting
 from testing.services import redirect_not_is_teacher
-from user.models import User
 
 
 # Create your views here.
@@ -42,15 +42,14 @@ class UpdateTesting(LoginRequiredMixin, UpdateView):
 @login_required
 def add_testing(request):
     redirect_not_is_teacher(request)
-    # author = Author.objects.get(id=pk)
-    # books = Book.objects.filter(author=author)
 
     testing_form = TestingForm()
-    # task_setting_form = TaskSettingForm()
-    task_setting_form = TaskSettingForm(request.POST or None)
+    task_setting_form = TaskSettingForm()
+
     if request.method == 'POST':
         testing_form = TestingForm(request.POST)
-        task_setting_form = TaskSettingForm(request.POST, extra=request.POST.get('is_if_operator'))
+        task_setting_form = TaskSettingForm(request.POST)
+        print(testing_form.is_valid(), '\n', task_setting_form.is_valid())
         is_valid = testing_form.is_valid() and task_setting_form.is_valid()
         if is_valid:
             # print(form.cleaned_data)
@@ -58,25 +57,24 @@ def add_testing(request):
             # testing = form.save()
             # return redirect(testing)
             # is_teacher = User.objects.get(pk=request.user.pk)
-            print(task_setting_form.cleaned_data['title'])
+            print('test: ', task_setting_form.cleaned_data['title'])
         else:
             return render(request, 'inc/task_setting/_form.html', context={
-                'task_setting_form': task_setting_form
+                'form': task_setting_form
             })
-    # else:
-    #     testing_form = TestingForm()
-    #     # task_setting_form = TaskSettingForm()
-    #     task_setting_form = TaskSettingForm(request.POST or None)
     context = {
         'testing_form': testing_form,
-        'task_setting_form': task_setting_form
+        'number_of_forms': 0
     }
     return render(request, 'testing/add_testing.html', context)
 
 
-def create_task_setting_form(request):
+def create_task_setting_form(request, number_of_forms):
+    if number_of_forms != 0:
+        settings.number_of_forms += 1
     form = TaskSettingForm()
     context = {
-        'form': form
+        'form': form,
+        'number_of_forms': settings.number_of_forms
     }
     return render(request, 'inc/task_setting/_form.html', context)

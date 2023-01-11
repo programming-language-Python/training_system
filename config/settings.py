@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'testing',
-    'user'
+    'user',
 ]
 
 MIDDLEWARE = [
@@ -131,3 +131,4 @@ AUTH_USER_MODEL = 'user.User'
 AUTH_PROFILE_MODULE = 'user.User'
 
 LOGOUT_REDIRECT_URL = '../'
+number_of_forms = 0
