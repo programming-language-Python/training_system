@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "training-system"
+version = "0.1.0"
+description = ""
+authors = ["Roman <maks3564195@gmail.com>"]
+readme = "README.md"
+packages = [{ include = "training_system" }]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+django = "^4.1.4"
+python-decouple = "^3.6"
+psycopg2 = "^2.9.5"
+psycopg2-binary = "^2.9.5"
+django-jquery = "^3.1.0"
+
+[tool.poetry.dev-dependencies]
+django-debug-toolbar = "^3.8.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
