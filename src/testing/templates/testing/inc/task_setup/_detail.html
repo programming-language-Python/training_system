@@ -1,0 +1,53 @@
+{% load tags %}
+
+<div hx-target="this">
+    <h2>id: {{ task_setup }}</h2>
+    <div>
+        <div class="uk-card uk-card-default uk-card-body">
+            <div class="uk-card-header">
+                <div class="uk-grid-small uk-flex-middle" uk-grid>
+                    <div class="uk-width-expand">
+                        <h3 class="uk-card-title uk-margin-remove-bottom">
+                            Задача №{{ forloop.counter }} (вес {{ task_setup.weight }})
+                        </h3>
+                    </div>
+                </div>
+            </div>
+            <div class="uk-card-body">
+                <h4>Структура программы:</h4>
+                <p>
+                    {% get_verbose_field_name task_setup 'is_if_operator' %}:
+                    {{ task_setup.is_if_operator }}
+                </p>
+                <p>
+                    {% get_verbose_field_name task_setup 'condition_of_if_operator' %}:
+                    {{ task_setup.condition_of_if_operator }}
+                </p>
+                <p>
+                    {% get_verbose_field_name task_setup 'availability_of_cycles' %}:
+                    {{ task_setup.availability_of_cycles.all|join:', ' }}
+                </p>
+                <p>
+                    {% get_verbose_field_name task_setup 'cycle_condition' %}:
+                    {{ task_setup.cycle_condition }}
+                </p>
+                <p>
+                    {% get_verbose_field_name task_setup 'operator_nesting' %}:
+                    {{ task_setup.operator_nesting.all|join:', ' }}
+                </p>
+            </div>
+            <div class="uk-card-footer">
+                <button hx-get="{% url 'testing:update_task_setup' task_setup.id %}"
+                        hx-swap="outerHTML"
+                        uk-icon="refresh"
+                        uk-tooltip="Обновить">
+                </button>
+                <button hx-post="{% url 'testing:delete_task_setup' task_setup.id %}"
+                        hx-swap="outerHTML"
+                        uk-icon="trash"
+                        uk-tooltip="Удалить">
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

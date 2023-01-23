@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <selection class="content__user">
+        <h1 class="user__title">
+            Добро пожаловать, {{ user.last_name }} {{ user.first_name }} {{ user.patronymic }}
+        </h1>
+    </selection>
+{% endblock %}

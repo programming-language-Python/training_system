@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <section class="content__testing-list testing-list">
+        {% if user.is_teacher %}
+            <a class="uk-button uk-button-primary" href="{% url 'testing:create_testing' %}">
+                Добавить тестирование
+            </a>
+        {% endif %}
+        <div class="uk-margin-top uk-grid-match uk-grid-column-small uk-grid-row-large uk-child-width-1-3@s uk-text-center"
+             uk-grid>
+            {% for testing in testing_list %}
+                <div>
+                    <div class="uk-card uk-card-default uk-card-body">
+                        <div class="uk-card-header">
+                            <div class="uk-grid-small uk-flex-middle" uk-grid>
+                                <div class="uk-width-expand">
+                                    <h3 class="uk-card-title uk-margin-remove-bottom">
+                                        {{ testing.title }}
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+                        {% if user.is_teacher %}
+                            <div class="uk-card-body">
+                                <p>Группы: {{ testing.student_group.all|join:', ' }}</p>
+                            </div>
+                        {% endif %}
+                        <div class="uk-card-footer">
+                            <a href="{{ testing.get_absolute_url }}" class="uk-button uk-button-text">
+                                {{ card_footer_text }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+{% endblock %}

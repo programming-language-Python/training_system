@@ -1,0 +1,50 @@
+{% load static %}
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{% block title %}Система обучения{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}"/>
+    <link rel="stylesheet" href="{% static 'css/uikit/uikit.min.css' %}"/>
+    <script src="{% static 'js/uikit/uikit.min.js' %}"></script>
+    <script src="{% static 'js/uikit/uikit-icons.min.js' %}"></script>
+    <script src="https://unpkg.com/htmx.org@1.5.0"
+            integrity="sha384-oGA+prIp5Vchu6we2YkI51UtVzN9Jpx2Z7PnR1I78PnZlN8LkrCT4lqqqmDkyrvI"
+            crossorigin="anonymous"></script>
+    {#    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.js"/>#}
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/admin/form_task_setup.js' %}"></script>
+    {% block head_script %}{% endblock %}
+</head>
+<body>
+<div class="wrapper uk-margin-top uk-margin-bottom uk-margin-left uk-margin-right" id="wrapper">
+    {% include 'inc/_header.html' %}
+    <main class="main uk-text-center">
+        <section class="content uk-margin-top uk-margin-bottom uk-margin-left uk-margin-right">
+            {% block content %}CONTENT{% endblock %}
+        </section>
+    </main>
+</div>
+<script>
+    document.body.addEventListener('htmx:configRequest', (event) => {
+        event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+    })
+    {% if debug %}
+        if (typeof window.htmx !== "undefined") {
+            htmx.on("htmx:afterSettle", function (detail) {
+                if (
+                    typeof window.djdt !== "undefined"
+                    && detail.target instanceof HTMLBodyElement
+                ) {
+                    djdt.show_toolbar();
+                }
+            });
+        }
+    {% endif %}
+</script>
+{% block script %}{% endblock %}
+</body>
+</html>

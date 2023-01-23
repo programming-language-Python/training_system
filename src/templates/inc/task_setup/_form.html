@@ -1,0 +1,69 @@
+<div hx-target="this" hx-swap="outerHTML">
+    <form method="POST">
+        {% csrf_token %}
+        <div>
+            <div class="uk-card uk-card-default uk-card-body">
+                <div class="uk-card-header">
+                    <div class="uk-grid-small uk-flex-middle" uk-grid>
+                        <div class="uk-width-expand">
+                            <h3 class="uk-card-title uk-margin-remove-bottom">
+                                ({{ form.weight.label }} {{ form.weight }})
+                                {{ form.weight.errors }}
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="uk-card-body">
+                    <h4>Структура программы:</h4>
+                    <p>
+                        {{ form.is_if_operator.label }}
+                        {{ form.is_if_operator }}
+                        {{ form.is_if_operator.errors }}
+                    </p>
+                    <p>
+                        {{ form.condition_of_if_operator.label }}
+                        {{ form.condition_of_if_operator }}
+                        {{ form.condition_of_if_operator.errors }}
+                    </p>
+                    <p>
+                        {{ form.availability_of_cycles.label }}
+                        {{ form.availability_of_cycles }}
+                        {{ form.availability_of_cycles.errors }}
+                    </p>
+                    <p>
+                        {{ form.cycle_condition.label }}
+                        {{ form.cycle_condition }}
+                        {{ form.cycle_condition.errors }}
+                    </p>
+                    <p>
+                        {{ form.operator_nesting.label }}
+                        {{ form.operator_nesting }}
+                        {{ form.operator_nesting.errors }}
+                    </p>
+                </div>
+                <div class="uk-card-footer">
+                    {% if task_setup %}
+                        <button type="submit"
+                                hx-post="{% url 'testing:update_task_setup' task_setup.id %}"
+                                uk-icon="refresh"
+                                uk-tooltip="Обновить">
+                        </button>
+                        <button type="button"
+                                hx-get="{% url 'testing:task_setup_detail' task_setup.id %}"
+                                uk-icon="close"
+                                uk-tooltip="Отмена">
+                        </button>
+                    {% else %}
+                        <button class="uk-margin uk-button uk-button-secondary"
+                                type="submit"
+                                hx-post="."
+                                hx-target="#task-setting-list"
+                                hx-swap="beforeend">
+                            Добавить
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

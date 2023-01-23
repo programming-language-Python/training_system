@@ -1,0 +1,24 @@
+<header class="header">
+    <nav class="header__menu">
+        <ul class="header__list uk-nav-default uk-nav-parent-icon" uk-nav>
+            <li>
+                <a href="/">
+                    <span class="uk-margin-small-right" uk-icon="icon:  home"></span> Главная
+                </a>
+            </li>
+            {% if request.user.is_authenticated %}
+                <li class="header__link">
+                    <a href="{% url 'user:logout' %}">
+                        <span class="uk-margin-small-right" uk-icon="icon: trash"></span> Выйти
+                    </a>
+                </li>
+                <li class="header__link">
+                    <a href="{% url 'testing:testing_list' %}">
+                        <span class="uk-margin-small-right" uk-icon="icon: table"></span> Тестирования
+                    </a>
+                </li>
+                <li class="uk-nav-divider"></li>
+            {% endif %}
+        </ul>
+    </nav>
+</header>
