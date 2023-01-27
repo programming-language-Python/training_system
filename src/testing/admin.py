@@ -13,6 +13,12 @@ from . import models
 #     model = models.TaskSetup
 
 
+@admin.register(models.Task)
+class TaskAdmin(admin.ModelAdmin):
+    list_display = ('id',)
+    save_on_top = True
+
+
 @admin.register(models.Testing)
 class TestingAdmin(admin.ModelAdmin):
     # def setting(self, user) -> str:
@@ -80,14 +86,14 @@ class CycleAdmin(admin.ModelAdmin):
     save_on_top = True
 
 
-# @admin.register(models.CodeTemplate)
-# class CodeTemplateAdmin(admin.ModelAdmin):
-#     # list_display = ('id', 'code', 'setting')
-#     # list_display_links = ('id',)
-#     # search_fields = ('code', 'setting')
-#     # list_editable = ('code', 'setting')
-#     # list_filter = ('id', 'setting')
-#     save_on_top = True
+@admin.register(models.CodeTemplate)
+class CodeTemplateAdmin(admin.ModelAdmin):
+    # list_display = ('id', 'code', 'setting')
+    # list_display_links = ('id',)
+    # search_fields = ('code', 'setting')
+    # list_editable = ('code', 'setting')
+    # list_filter = ('id', 'setting')
+    save_on_top = True
 
 
 @admin.register(models.CompletedTesting)

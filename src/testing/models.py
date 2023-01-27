@@ -8,26 +8,39 @@ from user.models import User, StudentGroup
 app_name = 'testing'
 
 
+class Task(models.Model):
+    testing = models.ForeignKey('Testing',
+                                on_delete=models.CASCADE,
+                                verbose_name='Тестирование')
+    task_setup = models.ForeignKey('TaskSetup',
+                                   on_delete=models.CASCADE,
+                                   verbose_name='Настройка задачи')
+    count = models.IntegerField(default=0,
+                                verbose_name='Количество')
+
+    def get_absolut_url(self):
+        return reverse(app_name + ':task_detail', kwargs={'pk': self.pk})
+
+    class Meta:
+        verbose_name = 'Задача'
+        verbose_name_plural = 'Задачи'
+
+
 class Testing(models.Model):
     title = models.CharField(max_length=25,
                              verbose_name='Наименование')
-    id_of_one_test = models.IntegerField(blank=True,
-                                         null=True,
-                                         verbose_name='id одного теста')
-    task_setup = models.ForeignKey('TaskSetup',
-                                   blank=True,
-                                   null=True,
-                                   on_delete=models.CASCADE,
-                                   verbose_name='Настройки')
     student_group = models.ManyToManyField(StudentGroup,
                                            verbose_name='Группы студентов')
     user = models.ForeignKey(User,
                              on_delete=models.SET_NULL,
                              null=True,
                              verbose_name='Пользователь')
+    is_published = models.BooleanField(blank=True,
+                                       default=True,
+                                       verbose_name='Опубликовано')
 
     def get_absolute_url(self):
-        return reverse(app_name + ':create_task_setup', kwargs={'id_of_one_test': self.id_of_one_test})
+        return reverse(app_name + ':testing_detail', kwargs={'pk': self.pk})
 
     def __str__(self):
         return self.title
@@ -128,6 +141,8 @@ class OperatorNesting(models.Model):
 
 class CodeTemplate(models.Model):
     code = models.TextField(verbose_name='Код')
+    answer = models.CharField(max_length=20,
+                              verbose_name='Ответ')
     task_setup = models.ForeignKey('TaskSetup',
                                    on_delete=models.CASCADE,
                                    verbose_name='Настройки')

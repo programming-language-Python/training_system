@@ -19,17 +19,23 @@
             <div class="uk-flex uk-flex-column">
                 <div>
                     <button class="uk-margin uk-button uk-button-primary"
-                            hx-get="{% url 'testing:update_testing' testing.id_of_one_test %}"
+                            hx-get="{% url 'testing:testing_update' testing.pk %}"
                             hx-target="#testing-title"
                             hx-swap="outerHTML">
                         Обновить тестирование
                     </button>
                 </div>
                 <div>
+                    <button class="uk-margin uk-button uk-button-danger"
+                            hx-post="{% url 'testing:testing_delete' testing.pk %}">
+                        Удалить тестирование
+                    </button>
+                </div>
+                <div>
                     <button class="uk-button uk-button-secondary"
                             type="button"
-                            hx-get="{% url 'testing:add_task_setup_form' %}"
-                            hx-target="#task-setting-list"
+                            hx-get="{% url 'testing:add_task_form' %}"
+                            hx-target="#task-list"
                             hx-swap="afterbegin">
                         Добавить настройку задачи
                     </button>
@@ -38,7 +44,7 @@
         {% endif %}
     </section>
 
-    <section class="content__task-setting-form task-setting-form uk-margin" id="task-setting-form"></section>
+    <section class="content__task-form task-form uk-margin" id="task-form"></section>
 
-    {% include 'testing/inc/task_setup/_list.html' %}
+    {% include 'testing/inc/task/_list.html' %}
 {% endblock %}

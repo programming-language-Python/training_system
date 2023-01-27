@@ -1,20 +1,34 @@
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import F
 from django.http import HttpResponseNotAllowed, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
-from django.views.generic import ListView
+from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 
 from testing.forms import TestingForm, TaskSetupForm
-from testing.models import Testing, TaskSetup
+from testing.models import Testing, TaskSetup, Task
 from testing.services.decorators import is_teacher
-from testing.services.task_setup import Task
+from testing.services.task_setup import TaskManager
 
 
 # Create your views here.
-class TestingList(LoginRequiredMixin, ListView):
+class TestingCreateView(LoginRequiredMixin, CreateView):
+    form_class = TestingForm
+    template_name = 'testing/testing_create.html'
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super(TestingCreateView, self).form_valid(form)
+
+
+class TestingListView(LoginRequiredMixin, ListView):
     login_url = 'user:login'
     model = Testing
-    queryset = model.objects.all().distinct('id_of_one_test')
+
+    def get_queryset(self):
+        if self.request.user.is_teacher:
+            return Testing.objects.filter(user=self.request.user)
+        return Testing.objects.filter(student_group=self.request.user.student_group)
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -23,31 +37,42 @@ class TestingList(LoginRequiredMixin, ListView):
         return context
 
 
+class TestingDetailView(LoginRequiredMixin, DetailView):
+    model = Testing
+
+    def post(self, request, *args, **kwargs):
+        if request.method == 'POST':
+            testing = get_object_or_404(Testing, pk=kwargs['pk'])
+            form = TaskSetupForm(request.POST or None)
+            if form.is_valid():
+                task = TaskManager(request.user, form, testing)
+                task.add()
+                return redirect('testing:task_detail', pk=task.id)
+            return render(request, 'testing/task_form.html', context={
+                'form': form
+            })
+
+
+class TestingUpdateView(LoginRequiredMixin, UpdateView):
+    model = Testing
+    fields = ['title', 'student_group', 'is_published']
+    template_name_suffix = '_update'
+
+
 @login_required
 @user_passes_test(is_teacher, login_url='user:home', redirect_field_name=None)
-def create_testing(request):
-    testing_form = TestingForm(request.POST or None)
+def testing_delete(request, pk):
+    task_setup = get_object_or_404(Testing, id=pk)
 
     if request.method == 'POST':
-        if testing_form.is_valid():
-            user = request.user
-            '''Сделать проверку на создание task setting'''
-            task_setup = TaskSetup.objects.create()
+        task_setup.delete()
+        return redirect('testing:testing_list')
 
-            testing = testing_form.save(commit=False)
-            testing.user = user
-            testing.task_setup = task_setup
-            testing.save()
-            testing_form.save_m2m()
-            task_setup.user.add(user)
-            testing.id_of_one_test = testing.id
-            testing.save()
-            return redirect(testing)
-
-    context = {
-        'testing_form': testing_form
-    }
-    return render(request, 'testing/create_testing.html', context)
+    return HttpResponseNotAllowed(
+        [
+            'POST',
+        ]
+    )
 
 
 @login_required
@@ -68,94 +93,56 @@ def update_testing(request, id_of_one_test):
     return render(request, 'inc/testing/_form.html', context)
 
 
-@login_required
-# @user_passes_test(is_teacher, login_url='user:home', redirect_field_name=None)
-def create_task_setup(request, id_of_one_test):
-    # testing = get_object_or_404(Testing, id_of_one_test=id_of_one_test)
-    testing = Testing.objects.filter(id_of_one_test=id_of_one_test)
-    task_setups = TaskSetup.objects.filter(testing__in=testing)
-    # task_setups = testing.select_related('task_setup').all()
-    form = TaskSetupForm(request.POST or None)
-
-    if request.method == 'POST':
-        if form.is_valid():
-            # print(form.values('id_of_one_test').distinct())
-            task = Task(request.user, form, testing.first())
-            task.add()
-            # obj, created = filtered_many_to_many_relationship.filter(user=request.user).get_or_create(
-            #     **form.cleaned_data,
-            #     user=request.user
-            # )
-            # print(obj, created)
-
-            # saved_form_task_setup = form.save(commit=False)
-            # user = request.user
-            # saved_form_task_setup.user = user
-            # saved_form_task_setup.save()
-            # form.save_m2m()
-            #
-            #
-            #
-            # created_testing = Testing.objects.create(title=testing.title,
-            #                                          id_of_one_test=testing.id_of_one_test,
-            #                                          task_setup=saved_form_task_setup,
-            #                                          user=user
-            #                                          )
-            # for student_group in testing.student_group.all():
-            #     created_testing.student_group.add(student_group)
-            # return redirect('testing:task_setup_detail', pk=saved_form_task_setup.id)
-            return redirect('testing:task_setup_detail', pk=task.task_setup_id)
-        else:
-            return render(request, 'inc/task_setup/_form.html', context={
-                'form': form
-            })
-
-    context = {
-        'form': form,
-        'testing': testing.first(),
-        'task_setups': task_setups
-    }
-    return render(request, 'testing/testing_detail.html', context)
-
-
-@login_required
-def task_setup_detail(request, pk):
-    task_setup = get_object_or_404(TaskSetup, id=pk)
-
-    context = {
-        'task_setup': task_setup
-    }
-    return render(request, 'testing/inc/task_setup/_detail.html', context)
+class TaskDetailView(DetailView):
+    model = Task
+    template_name = 'testing/inc/task/_detail.html'
 
 
 @login_required
 @user_passes_test(is_teacher, login_url='user:home', redirect_field_name=None)
-def update_task_setup(request, pk):
-    task_setup = get_object_or_404(TaskSetup, id=pk)
+def task_update(request, pk):
+    task = get_object_or_404(Task, pk=pk)
+    task_setup = task.task_setup
     form = TaskSetupForm(request.POST or None, instance=task_setup)
 
-    # testing = Testing.objects.filter(id_of_one_test=id_of_one_test)
-    # task_setups = TaskSetup.objects.filter(testing__in=testing)
-
     if request.method == 'POST':
         if form.is_valid():
-            form.save()
-            return redirect('testing:task_setup_detail', pk=task_setup.id)
+            if form.changed_data:
+                # testing = task.testing
+                task_manager = TaskManager(request.user, form)
+                task_manager.update(task)
+                return redirect('testing:task_detail', pk=task_manager.id)
+            else:
+                change_number_of_tasks(task, '+')
+                return redirect('testing:task_detail', pk=task.pk)
 
     context = {
         'form': form,
+        'task': task,
         'task_setup': task_setup
     }
-    return render(request, 'inc/task_setup/_form.html', context)
+    return render(request, 'testing/task_form.html', context)
+
+
+def change_number_of_tasks(task, operand):
+    if operand == '+':
+        task.count += 1
+        task.save(update_fields=['count'])
+    elif operand == '-':
+        task.count -= 1
+        task.save(update_fields=['count'])
 
 
 @login_required
-@user_passes_test(is_teacher, login_url='user:home', redirect_field_name=None)
-def delete_task_setup(request, pk):
-    task_setup = get_object_or_404(TaskSetup, id=pk)
+@user_passes_test(is_teacher, login_url='testing:testing_detail', redirect_field_name=None)
+def task_delete(request, pk):
+    task = get_object_or_404(Task, id=pk)
 
     if request.method == 'POST':
-        task_setup.delete()
+        if task.count > 1:
+            change_number_of_tasks(task, '-')
+        else:
+            task.delete()
         return HttpResponse('')
 
     return HttpResponseNotAllowed(
@@ -165,12 +152,17 @@ def delete_task_setup(request, pk):
     )
 
 
+# class CreateTaskForm(CreateView):
+#     form_class = TaskSetupForm
+#     template_name = 'testing/task_form.html'
+
+
 @login_required
 @user_passes_test(is_teacher, login_url='user:home', redirect_field_name=None)
-def add_task_setup_form(request):
+def add_task_form(request):
     form = TaskSetupForm()
 
     context = {
         'form': form,
     }
-    return render(request, 'inc/task_setup/_form.html', context)
+    return render(request, 'testing/task_form.html', context)

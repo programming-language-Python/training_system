@@ -3,15 +3,22 @@ from django.urls import path
 from .views import *
 
 app_name = 'testing'
-
 urlpatterns = [
-    path('testing_list/', TestingList.as_view(), name='testing_list'),
+    path('testing/create/', TestingCreateView.as_view(), name='testing_create'),
+    path('testing_list/', TestingListView.as_view(), name='testing_list'),
+    path('testing/<pk>/detail/', TestingDetailView.as_view(), name='testing_detail'),
+    path('testing/<pk>/update/', TestingUpdateView.as_view(), name='testing_update'),
+    # path('testing/<pk>/delete/', TestingDeleteView.as_view(), name='testing_delete'),
+    path('testing/<pk>/delete/', testing_delete, name='testing_delete'),
     # path('update_testing/<int:pk>/', UpdateTesting.as_view(), name='update_testing'),
-    path('testing/create/', create_testing, name='create_testing'),
-    path('testing/<pk>/update/', update_testing, name='update_testing'),
-    path('task_setup/<id_of_one_test>/create/', create_task_setup, name='create_task_setup'),
-    path('task_setup/<pk>/detail/', task_setup_detail, name='task_setup_detail'),
-    path('task_setup/<pk>/update/', update_task_setup, name='update_task_setup'),
-    path('task_setup/<pk>/delete/', delete_task_setup, name='delete_task_setup'),
-    path('add_task_setup_form/', add_task_setup_form, name='add_task_setup_form'),
+    # path('testing/create/', create_testing, name='create_testing'),
+    # path('task/<pk>/create/', create_task, name='create_task'),
+    # path('task/<pk>/detail/', task_detail, name='task_detail'),
+
+    # path('task/create/', TaskCreate.as_view(), name='task_create'),
+    # path('task/<testing_pk>/create/', task_create, name='task_create'),
+    path('task/<pk>/detail/', TaskDetailView.as_view(), name='task_detail'),
+    path('task/<pk>/update/', task_update, name='task_update'),
+    path('task/<pk>/delete/', task_delete, name='task_delete'),
+    path('add_task_form/', add_task_form, name='add_task_form'),
 ]

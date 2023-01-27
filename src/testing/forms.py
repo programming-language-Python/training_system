@@ -15,6 +15,7 @@ class TestingForm(forms.ModelForm):
                                                        attrs={'name': 'student_group'}
                                                    ),
                                                    queryset=StudentGroup.objects.all())
+    is_published = forms.BooleanField(label='Опубликовано')
 
     class Meta:
         model = Testing
@@ -57,16 +58,10 @@ class TaskSetupForm(forms.ModelForm):
                                                       required=False,
                                                       queryset=OperatorNesting.objects.all())
 
-    # def __init__(self, *args, **kwargs):
-    #     super(TaskSetupForm, self).__init__(*args, **kwargs)
-    #     self.fields['availability_of_cycles'].required = False
-    #     self.fields['operator_nesting'].required = False
-
     class Meta:
         model = TaskSetup
         fields = '__all__'
         exclude = ['user', 'testing']
-
 
 # TaskSetupFormSet = inlineformset_factory(
 #     Testing,

@@ -1,26 +1,27 @@
+from django.db.models import F
+
 from testing.models import *
 from testing.services.filter import filter_many_to_many_relationship
 
 
-class Task:
-    def __init__(self, user, form, testing):
+class TaskManager:
+    def __init__(self, user, form, testing=''):
         self.user = user
         self.form = form
-        self.task_setup_id = ''
         self.testing = testing
+        self.id = ''
 
     def add(self):
-        """Добавляет настройку задачи TaskSetup"""
+        """Добавляет задачу Task"""
         filtered_task_setup = self.get_filter()
-        is_exists = filtered_task_setup.exists()
-        if is_exists:
-            self.create_testing(filtered_task_setup.first())
-            return
-        self.create_testing_and_task_setup()
+        if filtered_task_setup.exists():
+            self.create_task(filtered_task_setup.first())
+        else:
+            self.create_task_setup_and_task()
 
-    def create_testing_and_task_setup(self):
-        task_setup = self.create_task_setup()
-        self.create_testing(task_setup)
+    def create_task_setup_and_task(self):
+        task_setup_created = self.create_task_setup()
+        self.create_task(task_setup_created)
 
     def create_task_setup(self):
         task_setup = self.form.save(commit=False)
@@ -29,19 +30,60 @@ class Task:
         self.form.save_m2m()
         return task_setup
 
-    def create_testing(self, task_setup):
-        student_groups = self.testing.student_group.all()
-        self.testing.pk = None
-        self.testing.task_setup = task_setup
-        self.testing.save()
+    # нужна?
+    def create_task(self, task_setup):
+        task = Task.objects.filter(testing=self.testing,
+                                   task_setup=task_setup)
+        if task.exists():
+            task.update(count=F('count') + 1)
+            self.id = task.first().id
+        else:
+            task = Task.objects.create(testing=self.testing,
+                                       task_setup=task_setup,
+                                       count=1)
+            self.id = task.id
 
-        for student_group in student_groups:
-            self.testing.student_group.add(student_group)
+    def update(self, task):
+        self.testing = task.testing
+        filtered_task_setup = self.get_filter()
+        is_task_repeated = task.count > 1
+        if filtered_task_setup.exists():
+            if is_task_repeated:
+                # проверено всё работает :)
+                print('filtered_task_setup.exists() is_task_repeated')
+                # дубль 1
+                task.count -= 1
+                task.save(update_fields=['count'])
+                self.create_task(filtered_task_setup.first())
+            else:
+                # проверено всё работает :)
+                print('filtered_task_setup.exists() not is_task_repeated')
+                task.delete()
+                self.create_task(filtered_task_setup.first())
+        else:
+            if is_task_repeated:
+                # добавляет дубль task_setup как новый и меняет дубли task. В итоге дубли task становятся одинаковыми
+                print('not filtered_task_setup.exists() is_task_repeated')
+                # дубль 1
+                task.count -= 1
+                task.save(update_fields=['count'])
+                # created_task_setup = self.create_task_setup()
+                # Task.objects.create(testing=self.testing,
+                #                     task_setup=created_task_setup,
+                #                     count=1)
+                self.create_task_setup_and_task()
+            else:
+                # если нет настройки задачи task_setup и задачи task
+                print('not filtered_task_setup.exists() not is_task_repeated')
+                task_setup_created = self.create_task_setup()
+                task.task_setup = task_setup_created
+                task.save(update_fields=['task_setup'])
+                # task.update(task_setup=task_setup_created)
 
-        self.task_setup_id = task_setup.id
-
-    def update_testing(self):
-        pass
+    # def update_quantity_and_add_task(self, task):
+    #     task.count -= 1
+    #     task.save(update_fields=['count'])
+    #     self.add()
 
     def get_filter(self):
         filtered_many_to_many_relationship = self.get_filtered_many_to_many_relationship()

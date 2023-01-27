@@ -44,12 +44,13 @@
                 <div class="uk-card-footer">
                     {% if task_setup %}
                         <button type="submit"
-                                hx-post="{% url 'testing:update_task_setup' task_setup.id %}"
+                                hx-post="{% url 'testing:task_update' task.pk %}"
                                 uk-icon="refresh"
                                 uk-tooltip="Обновить">
                         </button>
                         <button type="button"
-                                hx-get="{% url 'testing:task_detail' task_setup.id %}"
+                                hx-confirm="unset"
+                                hx-get="/"
                                 uk-icon="close"
                                 uk-tooltip="Отмена">
                         </button>
@@ -57,8 +58,9 @@
                         <button class="uk-margin uk-button uk-button-secondary"
                                 type="submit"
                                 hx-post="."
-                                hx-target="#task-setting-list"
-                                hx-swap="beforeend">
+{#                                hx-target="#task-list"#}
+{#                                hx-swap="afterbegin"#}
+                        >
                             Добавить
                         </button>
                     {% endif %}
