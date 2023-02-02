@@ -20,9 +20,15 @@
     {% block head_script %}{% endblock %}
 </head>
 <body>
-<div class="wrapper uk-margin-top uk-margin-bottom uk-margin-left uk-margin-right" id="wrapper">
+<div class="wrapper
+{% if request.path == '/login/' %}
+wrapper_login uk-background-image uk-background-cover uk-background-blend-multiply
+{% endif %}" id="wrapper"
+        {% if request.path == '/login/' %}
+     uk-height-viewport="expand: true"
+        {% endif %}>
     {% include 'inc/_header.html' %}
-    <main class="main uk-text-center">
+    <main class="main uk-text-center uk-padding">
         <section class="content uk-margin-top uk-margin-bottom uk-margin-left uk-margin-right">
             {% block content %}CONTENT{% endblock %}
         </section>

@@ -1,0 +1,28 @@
+{% load random %}
+<div hx-target="this">
+    <h2>id: {{ key }}</h2>
+    <div>
+        <div class="uk-card uk-card-default uk-card-body">
+            <div class="uk-card-header">
+                <div class="uk-grid-small uk-flex-middle" uk-grid>
+                    <div class="uk-width-expand">
+                        <h3 class="uk-card-title uk-margin-remove-bottom">
+                            Задача №{{ values.number }} (вес {{ values.weight }})
+                            <input name="weight" type="hidden" value="{{ values.weight|add:"0" }}">
+                        </h3>
+                    </div>
+                </div>
+            </div>
+            <div class="uk-card-body">
+                <p>
+                    {{ values.code_template_code }}
+                    <input name="code_template_code" type="hidden" value="{{ values.code_template_code }}">
+                    <input name="code_template_pk" type="hidden" value="{{ values.code_template_pk }}">
+                </p>
+                <p>
+                    Ваш ответ: <input name="answer" type="text">
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

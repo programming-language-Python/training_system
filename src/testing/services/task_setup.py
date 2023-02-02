@@ -5,85 +5,35 @@ from testing.services.filter import filter_many_to_many_relationship
 
 
 class TaskManager:
-    def __init__(self, user, form, testing=''):
+    def __init__(self, user, form, testing):
         self.user = user
         self.form = form
         self.testing = testing
-        self.id = ''
+        self.pk = None
 
     def add(self):
         """Добавляет задачу Task"""
-        filtered_task_setup = self.get_filter()
-        if filtered_task_setup.exists():
-            self.create_task(filtered_task_setup.first())
-        else:
-            self.create_task_setup_and_task()
+        task_setup = self.get_task_setup()
+        self.create(task_setup)
 
-    def create_task_setup_and_task(self):
-        task_setup_created = self.create_task_setup()
-        self.create_task(task_setup_created)
-
-    def create_task_setup(self):
-        task_setup = self.form.save(commit=False)
-        task_setup.save()
-        task_setup.user.add(self.user)
-        self.form.save_m2m()
-        return task_setup
-
-    # нужна?
-    def create_task(self, task_setup):
+    def create(self, task_setup):
         task = Task.objects.filter(testing=self.testing,
                                    task_setup=task_setup)
         if task.exists():
             task.update(count=F('count') + 1)
-            self.id = task.first().id
+            self.pk = task.first().pk
         else:
             task = Task.objects.create(testing=self.testing,
                                        task_setup=task_setup,
                                        count=1)
-            self.id = task.id
+            self.pk = task.pk
 
-    def update(self, task):
-        self.testing = task.testing
+    def get_task_setup(self):
         filtered_task_setup = self.get_filter()
-        is_task_repeated = task.count > 1
         if filtered_task_setup.exists():
-            if is_task_repeated:
-                # проверено всё работает :)
-                print('filtered_task_setup.exists() is_task_repeated')
-                # дубль 1
-                task.count -= 1
-                task.save(update_fields=['count'])
-                self.create_task(filtered_task_setup.first())
-            else:
-                # проверено всё работает :)
-                print('filtered_task_setup.exists() not is_task_repeated')
-                task.delete()
-                self.create_task(filtered_task_setup.first())
-        else:
-            if is_task_repeated:
-                # добавляет дубль task_setup как новый и меняет дубли task. В итоге дубли task становятся одинаковыми
-                print('not filtered_task_setup.exists() is_task_repeated')
-                # дубль 1
-                task.count -= 1
-                task.save(update_fields=['count'])
-                # created_task_setup = self.create_task_setup()
-                # Task.objects.create(testing=self.testing,
-                #                     task_setup=created_task_setup,
-                #                     count=1)
-                self.create_task_setup_and_task()
-            else:
-                # если нет настройки задачи task_setup и задачи task
-                print('not filtered_task_setup.exists() not is_task_repeated')
-                task_setup_created = self.create_task_setup()
-                task.task_setup = task_setup_created
-                task.save(update_fields=['task_setup'])
-                # task.update(task_setup=task_setup_created)
-
-    # def update_quantity_and_add_task(self, task):
-    #     task.count -= 1
-    #     task.save(update_fields=['count'])
-    #     self.add()
+            print('filtered_task_setup.exists')
+            return filtered_task_setup.first()
+        return self.create_task_setup()
 
     def get_filter(self):
         filtered_many_to_many_relationship = self.get_filtered_many_to_many_relationship()
@@ -114,3 +64,56 @@ class TaskManager:
             filter_field='operator_nesting'
         )
         return filtered_many_to_many_relationship
+
+    def create_task_setup(self):
+        task_setup = self.form.save(commit=False)
+        task_setup.pk = None
+        task_setup.save()
+        task_setup.user.add(self.user)
+        self.form.save_m2m()
+        return task_setup
+
+    # проверить
+    # не работает
+    # print('not filtered_task_setup.exists() is_task_repeated')
+
+    # работает
+    # print('not filtered_task_setup.exists() not is_task_repeated')
+    def update(self, task):
+        if task.count == 1:
+            print('1')
+            filtered_task_setup = self.get_filter()
+            if filtered_task_setup.exists():
+                # работает
+                print('update filtered_task_setup.exists()')
+                task.delete()
+                self.create(filtered_task_setup.first())
+            else:
+                print('update not filtered_task_setup.exists()')
+                # работает
+                # print('not filtered_task_setup.exists() not is_task_repeated')
+                task.task_setup = self.get_task_setup()
+                task.save(update_fields=['task_setup'])
+                self.pk = task.pk
+            # # print('not filtered_task_setup.exists() is_task_repeated')
+            # task.count -= 1
+            # task.save(update_fields=['count'])
+            #
+            # task.task_setup = self.get_task_setup()
+            # task.save(update_fields=['task_setup'])
+
+            # # работает
+            # # print('not filtered_task_setup.exists() not is_task_repeated')
+            # task.task_setup = self.get_task_setup()
+            # task.save(update_fields=['task_setup'])
+            # self.pk = task.pk
+        else:
+            print('all')
+            task.count -= 1
+            task.save(update_fields=['count'])
+            self.add()
+
+    # def update_quantity_and_add_task(self, task):
+    #     task.count -= 1
+    #     task.save(update_fields=['count'])
+    #     self.add()

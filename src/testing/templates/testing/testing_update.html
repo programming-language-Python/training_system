@@ -17,7 +17,8 @@
                 {{ form.is_published.errors }}
             </div>
         </section>
-        <button type="submit" hx-post="{% url 'testing:testing_update' testing.id %}"
+        <button type="submit"
+                hx-post="{% url 'testing:testing_update' testing.pk %}"
                 hx-target="#wrapper"
                 hx-swap="outerHTML"
                 uk-icon="refresh"
@@ -25,9 +26,9 @@
         </button>
         <button type="button"
                 {#                hx-get="{% url 'testing:task_setup_detail' testing.id %}"#}
-                hx-get="{% url 'testing:testing_detail' testing.id %}"
+                hx-get="{% url 'testing:testing_detail' testing.pk %}"
                 hx-target="#wrapper"
-                hx-swap="outerHTML"
+                hx-swap="none"
                 uk-icon="close"
                 uk-tooltip="Отмена">
         </button>

@@ -1,7 +1,10 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.shortcuts import render
+from django.views.generic import DetailView, ListView
 
+from testing.models import CompletedTesting
 from .forms import UserLoginForm
 
 
@@ -11,6 +14,10 @@ class LoginUser(LoginView):
     template_name = 'user/login.html'
 
 
-@login_required
-def get_user(request):
-    return render(request, 'user/user_detail.html')
+class CompletedTestingListView(LoginRequiredMixin, ListView):
+    login_url = 'user:login'
+    model = CompletedTesting
+    template_name = 'user/user_detail.html'
+
+    def get_queryset(self):
+        return CompletedTesting.objects.filter(student=self.request.user)

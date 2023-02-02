@@ -1,12 +1,13 @@
+import random
+
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import F
 from django.http import HttpResponseNotAllowed, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
-from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
+from django.views.generic import ListView, CreateView, DetailView, UpdateView
 
 from testing.forms import TestingForm, TaskSetupForm
-from testing.models import Testing, TaskSetup, Task
+from testing.models import Testing, Task, CodeTemplate, CompletedTesting
 from testing.services.decorators import is_teacher
 from testing.services.task_setup import TaskManager
 
@@ -40,14 +41,62 @@ class TestingListView(LoginRequiredMixin, ListView):
 class TestingDetailView(LoginRequiredMixin, DetailView):
     model = Testing
 
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        if not self.request.user.is_teacher:
+            testing = [value for value in kwargs.values()][0]
+            tasks = testing.task_set.all()
+
+            tasks_context = {}
+            number = 1
+            for task in tasks:
+                code_template = task.task_setup.codetemplate_set.all()
+                random_code_template = random.choices(code_template)[0]
+
+                if task.count > 1:
+                    number_recurring_tasks = 1
+                    for i in range(task.count):
+                        task_data = {
+                            'number': number,
+                            'count': task.count,
+                            'weight': task.task_setup.weight,
+                            'code_template_pk': random_code_template.pk,
+                            'code_template_code': random_code_template.code
+                        }
+                        key = str(task.pk) + '_' + str(number_recurring_tasks)
+                        tasks_context[key] = task_data
+                        number_recurring_tasks += 1
+                        number += 1
+                else:
+                    task_data = {
+                        'number': number,
+                        'count': task.count,
+                        'weight': task.task_setup.weight,
+                        'code_template_pk': random_code_template.pk,
+                        'code_template_code': random_code_template.code
+                    }
+                    tasks_context[task.pk] = task_data
+                    number += 1
+
+            session_name = 'testing_' + str(testing.pk)
+            if not (session_name in self.request.session.keys()):
+                self.request.session[session_name] = tasks_context
+            context['task_data'] = self.request.session[session_name]
+            context['tasks'] = tasks
+            # del self.request.session[session_name]
+        else:
+            pass
+        return context
+
     def post(self, request, *args, **kwargs):
         if request.method == 'POST':
             testing = get_object_or_404(Testing, pk=kwargs['pk'])
             form = TaskSetupForm(request.POST or None)
             if form.is_valid():
-                task = TaskManager(request.user, form, testing)
-                task.add()
-                return redirect('testing:task_detail', pk=task.id)
+                task_manager = TaskManager(request.user, form, testing)
+                task_manager.add()
+                return redirect('testing:task_detail', pk=task_manager.pk)
             return render(request, 'testing/task_form.html', context={
                 'form': form
             })
@@ -109,9 +158,9 @@ def task_update(request, pk):
         if form.is_valid():
             if form.changed_data:
                 # testing = task.testing
-                task_manager = TaskManager(request.user, form)
+                task_manager = TaskManager(request.user, form, task.testing)
                 task_manager.update(task)
-                return redirect('testing:task_detail', pk=task_manager.id)
+                return redirect('testing:task_detail', pk=task_manager.pk)
             else:
                 change_number_of_tasks(task, '+')
                 return redirect('testing:task_detail', pk=task.pk)
@@ -166,3 +215,27 @@ def add_task_form(request):
         'form': form,
     }
     return render(request, 'testing/task_form.html', context)
+
+
+def serializer_of_test_answers(request):
+    task_weight_list = request.GET.getlist('weight')
+    task_weight_list = [int(task_weight) for task_weight in task_weight_list]
+
+    list_user_answers = request.GET.getlist('answer')
+    list_code_templates_pk = request.GET.getlist('code_template_pk')
+    sum_weights_correct_answers = 0
+    for task_weight, user_answer, code_template_pk in zip(task_weight_list, list_user_answers, list_code_templates_pk):
+        code_template = get_object_or_404(CodeTemplate, pk=code_template_pk)
+        if code_template.answer == user_answer:
+            sum_weights_correct_answers += task_weight
+    assessment = round(sum_weights_correct_answers / sum(task_weight_list) * 5)
+
+    result = {
+        'testing': request.GET.get('testing_title'),
+        'tasks': request.GET.getlist('code_template_code'),
+        'assessment': assessment
+    }
+    CompletedTesting.objects.create(result=result, student=request.user)
+    session_name = request.GET.get('testing_pk')
+    del request.session[session_name]
+    return redirect('user:home')

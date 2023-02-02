@@ -5,6 +5,7 @@
     HEAD_SCRIPT
 {% endblock %}
 {% block content %}
+    {{ title }}
     <section class="content__testing testing" id="testing">
         <div class="testing__title" id="testing-title">
             <h2>
@@ -45,6 +46,9 @@
     </section>
 
     <section class="content__task-form task-form uk-margin" id="task-form"></section>
-
-    {% include 'testing/inc/task/_list.html' %}
+    {% if user.is_teacher %}
+        {% include 'testing/inc/task/_list.html' %}
+    {% else %}
+        {% include 'testing/inc/task/_student-list.html' %}
+    {% endif %}
 {% endblock %}

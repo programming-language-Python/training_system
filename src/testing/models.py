@@ -158,9 +158,9 @@ class CodeTemplate(models.Model):
 
 class CompletedTesting(models.Model):
     result = models.JSONField(verbose_name='Результат теста')
-    student = models.OneToOneField(settings.AUTH_USER_MODEL,
-                                   on_delete=models.DO_NOTHING,
-                                   verbose_name='Студент')
+    student = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                on_delete=models.DO_NOTHING,
+                                verbose_name='Студент')
 
     def get_absolute_url(self):
         return reverse('complete_testing_detail',

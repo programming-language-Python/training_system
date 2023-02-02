@@ -7,7 +7,7 @@ from .views import *
 app_name = 'user'
 
 urlpatterns = [
-    path('', get_user, name='home'),
+    path('', CompletedTestingListView.as_view(), name='home'),
     path('login/', LoginUser.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), {'next_page': settings.LOGOUT_REDIRECT_URL}, name='logout'),
     # path('accounts/profile/', get_user, name='get_user'),

@@ -49,8 +49,7 @@
                                 uk-tooltip="Обновить">
                         </button>
                         <button type="button"
-                                hx-confirm="unset"
-                                hx-get="/"
+                                hx-get="{% url 'testing:task_detail' task.pk %}"
                                 uk-icon="close"
                                 uk-tooltip="Отмена">
                         </button>
