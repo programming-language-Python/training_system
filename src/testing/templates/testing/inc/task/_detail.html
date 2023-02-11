@@ -9,7 +9,7 @@
                     <div class="uk-grid-small uk-flex-middle" uk-grid>
                         <div class="uk-width-expand">
                             <h3 class="uk-card-title uk-margin-remove-bottom">
-                                    Задача №{{ task_number }} (вес {{ task_setup.weight }})
+                                    Задача №{{ task_number }} (вес {{ task.weight }})
                             </h3>
                         </div>
                     </div>
@@ -25,8 +25,8 @@
                         {{ task_setup.condition_of_if_operator }}
                     </p>
                     <p>
-                        {% get_verbose_name_for_field task_setup 'availability_of_cycles' %}:
-                        {{ task_setup.availability_of_cycles.all|join:', ' }}
+                        {% get_verbose_name_for_field task_setup 'presence_one_of_following_cycles' %}:
+                        {{ task_setup.presence_one_of_following_cycles.all|join:', ' }}
                     </p>
                     <p>
                         {% get_verbose_name_for_field task_setup 'cycle_condition' %}:

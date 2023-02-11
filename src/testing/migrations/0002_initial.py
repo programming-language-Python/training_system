@@ -28,8 +28,8 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='tasksetting',
-            name='availability_of_cycles',
-            field=models.ManyToManyField(blank=True, to='testing.cycle', verbose_name='Наличие цикла'),
+            name='presence_one_of_following_cycles',
+            field=models.ManyToManyField(blank=True, to='testing.cycle', verbose_name='Наличие одного из следующих циклов'),
         ),
         migrations.AddField(
             model_name='tasksetting',

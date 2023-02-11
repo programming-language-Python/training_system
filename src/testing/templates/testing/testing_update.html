@@ -1,4 +1,4 @@
-<div hx-target="this" hx-swap="outerHTML">
+<div class="uk-margin" hx-target="this" hx-swap="outerHTML">
     <form class="form" method="POST">
         {% csrf_token %}
         <section class="form__testing testing">
@@ -7,9 +7,9 @@
                 {{ form.title.errors }}
             </h2>
             <div class="testing__student-group">
-                {{ form.student_group.label }}
-                {{ form.student_group }}
-                {{ form.student_group.errors }}
+                {{ form.student_groups.label }}
+                {{ form.student_groups }}
+                {{ form.student_groups.errors }}
             </div>
             <div class="testing__is-published">
                 {{ form.is_published.label }}
@@ -24,13 +24,10 @@
                 uk-icon="refresh"
                 uk-tooltip="Обновить">
         </button>
-        <button type="button"
-                {#                hx-get="{% url 'testing:task_setup_detail' testing.id %}"#}
-                hx-get="{% url 'testing:testing_detail' testing.pk %}"
-                hx-target="#wrapper"
-                hx-swap="none"
-                uk-icon="close"
-                uk-tooltip="Отмена">
-        </button>
+        <a href="{% url 'testing:testing_detail' testing.pk %}"
+           uk-icon="close"
+           uk-tooltip="Отмена">
+        </a>
+
     </form>
 </div>

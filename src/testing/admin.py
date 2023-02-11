@@ -49,15 +49,15 @@ class TaskSetupAdmin(admin.ModelAdmin):
 
     testing.short_description = 'testings'
     # inlines = [TestingInLineAdmin]
-    availability_of_cycles = {
+    presence_one_of_following_cycles = {
         models.Cycle: {'widget': CheckboxSelectMultiple},
     }
     list_display = (
-        'id', 'weight', 'is_if_operator', 'condition_of_if_operator',
+        'id', 'is_if_operator', 'condition_of_if_operator',
         'cycle_condition')
     list_display_links = ('id',)
     list_filter = (
-        'id', 'weight', 'is_if_operator', 'condition_of_if_operator', 'availability_of_cycles',
+        'id', 'is_if_operator', 'condition_of_if_operator', 'presence_one_of_following_cycles',
         'cycle_condition',
         'operator_nesting')
     save_on_top = True

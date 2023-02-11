@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        <p>Вы уверены, что хотите удалить "{{ object }}"?</p>
+        {{ form }}
+        <button class="uk-button uk-button-primary" type="submit" value="Да">Да</button>
+        <a class="uk-button uk-button-default" href="{% url 'testing:testing_detail' testing.pk %}">Отмена</a>
+    </form>
+{% endblock %}

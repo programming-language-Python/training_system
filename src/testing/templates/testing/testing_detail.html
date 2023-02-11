@@ -15,11 +15,23 @@
                     Тест {{ testing.title }}
                 {% endif %}
             </h2>
+            <div>
+                Группы студентов:
+                {{ testing.student_groups.all|join:', ' }}
+            </div>
+            <div>
+                Опубликовано:
+                {% if testing.is_published %}
+                    Да
+                {% else %}
+                    Нет
+                {% endif %}
+            </div>
         </div>
         {% if user.is_teacher %}
             <div class="uk-flex uk-flex-column">
                 <div>
-                    <button class="uk-margin uk-button uk-button-primary"
+                    <button class="uk-margin uk-width-1-4 uk-button uk-button-primary"
                             hx-get="{% url 'testing:testing_update' testing.pk %}"
                             hx-target="#testing-title"
                             hx-swap="outerHTML">
@@ -27,13 +39,14 @@
                     </button>
                 </div>
                 <div>
-                    <button class="uk-margin uk-button uk-button-danger"
-                            hx-post="{% url 'testing:testing_delete' testing.pk %}">
-                        Удалить тестирование
-                    </button>
+                    <form action="{% url 'testing:testing_delete' testing.pk %}">
+                        <button type="submit" class="uk-margin uk-width-1-4 uk-button uk-button-danger">
+                            Удалить тестирование
+                        </button>
+                    </form>
                 </div>
                 <div>
-                    <button class="uk-button uk-button-secondary"
+                    <button class="uk-button uk-width-1-4 uk-button-secondary"
                             type="button"
                             hx-get="{% url 'testing:add_task_form' %}"
                             hx-target="#task-list"

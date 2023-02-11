@@ -4,9 +4,10 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseNotAllowed, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
-from django.views.generic import ListView, CreateView, DetailView, UpdateView
+from django.urls import reverse_lazy
+from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 
-from testing.forms import TestingForm, TaskSetupForm
+from testing.forms import TestingForm, TaskSetupForm, TaskForm
 from testing.models import Testing, Task, CodeTemplate, CompletedTesting
 from testing.services.decorators import is_teacher
 from testing.services.task_setup import TaskManager
@@ -29,7 +30,7 @@ class TestingListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         if self.request.user.is_teacher:
             return Testing.objects.filter(user=self.request.user)
-        return Testing.objects.filter(student_group=self.request.user.student_group)
+        return Testing.objects.filter(student_groups=self.request.user.student_group)
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -92,36 +93,44 @@ class TestingDetailView(LoginRequiredMixin, DetailView):
     def post(self, request, *args, **kwargs):
         if request.method == 'POST':
             testing = get_object_or_404(Testing, pk=kwargs['pk'])
-            form = TaskSetupForm(request.POST or None)
-            if form.is_valid():
-                task_manager = TaskManager(request.user, form, testing)
+            task_form = TaskForm(request.POST or None)
+            task_setup_form = TaskSetupForm(request.POST or None)
+            context = {
+                'task_form': task_form,
+                'task_setup_form': task_setup_form,
+            }
+            is_valid_forms = task_form.is_valid() and task_setup_form.is_valid()
+            if is_valid_forms:
+                task_manager = TaskManager(request.user, context, testing)
                 task_manager.add()
                 return redirect('testing:task_detail', pk=task_manager.pk)
-            return render(request, 'testing/task_form.html', context={
-                'form': form
-            })
+            return render(request, 'testing/task_form.html', context=context)
 
 
 class TestingUpdateView(LoginRequiredMixin, UpdateView):
     model = Testing
-    fields = ['title', 'student_group', 'is_published']
+    form_class = TestingForm
+    # fields = ['title', 'student_groups', 'is_published']
     template_name_suffix = '_update'
 
 
-@login_required
-@user_passes_test(is_teacher, login_url='user:home', redirect_field_name=None)
-def testing_delete(request, pk):
-    task_setup = get_object_or_404(Testing, id=pk)
-
-    if request.method == 'POST':
-        task_setup.delete()
-        return redirect('testing:testing_list')
-
-    return HttpResponseNotAllowed(
-        [
-            'POST',
-        ]
-    )
+class TestingDeleteView(DeleteView):
+    model = Testing
+    success_url = reverse_lazy('testing:testing_list')
+# @login_required
+# @user_passes_test(is_teacher, login_url='user:home', redirect_field_name=None)
+# def testing_delete(request, pk):
+#     task_setup = get_object_or_404(Testing, id=pk)
+#
+#     if request.method == 'POST':
+#         task_setup.delete()
+#         return redirect('testing:testing_list')
+#
+#     return HttpResponseNotAllowed(
+#         [
+#             'POST',
+#         ]
+#     )
 
 
 @login_required
@@ -152,24 +161,25 @@ class TaskDetailView(DetailView):
 def task_update(request, pk):
     task = get_object_or_404(Task, pk=pk)
     task_setup = task.task_setup
-    form = TaskSetupForm(request.POST or None, instance=task_setup)
-
-    if request.method == 'POST':
-        if form.is_valid():
-            if form.changed_data:
-                # testing = task.testing
-                task_manager = TaskManager(request.user, form, task.testing)
-                task_manager.update(task)
-                return redirect('testing:task_detail', pk=task_manager.pk)
-            else:
-                change_number_of_tasks(task, '+')
-                return redirect('testing:task_detail', pk=task.pk)
+    task_form = TaskForm(request.POST or None, instance=task)
+    task_setup_form = TaskSetupForm(request.POST or None, instance=task_setup)
 
     context = {
-        'form': form,
-        'task': task,
-        'task_setup': task_setup
+        'task_form': task_form,
+        'task_setup_form': task_setup_form,
+        'task': task
     }
+    if request.method == 'POST':
+        is_valid_forms = task_form.is_valid() and task_setup_form.is_valid()
+        if is_valid_forms:
+            is_changed_data = task_form.changed_data or task_setup_form.changed_data
+            if is_changed_data:
+                context.pop('task')
+                task_manager = TaskManager(request.user, context, task.testing)
+                task_manager.update(task)
+                return redirect('testing:task_detail', pk=task_manager.pk)
+            change_number_of_tasks(task, '+')
+            return redirect('testing:task_detail', pk=task.pk)
     return render(request, 'testing/task_form.html', context)
 
 
@@ -209,10 +219,12 @@ def task_delete(request, pk):
 @login_required
 @user_passes_test(is_teacher, login_url='user:home', redirect_field_name=None)
 def add_task_form(request):
-    form = TaskSetupForm()
+    task_form = TaskForm()
+    task_setup_form = TaskSetupForm()
 
     context = {
-        'form': form,
+        'task_form': task_form,
+        'task_setup_form': task_setup_form,
     }
     return render(request, 'testing/task_form.html', context)
 

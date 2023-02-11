@@ -9,6 +9,7 @@ app_name = 'testing'
 
 
 class Task(models.Model):
+    weight = models.IntegerField(default=1, verbose_name='Вес')
     testing = models.ForeignKey('Testing',
                                 on_delete=models.CASCADE,
                                 verbose_name='Тестирование')
@@ -29,8 +30,8 @@ class Task(models.Model):
 class Testing(models.Model):
     title = models.CharField(max_length=25,
                              verbose_name='Наименование')
-    student_group = models.ManyToManyField(StudentGroup,
-                                           verbose_name='Группы студентов')
+    student_groups = models.ManyToManyField(StudentGroup,
+                                            verbose_name='Группы студентов')
     user = models.ForeignKey(User,
                              on_delete=models.SET_NULL,
                              null=True,
@@ -59,7 +60,6 @@ class TaskSetup(models.Model):
         simple = 'Простое', _('Простое')
         composite = 'Составное', _('Составное')
 
-    weight = models.IntegerField(default=1, verbose_name='Вес')
     is_if_operator = models.CharField(max_length=25,
                                       choices=IsOperator.choices,
                                       default=IsOperator.absent,
@@ -70,9 +70,9 @@ class TaskSetup(models.Model):
                                                 null=True,
                                                 default=Condition.simple,
                                                 verbose_name='Условие оператора if')
-    availability_of_cycles = models.ManyToManyField('Cycle',
-                                                    blank=True,
-                                                    verbose_name='Наличие цикла')
+    presence_one_of_following_cycles = models.ManyToManyField('Cycle',
+                                                              blank=True,
+                                                              verbose_name='Наличие одного из следующих циклов')
     cycle_condition = models.CharField(max_length=25,
                                        choices=Condition.choices,
                                        blank=True,
@@ -82,13 +82,9 @@ class TaskSetup(models.Model):
     operator_nesting = models.ManyToManyField('OperatorNesting',
                                               blank=True,
                                               verbose_name='Вложенность операторов')
-    # testing = models.ForeignKey('Testing',
-    #                             on_delete=models.PROTECT,
-    #                             null=True,
-    #                             verbose_name='Тестирование')
-    user = models.ManyToManyField(User,
-                                  blank=True,
-                                  verbose_name='Пользователь')
+    users = models.ManyToManyField(User,
+                                   blank=True,
+                                   verbose_name='Пользователи')
 
     def get_absolute_url(self):
         return reverse(app_name + ':task_setup_detail',
@@ -134,11 +130,6 @@ class OperatorNesting(models.Model):
         verbose_name_plural = 'Вложенность операторов'
 
 
-# class AbstractTaskSetup(TaskSetup):
-#     class Meta:
-#         abstract = True
-
-
 class CodeTemplate(models.Model):
     code = models.TextField(verbose_name='Код')
     answer = models.CharField(max_length=20,
@@ -146,6 +137,7 @@ class CodeTemplate(models.Model):
     task_setup = models.ForeignKey('TaskSetup',
                                    on_delete=models.CASCADE,
                                    verbose_name='Настройки')
+    is_use = models.BooleanField(verbose_name='Использовался')
 
     def get_absolute_url(self):
         return reverse('code_template_detail',

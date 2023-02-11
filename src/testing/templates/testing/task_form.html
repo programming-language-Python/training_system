@@ -7,8 +7,8 @@
                     <div class="uk-grid-small uk-flex-middle" uk-grid>
                         <div class="uk-width-expand">
                             <h3 class="uk-card-title uk-margin-remove-bottom">
-                                ({{ form.weight.label }} {{ form.weight }})
-                                {{ form.weight.errors }}
+                                ({{ task_form.weight.label }} {{ task_form.weight }})
+                                {{ task_form.weight.errors }}
                             </h3>
                         </div>
                     </div>
@@ -16,33 +16,34 @@
                 <div class="uk-card-body">
                     <h4>Структура программы:</h4>
                     <p>
-                        {{ form.is_if_operator.label }}
-                        {{ form.is_if_operator }}
-                        {{ form.is_if_operator.errors }}
+                        {{ task_setup_form.is_if_operator.label }}
+                        {{ task_setup_form.is_if_operator }}
+                        {{ task_setup_form.is_if_operator.errors }}
                     </p>
                     <p>
-                        {{ form.condition_of_if_operator.label }}
-                        {{ form.condition_of_if_operator }}
-                        {{ form.condition_of_if_operator.errors }}
+                        {{ task_setup_form.condition_of_if_operator.label }}
+                        {{ task_setup_form.condition_of_if_operator }}
+                        {{ task_setup_form.condition_of_if_operator.errors }}
                     </p>
                     <p>
-                        {{ form.availability_of_cycles.label }}
-                        {{ form.availability_of_cycles }}
-                        {{ form.availability_of_cycles.errors }}
+                        {{ task_setup_form.presence_one_of_following_cycles.label }}
+                        {{ task_setup_form.presence_one_of_following_cycles }}
+                        {{ task_setup_form.presence_one_of_following_cycles.errors }}
                     </p>
                     <p>
-                        {{ form.cycle_condition.label }}
-                        {{ form.cycle_condition }}
-                        {{ form.cycle_condition.errors }}
+                        {{ task_setup_form.cycle_condition.label }}
+                        {{ task_setup_form.cycle_condition }}
+                        {{ task_setup_form.cycle_condition.errors }}
                     </p>
                     <p>
-                        {{ form.operator_nesting.label }}
-                        {{ form.operator_nesting }}
-                        {{ form.operator_nesting.errors }}
+                        {{ task_setup_form.operator_nesting.label }}
+                        {{ task_setup_form.operator_nesting }}
+                        {{ task_setup_form.operator_nesting.errors }}
                     </p>
                 </div>
                 <div class="uk-card-footer">
-                    {% if task_setup %}
+                    {#                    {% if task_setup %}#}
+                    {% if task %}
                         <button type="submit"
                                 hx-post="{% url 'testing:task_update' task.pk %}"
                                 uk-icon="refresh"
@@ -57,8 +58,8 @@
                         <button class="uk-margin uk-button uk-button-secondary"
                                 type="submit"
                                 hx-post="."
-{#                                hx-target="#task-list"#}
-{#                                hx-swap="afterbegin"#}
+                                {#                                hx-target="#task-list"#}
+                                {#                                hx-swap="afterbegin"#}
                         >
                             Добавить
                         </button>

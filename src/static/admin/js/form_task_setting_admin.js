@@ -2,7 +2,7 @@ jQuery(function ($) {
         let id_is_if_statement = $('#id_is_if_statement'),
             field_condition_of_if_statement = $('#id_condition_of_if_statement'),
 
-            id_availability_of_cycles = $('#id_availability_of_cycles'),
+            id_presence_one_of_following_cycles = $('#id_presence_one_of_following_cycles'),
             id_cycle_condition = $('#id_cycle_condition'),
             id_operator_nesting = $('#id_operator_nesting'),
             blocking_fields = []
@@ -17,7 +17,7 @@ jQuery(function ($) {
 
         function block_or_unblock_field() {
             block_or_unblock_field_select(id_is_if_statement, field_condition_of_if_statement)
-            block_or_unblock_field_multiple_select(id_availability_of_cycles, blocking_fields)
+            block_or_unblock_field_multiple_select(id_presence_one_of_following_cycles, blocking_fields)
         }
 
         function block_or_unblock_field_select(select, blocking_field) {
