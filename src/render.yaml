@@ -1,6 +1,6 @@
 databases:
-  - name: training_system
-    databaseName: training_system
+  - name: config
+    databaseName: config
     user: Roman
 
 services:
