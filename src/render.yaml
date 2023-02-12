@@ -1,0 +1,20 @@
+databases:
+  - name: training_system
+    databaseName: training_system
+    user: Roman
+
+services:
+  - type: web
+    name: config
+    env: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn config.wsgi:application"
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: training_system
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: WEB_CONCURRENCY
+        value: 4
