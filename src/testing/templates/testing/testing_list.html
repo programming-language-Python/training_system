@@ -24,7 +24,7 @@
                             </div>
                             {% if user.is_teacher %}
                                 <div class="uk-card-body">
-                                    <p>Группы: {{ testing.student_group.all|join:', ' }}</p>
+                                    <p>Группы: {{ testing.student_groups.all|join:', ' }}</p>
                                 </div>
                             {% endif %}
                             <div class="uk-card-footer">

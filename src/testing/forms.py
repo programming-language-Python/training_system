@@ -4,6 +4,10 @@ from django.forms import inlineformset_factory
 from testing.models import TaskSetup, Cycle, OperatorNesting, Testing, Task
 from user.models import StudentGroup
 
+class_uk_select = 'uk-select'
+class_uk_form_width_small = 'uk-form-width-small'
+select_tag_classes = f'{class_uk_select} {class_uk_form_width_small}'
+
 
 class TestingForm(forms.ModelForm):
     title = forms.CharField(label='Наименование',
@@ -35,7 +39,12 @@ class TestingForm(forms.ModelForm):
 
 
 class TaskForm(forms.ModelForm):
-    weight = forms.IntegerField(label='Вес')
+    weight = forms.IntegerField(label='Вес',
+                                widget=forms.NumberInput(
+                                    attrs={
+                                        'class': 'uk-input uk-form-width-small uk-form-small'
+                                    }
+                                ))
 
     class Meta:
         model = Task
@@ -50,30 +59,55 @@ class TaskSetupForm(forms.ModelForm):
         (absent, absent)
     )
     is_if_operator = forms.ChoiceField(label='Наличие оператора if',
-                                       widget=forms.RadioSelect,
+                                       widget=forms.Select(
+                                           attrs={
+                                               'class': select_tag_classes
+                                           }
+                                       ),
                                        choices=choices_is_operator)
 
     simple = TaskSetup.Condition.simple
     composite = TaskSetup.Condition.composite
     choices_condition_operator = (
+        ('', '----'),
         (simple, simple),
         (composite, composite)
     )
     condition_of_if_operator = forms.ChoiceField(label='Условие оператора if',
-                                                 widget=forms.RadioSelect,
+                                                 required=False,
+                                                 initial=choices_condition_operator[1],
+                                                 widget=forms.Select(
+                                                     attrs={
+                                                         'class': select_tag_classes
+                                                     }
+                                                 ),
                                                  choices=choices_condition_operator)
-    presence_one_of_following_cycles = forms.ModelMultipleChoiceField(label='Наличие одного из следующих циклов',
-                                                                      widget=forms.CheckboxSelectMultiple,
-                                                                      to_field_name='title',
-                                                                      required=False,
-                                                                      queryset=Cycle.objects.all())
+    presence_one_of_cycles = forms.ModelMultipleChoiceField(label='Наличие одного из следующих циклов',
+                                                            required=False,
+                                                            widget=forms.SelectMultiple(
+                                                                attrs={
+                                                                    'class': class_uk_select
+                                                                }
+                                                            ),
+                                                            to_field_name='title',
+                                                            queryset=Cycle.objects.all())
     cycle_condition = forms.ChoiceField(label='Условие цикла',
-                                        widget=forms.RadioSelect,
+                                        required=False,
+                                        initial=choices_condition_operator[1],
+                                        widget=forms.Select(
+                                            attrs={
+                                                'class': select_tag_classes
+                                            }
+                                        ),
                                         choices=choices_condition_operator)
     operator_nesting = forms.ModelMultipleChoiceField(label='Вложенность операторов',
-                                                      widget=forms.CheckboxSelectMultiple,
-                                                      to_field_name='title',
                                                       required=False,
+                                                      widget=forms.SelectMultiple(
+                                                          attrs={
+                                                              'class': class_uk_select
+                                                          }
+                                                      ),
+                                                      to_field_name='title',
                                                       queryset=OperatorNesting.objects.all())
 
     class Meta:

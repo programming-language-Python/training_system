@@ -14,13 +14,14 @@
                 </div>
             </div>
             <div class="uk-card-body">
+                <h4>
+                    Определить выводимое на экран значение переменной по результатам выполнения программы на Java:
+                </h4>
+                <pre onmousedown="return false"
+                     class="uk-text-justify"><code>{{ values.code }}</code></pre>
+                <input name="code" type="hidden" value="{{ values.code }}">
                 <p>
-                    {{ values.code_template_code }}
-                    <input name="code_template_code" type="hidden" value="{{ values.code_template_code }}">
-                    <input name="code_template_pk" type="hidden" value="{{ values.code_template_pk }}">
-                </p>
-                <p>
-                    Ваш ответ: <input name="answer" type="text">
+                    Ваш ответ: <input name="answer" type="number">
                 </p>
             </div>
         </div>

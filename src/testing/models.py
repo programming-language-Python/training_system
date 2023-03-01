@@ -68,19 +68,19 @@ class TaskSetup(models.Model):
                                                 choices=Condition.choices,
                                                 blank=True,
                                                 null=True,
-                                                default=Condition.simple,
                                                 verbose_name='Условие оператора if')
-    presence_one_of_following_cycles = models.ManyToManyField('Cycle',
-                                                              blank=True,
-                                                              verbose_name='Наличие одного из следующих циклов')
+    presence_one_of_cycles = models.ManyToManyField('Cycle',
+                                                    blank=True,
+                                                    null=True,
+                                                    verbose_name='Наличие одного из следующих циклов')
     cycle_condition = models.CharField(max_length=25,
                                        choices=Condition.choices,
                                        blank=True,
                                        null=True,
-                                       default=Condition.simple,
                                        verbose_name='Условие цикла')
     operator_nesting = models.ManyToManyField('OperatorNesting',
                                               blank=True,
+                                              null=True,
                                               verbose_name='Вложенность операторов')
     users = models.ManyToManyField(User,
                                    blank=True,

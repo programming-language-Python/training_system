@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+    {% for testing in user.completedtesting_set.all %}
+        {% with testing.result as result %}
+            <section class="content__testing testing" id="testing">
+                <div class="testing__title" id="testing-title">
+                    <h2>
+                        Тест {{ result.testing }}
+                    </h2>
+                    <h2>
+                        Оценка: {{ result.assessment }}
+                    </h2>
+                </div>
+            </section>
+{#            <ul class="content__task-student-list task-student-list uk-flex uk-flex-column uk-text-center uk-nav-default uk-nav-parent-icon"#}
+{#                id="task-student-list" uk-nav>#}
+{#                <li class="uk-parent">#}
+{#                    <a href="#">#}
+{#                        <h2>#}
+{#                            Тест {{ result.testing }}#}
+{#                        </h2>#}
+{#                    </a>#}
+{#                    <ul class="uk-nav-sub">#}
+{#                        <li class="uk-parent">#}
+{#                            <ul class="uk-nav-sub">#}
+{#                                <h2>#}
+{#                                    Оценка: {{ result.assessment }}#}
+{#                                </h2>#}
+{#                                {% include 'user/inc/testing/_task_completed_list.html' %}#}
+{#                            </ul>#}
+{#                        </li>#}
+{#                    </ul>#}
+{#                </li>#}
+{##}
+{#            </ul>#}
+            <section class="content__task-student-list task-student-list uk-flex uk-flex-column uk-text-center"
+                     id="task-student-list">
+                {% include 'user/inc/testing/_task_completed_list.html' %}
+            </section>
+        {% endwith %}
+    {% endfor %}
+{% endblock %}

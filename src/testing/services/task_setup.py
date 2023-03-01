@@ -37,10 +37,8 @@ class TaskManager:
         if filtered_task_setup.exists():
             filtered_task_setup_by_user = filtered_task_setup.filter(users=self.user)
             if filtered_task_setup_by_user.exists():
-                print('filtered_task_setup_by_user.exists()')
                 return filtered_task_setup.first()
             return filtered_task_setup
-        print('create task setup')
         return self.create_task_setup()
 
     def get_filtered_setup_task(self):
@@ -53,13 +51,14 @@ class TaskManager:
             condition_of_if_operator=condition_of_if_operator,
             cycle_condition=cycle_condition
         )
+        print('cycle_condition', cycle_condition)
         return filtered_task_setup
 
     def get_filtered_many_to_many_relationship(self):
         obj_to_filter = filter_many_to_many_relationship(
             items_model=Cycle,
             form=self.task_setup_form,
-            filter_field='presence_one_of_following_cycles'
+            filter_field='presence_one_of_cycles'
         )
         filtered_many_to_many_relationship = filter_many_to_many_relationship(
             items_model=OperatorNesting,
@@ -84,22 +83,33 @@ class TaskManager:
     # работает
     # print('not filtered_task_setup.exists() not is_task_repeated')
     def update(self, task):
+        # self.block_fields()
         if task.count == 1:
-            filtered_task_setup = self.get_filtered_setup_task()
-            if filtered_task_setup.exists():
-                self.update_weight(task)
-                if self.task_setup_form.changed_data:
-                    task_setup = filtered_task_setup.first()
-                    update_task_setup(task, task_setup)
-            else:
-                self.update_weight(task)
-                task_setup = self.get_task_setup()
-                update_task_setup(task, task_setup)
-            self.pk = task.pk
+            self.update_non_recurring(task)
         else:
             task.count -= 1
             task.save(update_fields=['count'])
             self.add()
+
+    def block_fields(self):
+        is_if_operator_absent = self.task_setup_form.cleaned_data['is_if_operator'] == 'Отсутствует'
+        is_empty_presence_one_of_cycles = self.task_setup_form.cleaned_data['presence_one_of_cycles'] == ''
+        if is_if_operator_absent:
+            self.task_setup_form.cleaned_data['condition_of_if_operator'] = ''
+        if is_empty_presence_one_of_cycles:
+            self.task_setup_form.cleaned_data['cycle_condition'] = ''
+
+    def update_non_recurring(self, task):
+        self.update_weight(task)
+        filtered_task_setup = self.get_filtered_setup_task()
+        is_exists_and_changed_data = filtered_task_setup.exists() and self.task_setup_form.changed_data
+        if is_exists_and_changed_data:
+            task_setup = filtered_task_setup.first()
+        else:
+            task_setup = self.get_task_setup()
+        print('task_setup', task_setup)
+        update_task_setup(task, task_setup)
+        self.pk = task.pk
 
     def update_weight(self, task):
         if self.task_form.changed_data:
@@ -113,5 +123,6 @@ class TaskManager:
 
 
 def update_task_setup(task, task_setup):
+    # print('update_task_setup', task_setup.cycle_condition)
     task.task_setup = task_setup
     task.save(update_fields=['task_setup'])

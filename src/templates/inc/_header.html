@@ -8,13 +8,13 @@
             </li>
             {% if request.user.is_authenticated %}
                 <li class="header__link">
-                    <a href="{% url 'user:logout' %}">
-                        <span class="uk-margin-small-right" uk-icon="icon: trash"></span> Выйти
+                    <a href="{% url 'testing:testing_list' %}">
+                        <span class="uk-margin-small-right" uk-icon="icon: table"></span> Тестирования
                     </a>
                 </li>
                 <li class="header__link">
-                    <a href="{% url 'testing:testing_list' %}">
-                        <span class="uk-margin-small-right" uk-icon="icon: table"></span> Тестирования
+                    <a href="{% url 'user:logout' %}">
+                        <span class="uk-margin-small-right" uk-icon="icon: trash"></span> Выйти
                     </a>
                 </li>
                 <li class="uk-nav-divider"></li>

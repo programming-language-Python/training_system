@@ -7,50 +7,57 @@
                     <div class="uk-grid-small uk-flex-middle" uk-grid>
                         <div class="uk-width-expand">
                             <h3 class="uk-card-title uk-margin-remove-bottom">
-                                ({{ task_form.weight.label }} {{ task_form.weight }})
+                                {{ task_form.weight.label }} {{ task_form.weight }}
                                 {{ task_form.weight.errors }}
                             </h3>
                         </div>
                     </div>
                 </div>
-                <div class="uk-card-body">
+                <div class="uk-card-body task__body body">
                     <h4>Структура программы:</h4>
-                    <p>
-                        {{ task_setup_form.is_if_operator.label }}
-                        {{ task_setup_form.is_if_operator }}
-                        {{ task_setup_form.is_if_operator.errors }}
-                    </p>
-                    <p>
-                        {{ task_setup_form.condition_of_if_operator.label }}
-                        {{ task_setup_form.condition_of_if_operator }}
-                        {{ task_setup_form.condition_of_if_operator.errors }}
-                    </p>
-                    <p>
-                        {{ task_setup_form.presence_one_of_following_cycles.label }}
-                        {{ task_setup_form.presence_one_of_following_cycles }}
-                        {{ task_setup_form.presence_one_of_following_cycles.errors }}
-                    </p>
-                    <p>
-                        {{ task_setup_form.cycle_condition.label }}
-                        {{ task_setup_form.cycle_condition }}
-                        {{ task_setup_form.cycle_condition.errors }}
-                    </p>
-                    <p>
-                        {{ task_setup_form.operator_nesting.label }}
-                        {{ task_setup_form.operator_nesting }}
-                        {{ task_setup_form.operator_nesting.errors }}
-                    </p>
+                    <div class="body uk-child-width-1-2@s uk-text-justify" uk-grid>
+                        <div>
+                            <p>
+                                {{ task_setup_form.is_if_operator.label }}
+                                {{ task_setup_form.is_if_operator }}
+                                {{ task_setup_form.is_if_operator.errors }}
+                            </p>
+                            <p>
+                                {{ task_setup_form.condition_of_if_operator.label }}
+                                {{ task_setup_form.condition_of_if_operator }}
+                                {{ task_setup_form.condition_of_if_operator.errors }}
+                            </p>
+                            <p>
+                                {{ task_setup_form.presence_one_of_cycles.label }}
+                                {{ task_setup_form.presence_one_of_cycles }}
+                                {{ task_setup_form.presence_one_of_cycles.errors }}
+                            </p>
+                        </div>
+                        <div>
+                            <p>
+                                {{ task_setup_form.cycle_condition.label }}
+                                {{ task_setup_form.cycle_condition }}
+                                {{ task_setup_form.cycle_condition.errors }}
+                            </p>
+                            <p>
+                                {{ task_setup_form.operator_nesting.label }}
+                                {{ task_setup_form.operator_nesting }}
+                                {{ task_setup_form.operator_nesting.errors }}
+                            </p>
+                        </div>
+                    </div>
                 </div>
                 <div class="uk-card-footer">
                     {#                    {% if task_setup %}#}
                     {% if task %}
-                        <button type="submit"
+                        <button name="btn-update"
+                                type="submit"
                                 hx-post="{% url 'testing:task_update' task.pk %}"
                                 uk-icon="refresh"
                                 uk-tooltip="Обновить">
                         </button>
-                        <button type="button"
-                                hx-get="{% url 'testing:task_detail' task.pk %}"
+                        <button onclick="location.reload()"
+                                type="button"
                                 uk-icon="close"
                                 uk-tooltip="Отмена">
                         </button>

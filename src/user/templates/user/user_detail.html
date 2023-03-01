@@ -5,7 +5,33 @@
         <h1 class="user__title">
             Добро пожаловать, {{ user.last_name }} {{ user.first_name }} {{ user.patronymic }}
         </h1>
-        {% if completedtesting_list %}
+        {% if request.user.is_teacher %}
+            <h2>Студенты</h2>
+            <div class="uk-grid-small uk-child-width-expand@s uk-text-center" uk-grid>
+                <div>
+                    <div class="uk-card uk-card-default uk-card-body">Группа</div>
+                </div>
+                <div>
+                    <div class="uk-card uk-card-default uk-card-body">ФИО</div>
+                </div>
+            </div>
+            {% for student in home_list %}
+                <div class="uk-grid-small uk-child-width-expand@s uk-text-center" uk-grid>
+                    <div>
+                        <div class="uk-card uk-card-default uk-card-body">
+                            {{ student.student_group }}
+                        </div>
+                    </div>
+                    <div>
+                        <div class="uk-card uk-card-default uk-card-body">
+                            <a href="{{ student.get_absolute_url }}">
+                                {{ student.last_name }} {{ student.first_name }} {{ student.patronymic }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
             <div class="uk-grid-small uk-child-width-expand@s uk-text-center" uk-grid>
                 <div>
                     <div class="uk-card uk-card-default uk-card-body">Тестирование</div>
@@ -14,16 +40,16 @@
                     <div class="uk-card uk-card-default uk-card-body">Оценка</div>
                 </div>
             </div>
-            {% for completedtesting in completedtesting_list %}
+            {% for completed_testing in home_list %}
                 <div class="uk-grid-small uk-child-width-expand@s uk-text-center" uk-grid>
                     <div>
                         <div class="uk-card uk-card-default uk-card-body">
-                            {{ completedtesting.result.testing }}
+                            {{ completed_testing.result.testing }}
                         </div>
                     </div>
                     <div>
                         <div class="uk-card uk-card-default uk-card-body">
-                            {{ completedtesting.result.assessment }}
+                            {{ completed_testing.result.assessment }}
                         </div>
                     </div>
                 </div>

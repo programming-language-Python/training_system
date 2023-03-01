@@ -1,5 +1,3 @@
-import random
-
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseNotAllowed, HttpResponse
@@ -8,7 +6,9 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 
 from testing.forms import TestingForm, TaskSetupForm, TaskForm
-from testing.models import Testing, Task, CodeTemplate, CompletedTesting
+from testing.models import Testing, Task, CompletedTesting
+from testing.services.code_conversion import JavaToPythonConversion
+from testing.services.code_generation import RandomizerJava
 from testing.services.decorators import is_teacher
 from testing.services.task_setup import TaskManager
 
@@ -30,7 +30,7 @@ class TestingListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         if self.request.user.is_teacher:
             return Testing.objects.filter(user=self.request.user)
-        return Testing.objects.filter(student_groups=self.request.user.student_group)
+        return Testing.objects.filter(is_published=True, student_groups=self.request.user.student_group)
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -52,30 +52,47 @@ class TestingDetailView(LoginRequiredMixin, DetailView):
             tasks_context = {}
             number = 1
             for task in tasks:
-                code_template = task.task_setup.codetemplate_set.all()
-                random_code_template = random.choices(code_template)[0]
-
+                task_setup = task.task_setup
+                task_setup = {
+                    'is_if_operator': task_setup.is_if_operator,
+                    'condition_of_if_operator': task_setup.condition_of_if_operator,
+                    'presence_one_of_cycles': task_setup.presence_one_of_cycles.all(),
+                    'cycle_condition': task_setup.cycle_condition,
+                    'operator_nesting': task_setup.operator_nesting.all()
+                }
+                # is_if_operator = task_setup.is_if_operator
+                # condition_of_if_operator = task_setup.condition_of_if_operator
+                # presence_one_of_following_cycles = task_setup.presence_one_of_following_cycles
+                # cycle_condition = task_setup.cycle_condition
+                # operator_nesting = task_setup.operator_nesting
+                # print(is_if_operator)
+                # print(condition_of_if_operator)
+                # for item in presence_one_of_following_cycles.all():
+                #     print(item)
+                # print(presence_one_of_following_cycles.all())
+                # print(cycle_condition)
+                # print(operator_nesting.all())
                 if task.count > 1:
                     number_recurring_tasks = 1
                     for i in range(task.count):
+                        randomizer_java = RandomizerJava(**task_setup)
                         task_data = {
                             'number': number,
                             'count': task.count,
-                            'weight': task.task_setup.weight,
-                            'code_template_pk': random_code_template.pk,
-                            'code_template_code': random_code_template.code
+                            'weight': task.weight,
+                            'code': randomizer_java.generate_code(),
                         }
                         key = str(task.pk) + '_' + str(number_recurring_tasks)
                         tasks_context[key] = task_data
                         number_recurring_tasks += 1
                         number += 1
                 else:
+                    randomizer_java = RandomizerJava(**task_setup)
                     task_data = {
                         'number': number,
                         'count': task.count,
-                        'weight': task.task_setup.weight,
-                        'code_template_pk': random_code_template.pk,
-                        'code_template_code': random_code_template.code
+                        'weight': task.weight,
+                        'code': randomizer_java.generate_code(),
                     }
                     tasks_context[task.pk] = task_data
                     number += 1
@@ -117,6 +134,8 @@ class TestingUpdateView(LoginRequiredMixin, UpdateView):
 class TestingDeleteView(DeleteView):
     model = Testing
     success_url = reverse_lazy('testing:testing_list')
+
+
 # @login_required
 # @user_passes_test(is_teacher, login_url='user:home', redirect_field_name=None)
 # def testing_delete(request, pk):
@@ -232,22 +251,25 @@ def add_task_form(request):
 def serializer_of_test_answers(request):
     task_weight_list = request.GET.getlist('weight')
     task_weight_list = [int(task_weight) for task_weight in task_weight_list]
-
     list_user_answers = request.GET.getlist('answer')
-    list_code_templates_pk = request.GET.getlist('code_template_pk')
+    code_list = request.GET.getlist('code')
     sum_weights_correct_answers = 0
-    for task_weight, user_answer, code_template_pk in zip(task_weight_list, list_user_answers, list_code_templates_pk):
-        code_template = get_object_or_404(CodeTemplate, pk=code_template_pk)
-        if code_template.answer == user_answer:
+    for task_weight, user_answer, code in zip(task_weight_list, list_user_answers, code_list):
+        java_to_python_conversion = JavaToPythonConversion(code)
+        answer = int(java_to_python_conversion.run_code())
+        if answer == int(user_answer):
             sum_weights_correct_answers += task_weight
-    assessment = round(sum_weights_correct_answers / sum(task_weight_list) * 5)
-
+    assessment = round_up(sum_weights_correct_answers / sum(task_weight_list) * 5)
     result = {
         'testing': request.GET.get('testing_title'),
-        'tasks': request.GET.getlist('code_template_code'),
+        'tasks': code_list,
         'assessment': assessment
     }
     CompletedTesting.objects.create(result=result, student=request.user)
     session_name = request.GET.get('testing_pk')
     del request.session[session_name]
     return redirect('user:home')
+
+
+def round_up(num):
+    return int(num + (0.5 if num > 0 else -0.5))

@@ -15,8 +15,6 @@
             integrity="sha384-oGA+prIp5Vchu6we2YkI51UtVzN9Jpx2Z7PnR1I78PnZlN8LkrCT4lqqqmDkyrvI"
             crossorigin="anonymous"></script>
     {#    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.js"/>#}
-    <script src="{% static 'js/jquery.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/admin/form_task_setup.js' %}"></script>
     {% block head_script %}{% endblock %}
 </head>
 <body>
@@ -28,7 +26,7 @@ wrapper_login uk-background-image uk-background-cover uk-background-blend-multip
      uk-height-viewport="expand: true"
         {% endif %}>
     {% include 'inc/_header.html' %}
-    <main class="main uk-text-center uk-padding">
+    <main class="main uk-text-center uk-padding" id="main">
         <section class="content uk-margin-top uk-margin-bottom uk-margin-left uk-margin-right">
             {% block content %}CONTENT{% endblock %}
         </section>

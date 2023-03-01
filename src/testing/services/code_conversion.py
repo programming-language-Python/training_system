@@ -3,17 +3,16 @@ import re
 
 class JavaToPythonConversion:
     def __init__(self, code):
-        print(code, '\n')
         self.code = code
         self.convert_code_to_python()
-        print(self.run_code())
+        # print(self.run_code())
 
     def convert_code_to_python(self):
         self.convert_do_while()
         self.convert_for()
         self.replace_symbols()
         self.convert_print()
-        print(self.code)
+        # print(self.code)
 
     def convert_do_while(self):
         start_symbol_do_while = 'do {'
@@ -21,7 +20,7 @@ class JavaToPythonConversion:
             do_while_boolean_expression = self.get_text_between_symbols('while (', ')')
             body_do_while = self.get_text_between_symbols(start_symbol_do_while, '}')
             self.code = self.code.replace('do', 'while True').replace(f'while ({do_while_boolean_expression})', '') \
-                .replace(body_do_while, body_do_while + f'if {do_while_boolean_expression}:\n' + '\t' * 2 + 'break')
+                .replace(body_do_while, body_do_while + f'\tif {do_while_boolean_expression}: break')
 
     def convert_for(self):
         start_symbol_for = 'for ('
@@ -47,9 +46,13 @@ class JavaToPythonConversion:
         deleting_symbol = ''
         replacement_symbols = {
             ' {': ':',
+            '\t}': deleting_symbol,
+            '}\n': deleting_symbol,
             '}': deleting_symbol,
             'int ': deleting_symbol,
-            ';': deleting_symbol
+            ';': deleting_symbol,
+            '&&': 'and',
+            '||': 'or'
         }
         for symbol, replacement in replacement_symbols.items():
             self.code = self.code.replace(symbol, replacement)
@@ -57,5 +60,4 @@ class JavaToPythonConversion:
     def run_code(self):
         context = {}
         exec(self.code, context)
-        print(context['result'])
         return round(context['result'], 2)

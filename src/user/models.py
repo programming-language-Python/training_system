@@ -10,7 +10,10 @@ class User(AbstractUser):
                                       verbose_name='Группа студента')
 
     def get_absolute_url(self):
-        return reverse('user_detail', kwargs={"pk": self.pk})
+        return reverse('user:testing_completed_list', kwargs={"pk": self.pk})
+        # if self.is_teacher:
+        #     return reverse('testing_completed_list', kwargs={"pk": self.pk})
+        # return reverse('user_detail', kwargs={"pk": self.pk})
 
     class Meta:
         verbose_name = 'Пользователь'

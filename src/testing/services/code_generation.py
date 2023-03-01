@@ -1,35 +1,45 @@
 import string
 from random import randint, choice
 
-from testing.services.code_conversion import JavaToPythonConversion
-
 
 class RandomizerJava:
-    def __init__(self):
+    def __init__(self, **task_setup):
         self.code = ''
 
-        self.condition = 'if'
-        self.condition_of_if_operator = 'Составное'
-        self.cycle = 'while'
-        self.cycle_condition = 'Составное'
-        self.operator_nesting = 'оператор if вложен в '
+        self.is_if_operator = task_setup['is_if_operator'] == 'Присутствует'
+        self.condition_of_if_operator = task_setup['condition_of_if_operator']
+        self.presence_one_of_cycles = task_setup['presence_one_of_cycles']
+        self.cycle_condition = task_setup['cycle_condition']
+        self.operator_nesting = task_setup['operator_nesting']
 
-        self.variables = self.remove_poorly_readable_variables()
+        # self.is_if_operator = True
+        # self.condition_of_if_operator = 'Составное'
+        # self.presence_one_of_cycles = ['while', 'do-while']
+        # self.cycle_condition = 'Составное'
+        # self.operator_nesting = 'оператор if вложен в цикл'
+
+        variables = string.ascii_letters
+        self.variables = self.remove_poorly_readable_variables(variables)
         self.comparison_operators = ['<', '<=', '>', '>=', '==', '!=']
         self.logical_operators = ['&&', '||']
         self.arithmetic_operators = ['+', '-', '*', '/']
-        count_variables = randint(2, 3)
-        # баг с 1 переменной
-        self.initialized_variables = {choice(self.variables): randint(0, 100) for i in
-                                      range(count_variables)}
-        self.generate_code()
-        print(self.code)
+
+        self.initialized_variables = {}
+        self.generate_initialized_variables()
+        # print(self.generate_code())
         # JavaToPythonConversion(self.code)
 
+    def generate_initialized_variables(self):
+        count_variables = randint(2, 3)
+        # баг с 1 переменной
+        for i in range(count_variables):
+            random_variable = choice(self.variables)
+            self.initialized_variables[random_variable] = randint(0, 100)
+            self.variables.replace(random_variable, '')
+
     @staticmethod
-    def remove_poorly_readable_variables():
+    def remove_poorly_readable_variables(variables):
         excluded_variables = ['i', 'l', 'o', 'O']
-        variables = string.ascii_letters
         for variable in excluded_variables:
             variables = variables.replace(variable, '')
         return variables
@@ -37,21 +47,16 @@ class RandomizerJava:
     def generate_code(self):
         # Формирование переменных
         self.generate_variables()
-        # Вложенность операторов
-        operator_nesting = 1
-        # Наличие оператора if
-        is_if_operator = 1
-        # наличие одного из следующих циклов
-        is_presence_of_cycles = 1
-        if operator_nesting:
+        if self.operator_nesting:
             self.code += self.get_nesting_of_operators()
-        elif is_if_operator and is_presence_of_cycles:
+        elif self.is_if_operator and self.presence_one_of_cycles:
             self.code += self.get_condition_and_loop()
-        elif is_if_operator:
+        elif self.is_if_operator:
             self.code += self.get_generated_condition()
-        elif is_presence_of_cycles:
+        elif self.presence_one_of_cycles:
             self.code += self.get_generated_cycle()
         self.code += '\n' + self.get_print_of_variable()
+        return self.code
 
     def get_condition_and_loop(self):
         condition = self.get_generated_condition()
@@ -79,11 +84,11 @@ class RandomizerJava:
 
     def get_generated_condition(self, nested_operator=''):
         """Сгенерирует условие"""
-        computing_process = self.condition
-        if self.condition_of_if_operator == 'Составное':
-            return self.get_compound_boolean_expression_with_body(computing_process, nested_operator)
-        else:
-            return self.get_simple_boolean_expression_with_body(computing_process, nested_operator)
+        operator = 'if'
+        condition = self.condition_of_if_operator
+        return self.get_boolean_expression_with_body(operator,
+                                                     condition,
+                                                     nested_operator)
 
     def get_compound_boolean_expression(self):
         """Сгенерирует составное логическое выражение"""
@@ -104,54 +109,43 @@ class RandomizerJava:
 
     def get_generated_cycle(self, nested_operator=''):
         """Сгенерирует цикл"""
-        computing_process = self.cycle
-        if self.cycle_condition == 'Составное':
-            if computing_process == 'for':
-                pass
-            elif computing_process == 'do-while':
-                boolean_expression = self.get_compound_boolean_expression()
-                return self.get_do_while_loop(boolean_expression, nested_operator)
-            else:
-                return self.get_compound_boolean_expression_with_body(computing_process, nested_operator)
-        else:
-            if computing_process == 'for':
-                return self.get_simple_for_with_body(nested_operator)
-            elif computing_process == 'do-while':
-                boolean_expression = self.get_simple_boolean_expression()
-                return self.get_do_while_loop(boolean_expression, nested_operator)
-            else:
-                return self.get_simple_boolean_expression_with_body(computing_process, nested_operator)
+        operator = choice(self.presence_one_of_cycles).title
+        if operator == 'for':
+            return self.get_for_with_body(nested_operator)
+        elif operator == 'while':
+            condition = self.cycle_condition
+            return self.get_boolean_expression_with_body(operator, condition, nested_operator)
+        elif operator == 'do-while':
+            return self.get_do_while_loop(nested_operator)
 
-    def get_do_while_loop(self, boolean_expression, nested_operator):
+    def get_for_with_body(self, nested_operator):
+        if self.cycle_condition == 'Составное':
+            pass
+        else:
+            body_for = self.get_simple_for() + self.get_generated_body()
+            if nested_operator:
+                nested_operator = self.add_tabs_to_paragraphs(nested_operator)
+                return body_for + '\n' + nested_operator + '\n}'
+        return body_for + '\n}'
+
+    def get_boolean_expression_with_body(self, operator, condition, nested_operator):
+        if operator in ['do-while', 'while']:
+            pass
+        boolean_expression = self.get_boolean_expression(condition)
+        if nested_operator:
+            nested_operator = self.add_tabs_to_paragraphs(nested_operator)
+            return operator + ' ' + boolean_expression + ' ' + '{\n' \
+                + self.get_generated_body() + '\n' + nested_operator + '\n}'
+        return operator + ' ' + boolean_expression + ' ' + '{\n' \
+            + self.get_generated_body() + '\n}'
+
+    def get_do_while_loop(self, nested_operator):
+        boolean_expression = self.get_boolean_expression(self.cycle_condition)
         if nested_operator:
             nested_operator = self.add_tabs_to_paragraphs(nested_operator)
             return 'do {\n' + self.get_generated_body() + '\n' + nested_operator + '\n}\n' \
                 + f'while {boolean_expression};'
         return 'do {\n' + self.get_generated_body() + '\n}\n' + f'while {boolean_expression};'
-
-    def get_compound_boolean_expression_with_body(self, computing_process, nested_operator):
-        if nested_operator:
-            nested_operator = self.add_tabs_to_paragraphs(nested_operator)
-            return computing_process + ' ' + self.get_compound_boolean_expression() + ' ' + '{\n' \
-                + self.get_generated_body() + '\n' + nested_operator + '\n}'
-        return computing_process + ' ' + self.get_compound_boolean_expression() + ' ' + '{\n' \
-            + self.get_generated_body() + '\n}'
-
-    def get_simple_boolean_expression_with_body(self, computing_process, nested_operator):
-        if nested_operator:
-            nested_operator = self.add_tabs_to_paragraphs(nested_operator)
-            return computing_process + ' ' + self.get_simple_boolean_expression() + ' {\n' \
-                + self.get_generated_body() + '\n' + nested_operator + '\n}'
-        return computing_process + ' ' + self.get_simple_boolean_expression() + ' {\n' + \
-            self.get_generated_body() + '\n}'
-
-    def get_boolean_expression_with_body(self, computing_process, nested_operator, condition):
-        if nested_operator:
-            nested_operator = self.add_tabs_to_paragraphs(nested_operator)
-            return computing_process + ' ' + self.get_compound_boolean_expression() + ' ' + '{\n' \
-                + self.get_generated_body() + '\n' + nested_operator + '\n}'
-        return computing_process + ' ' + self.get_compound_boolean_expression() + ' ' + '{\n' \
-            + self.get_generated_body() + '\n}'
 
     def get_print_of_variable(self):
         list_variables = list(self.initialized_variables)
@@ -162,13 +156,6 @@ class RandomizerJava:
     @staticmethod
     def add_tabs_to_paragraphs(text):
         return '\n'.join(f'\t{word}' for word in text.split('\n'))
-
-    def get_simple_for_with_body(self, nested_operator):
-        body_for = self.get_simple_for() + self.get_generated_body()
-        if nested_operator:
-            nested_operator = self.add_tabs_to_paragraphs(nested_operator)
-            return body_for + '\n' + nested_operator + '\n}'
-        return body_for + '\n}'
 
     @staticmethod
     def get_simple_for():
@@ -186,6 +173,11 @@ class RandomizerJava:
         arithmetic_operator = self.get_random_arithmetic_operator()
         rand_int = randint(0, 100)
         return f'\t{variable} {arithmetic_operator}= {rand_int};'
+
+    def get_boolean_expression(self, condition):
+        if condition == 'Составное':
+            return self.get_compound_boolean_expression()
+        return self.get_simple_boolean_expression()
 
     def get_random_comparison_operator(self):
         return choice(self.comparison_operators)

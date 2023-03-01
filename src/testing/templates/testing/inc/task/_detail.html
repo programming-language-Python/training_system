@@ -1,6 +1,6 @@
 {% load model_manipulation %}
 
-<div hx-target="this">
+<div class="task" hx-target="this">
     <h2>id: {{ task.id }}</h2>
     {% with task.task_setup as task_setup %}
         <div>
@@ -9,36 +9,43 @@
                     <div class="uk-grid-small uk-flex-middle" uk-grid>
                         <div class="uk-width-expand">
                             <h3 class="uk-card-title uk-margin-remove-bottom">
-                                    Задача №{{ task_number }} (вес {{ task.weight }})
+                                Задача №{{ task_number }} (вес {{ task.weight }})
                             </h3>
                         </div>
                     </div>
                 </div>
-                <div class="uk-card-body">
+                <div class="uk-card-body task__body body">
                     <h4>Структура программы:</h4>
-                    <p>
-                        {% get_verbose_name_for_field task_setup 'is_if_operator' %}:
-                        {{ task_setup.is_if_operator }}
-                    </p>
-                    <p>
-                        {% get_verbose_name_for_field task_setup 'condition_of_if_operator' %}:
-                        {{ task_setup.condition_of_if_operator }}
-                    </p>
-                    <p>
-                        {% get_verbose_name_for_field task_setup 'presence_one_of_following_cycles' %}:
-                        {{ task_setup.presence_one_of_following_cycles.all|join:', ' }}
-                    </p>
-                    <p>
-                        {% get_verbose_name_for_field task_setup 'cycle_condition' %}:
-                        {{ task_setup.cycle_condition }}
-                    </p>
-                    <p>
-                        {% get_verbose_name_for_field task_setup 'operator_nesting' %}:
-                        {{ task_setup.operator_nesting.all|join:', ' }}
-                    </p>
+                    <div class="body uk-child-width-1-2 uk-text-justify" uk-grid>
+                        <div>
+                            <p>
+                                {% get_verbose_name_for_field task_setup 'is_if_operator' %}:
+                                {{ task_setup.is_if_operator }}
+                            </p>
+                            <p>
+                                {% get_verbose_name_for_field task_setup 'condition_of_if_operator' %}:
+                                {{ task_setup.condition_of_if_operator }}
+                            </p>
+                            <p>
+                                {% get_verbose_name_for_field task_setup 'presence_one_of_cycles' %}:
+                                {{ task_setup.presence_one_of_cycles.all|join:', ' }}
+                            </p>
+                        </div>
+                        <div>
+                            <p>
+                                {% get_verbose_name_for_field task_setup 'cycle_condition' %}:
+                                {{ task_setup.cycle_condition }}
+                            </p>
+                            <p>
+                                {% get_verbose_name_for_field task_setup 'operator_nesting' %}:
+                                {{ task_setup.operator_nesting.all|join:', ' }}
+                            </p>
+                        </div>
+                    </div>
                 </div>
                 <div class="uk-card-footer">
-                    <button hx-post="{% url 'testing:task_update' task.pk %}"
+                    <button name="btn-update"
+                            hx-post="{% url 'testing:task_update' task.pk %}"
                             hx-swap="outerHTML"
                             uk-icon="refresh"
                             uk-tooltip="Обновить">
