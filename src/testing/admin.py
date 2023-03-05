@@ -31,7 +31,7 @@ class TestingAdmin(admin.ModelAdmin):
 
     # filter_vertical = [TaskSetupInLineAdmin]
     # inlines = [TaskSetupInLineAdmin]
-    list_display = ('id', 'title',)
+    list_display = ('id', 'title')
     list_display_links = ('id',)
     search_fields = ('title',)
     list_editable = ('title',)
@@ -52,14 +52,12 @@ class TaskSetupAdmin(admin.ModelAdmin):
     presence_one_of_cycles = {
         models.Cycle: {'widget': CheckboxSelectMultiple},
     }
-    list_display = (
-        'id', 'is_if_operator', 'condition_of_if_operator',
-        'cycle_condition')
+    list_display = ('id', 'is_if_operator', 'condition_of_if_operator',
+                    'cycle_condition')
     list_display_links = ('id',)
-    list_filter = (
-        'id', 'is_if_operator', 'condition_of_if_operator', 'presence_one_of_cycles',
-        'cycle_condition',
-        'operator_nesting')
+    list_filter = ('id', 'use_of_all_variables', 'is_if_operator', 'condition_of_if_operator', 'presence_one_of_cycles',
+                   'cycle_condition',
+                   'operator_nesting')
     save_on_top = True
 
     class Media:
@@ -68,8 +66,7 @@ class TaskSetupAdmin(admin.ModelAdmin):
 
 @admin.register(models.Cycle)
 class CycleAdmin(admin.ModelAdmin):
-    list_display = (
-        'id', 'title')
+    list_display = ('id', 'title')
     list_display_links = ('id', 'title')
     search_fields = ('title',)
     list_filter = ('id', 'title')
@@ -78,30 +75,19 @@ class CycleAdmin(admin.ModelAdmin):
 
 @admin.register(models.OperatorNesting)
 class CycleAdmin(admin.ModelAdmin):
-    list_display = (
-        'id', 'title')
+    list_display = ('id', 'title')
     list_display_links = ('id', 'title')
     search_fields = ('title',)
     list_filter = ('id', 'title')
     save_on_top = True
 
 
-@admin.register(models.CodeTemplate)
-class CodeTemplateAdmin(admin.ModelAdmin):
-    # list_display = ('id', 'code', 'setting')
-    # list_display_links = ('id',)
-    # search_fields = ('code', 'setting')
-    # list_editable = ('code', 'setting')
-    # list_filter = ('id', 'setting')
-    save_on_top = True
-
-
 @admin.register(models.CompletedTesting)
 class CompletedTestingAdmin(admin.ModelAdmin):
-    list_display = ('id', 'result', 'student')
+    list_display = ('id', 'assessment', 'total_weight', 'weight_of_student_tasks', 'tasks', 'testing', 'student')
     list_display_links = ('id', 'student')
-    search_fields = ('student',)
-    list_filter = ('student',)
+    search_fields = ('assessment', 'total_weight', 'weight_of_student_tasks', 'testing', 'student')
+    list_filter = ('assessment', 'total_weight', 'weight_of_student_tasks', 'testing', 'student')
     save_on_top = True
 
 

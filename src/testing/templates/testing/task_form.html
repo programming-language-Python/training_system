@@ -18,6 +18,11 @@
                     <div class="body uk-child-width-1-2@s uk-text-justify" uk-grid>
                         <div>
                             <p>
+                                {{ task_setup_form.use_of_all_variables.label }}
+                                {{ task_setup_form.use_of_all_variables }}
+                                {{ task_setup_form.use_of_all_variables.errors }}
+                            </p>
+                            <p>
                                 {{ task_setup_form.is_if_operator.label }}
                                 {{ task_setup_form.is_if_operator }}
                                 {{ task_setup_form.is_if_operator.errors }}

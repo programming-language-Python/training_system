@@ -1,5 +1,4 @@
 from django import forms
-from django.forms import inlineformset_factory
 
 from testing.models import TaskSetup, Cycle, OperatorNesting, Testing, Task
 from user.models import StudentGroup
@@ -58,6 +57,7 @@ class TaskSetupForm(forms.ModelForm):
         (be_present, be_present),
         (absent, absent)
     )
+    use_of_all_variables = forms.CheckboxInput()
     is_if_operator = forms.ChoiceField(label='Наличие оператора if',
                                        widget=forms.Select(
                                            attrs={

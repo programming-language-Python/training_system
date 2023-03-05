@@ -60,6 +60,8 @@ class TaskSetup(models.Model):
         simple = 'Простое', _('Простое')
         composite = 'Составное', _('Составное')
 
+    use_of_all_variables = models.BooleanField(default=False,
+                                               verbose_name='Использование обязательно всех переменных')
     is_if_operator = models.CharField(max_length=25,
                                       choices=IsOperator.choices,
                                       default=IsOperator.absent,
@@ -71,7 +73,7 @@ class TaskSetup(models.Model):
                                                 verbose_name='Условие оператора if')
     presence_one_of_cycles = models.ManyToManyField('Cycle',
                                                     blank=True,
-                                                    null=True,
+                                                    # null=True,
                                                     verbose_name='Наличие одного из следующих циклов')
     cycle_condition = models.CharField(max_length=25,
                                        choices=Condition.choices,
@@ -80,7 +82,7 @@ class TaskSetup(models.Model):
                                        verbose_name='Условие цикла')
     operator_nesting = models.ManyToManyField('OperatorNesting',
                                               blank=True,
-                                              null=True,
+                                              # null=True,
                                               verbose_name='Вложенность операторов')
     users = models.ManyToManyField(User,
                                    blank=True,
@@ -130,28 +132,16 @@ class OperatorNesting(models.Model):
         verbose_name_plural = 'Вложенность операторов'
 
 
-class CodeTemplate(models.Model):
-    code = models.TextField(verbose_name='Код')
-    answer = models.CharField(max_length=20,
-                              verbose_name='Ответ')
-    task_setup = models.ForeignKey('TaskSetup',
-                                   on_delete=models.CASCADE,
-                                   verbose_name='Настройки')
-    is_use = models.BooleanField(verbose_name='Использовался')
-
-    def get_absolute_url(self):
-        return reverse('code_template_detail',
-                       kwargs={'pk': self.pk})
-
-    class Meta:
-        verbose_name = 'Шаблон кода'
-        verbose_name_plural = 'Шаблоны кодов'
-
-
 class CompletedTesting(models.Model):
-    result = models.JSONField(verbose_name='Результат теста')
+    assessment = models.IntegerField(verbose_name='Оценка')
+    total_weight = models.IntegerField(verbose_name='Общий вес')
+    weight_of_student_tasks = models.IntegerField(verbose_name='Вес задач студента')
+    tasks = models.JSONField(verbose_name='Задачи')
+    testing = models.ForeignKey(Testing,
+                                on_delete=models.CASCADE,
+                                verbose_name='Тестирование')
     student = models.ForeignKey(settings.AUTH_USER_MODEL,
-                                on_delete=models.DO_NOTHING,
+                                on_delete=models.CASCADE,
                                 verbose_name='Студент')
 
     def get_absolute_url(self):

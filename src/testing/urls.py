@@ -23,5 +23,5 @@ urlpatterns = [
     path('task/<pk>/delete/', task_delete, name='task_delete'),
     path('add_task_form/', add_task_form, name='add_task_form'),
 
-    path('serializer_of_test_answers/', serializer_of_test_answers, name='serializer_of_test_answers'),
+    path('create_completed_test/', create_completed_test, name='create_completed_test'),
 ]

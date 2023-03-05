@@ -1,9 +1,9 @@
 <section class="content__task-student-list task-student-list uk-flex uk-flex-column uk-text-center"
          id="task-student-list">
-    <form action="{% url 'testing:serializer_of_test_answers' %}" method="get">
+    <form action="{% url 'testing:create_completed_test' %}" method="get">
         {% csrf_token %}
         <input name="testing_title" type="hidden" value="{{ testing.title }}">
-        <input name="testing_pk" type="hidden" value="testing_{{ testing.pk }}">
+        <input name="testing_pk" type="hidden" value="{{ testing.pk }}">
         <button type="submit">Завершить тест</button>
         {% for key, values in task_data.items %}
             {% include "testing/inc/task/_student-detail.html" %}

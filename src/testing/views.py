@@ -44,34 +44,21 @@ class TestingDetailView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-
         if not self.request.user.is_teacher:
             testing = [value for value in kwargs.values()][0]
             tasks = testing.task_set.all()
-
             tasks_context = {}
             number = 1
             for task in tasks:
                 task_setup = task.task_setup
                 task_setup = {
+                    'use_of_all_variables': task_setup.use_of_all_variables,
                     'is_if_operator': task_setup.is_if_operator,
                     'condition_of_if_operator': task_setup.condition_of_if_operator,
                     'presence_one_of_cycles': task_setup.presence_one_of_cycles.all(),
                     'cycle_condition': task_setup.cycle_condition,
                     'operator_nesting': task_setup.operator_nesting.all()
                 }
-                # is_if_operator = task_setup.is_if_operator
-                # condition_of_if_operator = task_setup.condition_of_if_operator
-                # presence_one_of_following_cycles = task_setup.presence_one_of_following_cycles
-                # cycle_condition = task_setup.cycle_condition
-                # operator_nesting = task_setup.operator_nesting
-                # print(is_if_operator)
-                # print(condition_of_if_operator)
-                # for item in presence_one_of_following_cycles.all():
-                #     print(item)
-                # print(presence_one_of_following_cycles.all())
-                # print(cycle_condition)
-                # print(operator_nesting.all())
                 if task.count > 1:
                     number_recurring_tasks = 1
                     for i in range(task.count):
@@ -102,9 +89,8 @@ class TestingDetailView(LoginRequiredMixin, DetailView):
                 self.request.session[session_name] = tasks_context
             context['task_data'] = self.request.session[session_name]
             context['tasks'] = tasks
-            # del self.request.session[session_name]
-        else:
-            pass
+            # !!! УБРАТЬ ЕЁ ПОТОМ !!!
+            del self.request.session[session_name]
         return context
 
     def post(self, request, *args, **kwargs):
@@ -182,7 +168,6 @@ def task_update(request, pk):
     task_setup = task.task_setup
     task_form = TaskForm(request.POST or None, instance=task)
     task_setup_form = TaskSetupForm(request.POST or None, instance=task_setup)
-
     context = {
         'task_form': task_form,
         'task_setup_form': task_setup_form,
@@ -205,10 +190,9 @@ def task_update(request, pk):
 def change_number_of_tasks(task, operand):
     if operand == '+':
         task.count += 1
-        task.save(update_fields=['count'])
     elif operand == '-':
         task.count -= 1
-        task.save(update_fields=['count'])
+    task.save(update_fields=['count'])
 
 
 @login_required
@@ -248,26 +232,35 @@ def add_task_form(request):
     return render(request, 'testing/task_form.html', context)
 
 
-def serializer_of_test_answers(request):
-    task_weight_list = request.GET.getlist('weight')
-    task_weight_list = [int(task_weight) for task_weight in task_weight_list]
+def create_completed_test(request):
+    task_weight_list = [int(task_weight) for task_weight in request.GET.getlist('weight')]
     list_user_answers = request.GET.getlist('answer')
     code_list = request.GET.getlist('code')
-    sum_weights_correct_answers = 0
+    weight_of_student_tasks = 0
+    tasks = []
     for task_weight, user_answer, code in zip(task_weight_list, list_user_answers, code_list):
         java_to_python_conversion = JavaToPythonConversion(code)
         answer = int(java_to_python_conversion.run_code())
         if answer == int(user_answer):
-            sum_weights_correct_answers += task_weight
-    assessment = round_up(sum_weights_correct_answers / sum(task_weight_list) * 5)
-    result = {
-        'testing': request.GET.get('testing_title'),
-        'tasks': code_list,
-        'assessment': assessment
-    }
-    CompletedTesting.objects.create(result=result, student=request.user)
-    session_name = request.GET.get('testing_pk')
-    del request.session[session_name]
+            weight_of_student_tasks += task_weight
+        task = {
+            'weight': task_weight,
+            'code': code,
+            'answer': answer,
+            'user_answer': user_answer
+        }
+        tasks.append(task)
+    assessment = round_up(weight_of_student_tasks / sum(task_weight_list) * 5)
+    testing = Testing.objects.get(pk=request.GET.get('testing_pk'))
+    CompletedTesting.objects.create(assessment=assessment,
+                                    total_weight=sum(task_weight_list),
+                                    weight_of_student_tasks=weight_of_student_tasks,
+                                    tasks=tasks,
+                                    testing=testing,
+                                    student=request.user)
+    # РАССКОМЕНТИТЬ ПОТОМ !!!
+    # session_name = request.GET.get('testing_pk')
+    # del request.session[session_name]
     return redirect('user:home')
 
 

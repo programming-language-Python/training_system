@@ -1,5 +1,7 @@
 import re
 
+from testing.services.code_generation import RandomizerJava
+
 
 class JavaToPythonConversion:
     def __init__(self, code):
@@ -19,8 +21,9 @@ class JavaToPythonConversion:
         if self.is_symbol(start_symbol_do_while):
             do_while_boolean_expression = self.get_text_between_symbols('while (', ')')
             body_do_while = self.get_text_between_symbols(start_symbol_do_while, '}')
+            # self.convert_if_boolean_expression(do_while_boolean_expression)
             self.code = self.code.replace('do', 'while True').replace(f'while ({do_while_boolean_expression})', '') \
-                .replace(body_do_while, body_do_while + f'\tif {do_while_boolean_expression}: break')
+                .replace(body_do_while, body_do_while + f'if {do_while_boolean_expression}: continue\n\telse: break')
 
     def convert_for(self):
         start_symbol_for = 'for ('
@@ -31,9 +34,9 @@ class JavaToPythonConversion:
             self.code = self.code.replace(start_symbol_for + for_boolean_expression + ')', python_for)
 
     def convert_print(self):
-        printed_variable = self.get_text_between_symbols('System.out.printIn("', ' =')
+        printed_variable = self.get_text_between_symbols('System.out.println("', ' =')
         variable_print_paragraph = self.code.split('\n')[-1]
-        result = f'result = {printed_variable}'
+        result = f'result = int({printed_variable})'
         self.code = self.code.replace(variable_print_paragraph, result)
 
     def is_symbol(self, symbol):
@@ -59,5 +62,6 @@ class JavaToPythonConversion:
 
     def run_code(self):
         context = {}
+        print(self.code)
         exec(self.code, context)
         return round(context['result'], 2)

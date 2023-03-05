@@ -11,25 +11,27 @@
     {{ title }}
     <section class="content__testing testing" id="testing">
         <div class="testing__title" id="testing-title">
-            <h2>
-                {% if user.is_teacher %}
+            {% if user.is_teacher %}
+                <h2>
                     Создать настройки задач для тестирования {{ testing.title }}
-                {% else %}
+                </h2>
+                <div>
+                    Группы студентов:
+                    {{ testing.student_groups.all|join:', ' }}
+                </div>
+                <div>
+                    Опубликовано:
+                    {% if testing.is_published %}
+                        Да
+                    {% else %}
+                        Нет
+                    {% endif %}
+                </div>
+            {% else %}
+                <h2>
                     Тест {{ testing.title }}
-                {% endif %}
-            </h2>
-            <div>
-                Группы студентов:
-                {{ testing.student_groups.all|join:', ' }}
-            </div>
-            <div>
-                Опубликовано:
-                {% if testing.is_published %}
-                    Да
-                {% else %}
-                    Нет
-                {% endif %}
-            </div>
+                </h2>
+            {% endif %}
         </div>
         {% if user.is_teacher %}
             <div name="btns-testing" class="uk-flex uk-flex-column">

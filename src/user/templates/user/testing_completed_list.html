@@ -1,44 +1,64 @@
 {% extends "base.html" %}
+{% load model_manipulation %}
 {% load static %}
 
 {% block content %}
-    {% for testing in user.completedtesting_set.all %}
-        {% with testing.result as result %}
-            <section class="content__testing testing" id="testing">
-                <div class="testing__title" id="testing-title">
-                    <h2>
-                        Тест {{ result.testing }}
-                    </h2>
-                    <h2>
-                        Оценка: {{ result.assessment }}
-                    </h2>
+    <h1>{{ user.last_name }} {{ user.first_name }} {{ user.patronymic }}</h1>
+    {% for completed_testing in user.completedtesting_set.all %}
+        <section class="content__testing testing" id="testing">
+            <div class="uk-margin">
+                <div class="uk-card uk-card-default uk-card-body">
+                    <div class="testing__title uk-card-header" id="testing-title">
+                        <div class="uk-grid-small uk-flex-middle" uk-grid>
+                            <div class="uk-width-expand">
+                                <h2 class="uk-card-title">
+                                    Тест {{ completed_testing.testing }}
+                                </h2>
+                                <h3 class="uk-card-title">
+                                    {% get_verbose_name_for_field completed_testing 'assessment' %}: {{ completed_testing.assessment }}
+                                </h3>
+                                <h3 class="uk-card-title">
+                                    {% get_verbose_name_for_field completed_testing 'total_weight' %}: {{ completed_testing.total_weight }}
+                                </h3>
+                                <h3 class="uk-card-title">
+                                    {% get_verbose_name_for_field completed_testing 'weight_of_student_tasks' %}
+                                    : {{ completed_testing.weight_of_student_tasks }}
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+                    {#            <ul class="content__task-student-list task-student-list uk-flex uk-flex-column uk-text-center uk-nav-default uk-nav-parent-icon"#}
+                    {#                id="task-student-list" uk-nav>#}
+                    {#                <li class="uk-parent">#}
+                    {#                    <a href="#">#}
+                    {#                        <h2>#}
+                    {#                            Тест {{ result.testing }}#}
+                    {#                        </h2>#}
+                    {#                    </a>#}
+                    {#                    <ul class="uk-nav-sub">#}
+                    {#                        <li class="uk-parent">#}
+                    {#                            <ul class="uk-nav-sub">#}
+                    {#                                <h2>#}
+                    {#                                    Оценка: {{ result.assessment }}#}
+                    {#                                </h2>#}
+                    {#                                {% include 'user/inc/testing/_task_completed_list.html' %}#}
+                    {#                            </ul>#}
+                    {#                        </li>#}
+                    {#                    </ul>#}
+                    {#                </li>#}
+                    {##}
+                    {#            </ul>#}
+                    <div class="uk-card-body">
+                        <section
+                                class="content__task-student-list task-student-list uk-flex uk-flex-column uk-text-center"
+                                id="task-student-list">
+                            {% with completed_testing.tasks as tasks %}
+                                {% include 'user/inc/testing/_task_completed_list.html' %}
+                            {% endwith %}
+                        </section>
+                    </div>
                 </div>
-            </section>
-{#            <ul class="content__task-student-list task-student-list uk-flex uk-flex-column uk-text-center uk-nav-default uk-nav-parent-icon"#}
-{#                id="task-student-list" uk-nav>#}
-{#                <li class="uk-parent">#}
-{#                    <a href="#">#}
-{#                        <h2>#}
-{#                            Тест {{ result.testing }}#}
-{#                        </h2>#}
-{#                    </a>#}
-{#                    <ul class="uk-nav-sub">#}
-{#                        <li class="uk-parent">#}
-{#                            <ul class="uk-nav-sub">#}
-{#                                <h2>#}
-{#                                    Оценка: {{ result.assessment }}#}
-{#                                </h2>#}
-{#                                {% include 'user/inc/testing/_task_completed_list.html' %}#}
-{#                            </ul>#}
-{#                        </li>#}
-{#                    </ul>#}
-{#                </li>#}
-{##}
-{#            </ul>#}
-            <section class="content__task-student-list task-student-list uk-flex uk-flex-column uk-text-center"
-                     id="task-student-list">
-                {% include 'user/inc/testing/_task_completed_list.html' %}
-            </section>
-        {% endwith %}
+            </div>
+        </section>
     {% endfor %}
 {% endblock %}

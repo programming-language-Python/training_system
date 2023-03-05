@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <selection class="content__user">
+    <section class="content__user">
         <h1 class="user__title">
             Добро пожаловать, {{ user.last_name }} {{ user.first_name }} {{ user.patronymic }}
         </h1>
@@ -44,16 +44,16 @@
                 <div class="uk-grid-small uk-child-width-expand@s uk-text-center" uk-grid>
                     <div>
                         <div class="uk-card uk-card-default uk-card-body">
-                            {{ completed_testing.result.testing }}
+                            {{ completed_testing.testing }}
                         </div>
                     </div>
                     <div>
                         <div class="uk-card uk-card-default uk-card-body">
-                            {{ completed_testing.result.assessment }}
+                            {{ completed_testing.assessment }}
                         </div>
                     </div>
                 </div>
             {% endfor %}
         {% endif %}
-    </selection>
+    </section>
 {% endblock %}

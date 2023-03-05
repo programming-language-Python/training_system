@@ -19,6 +19,14 @@
                     <div class="body uk-child-width-1-2 uk-text-justify" uk-grid>
                         <div>
                             <p>
+                                {% get_verbose_name_for_field task_setup 'use_of_all_variables' %}:
+                                {% if task_setup.use_of_all_variables %}
+                                    Да
+                                {% else %}
+                                    Нет
+                                {% endif %}
+                            </p>
+                            <p>
                                 {% get_verbose_name_for_field task_setup 'is_if_operator' %}:
                                 {{ task_setup.is_if_operator }}
                             </p>
