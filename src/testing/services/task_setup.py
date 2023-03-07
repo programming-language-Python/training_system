@@ -51,7 +51,6 @@ class TaskManager:
             condition_of_if_operator=condition_of_if_operator,
             cycle_condition=cycle_condition
         )
-        print('cycle_condition', cycle_condition)
         return filtered_task_setup
 
     def get_filtered_many_to_many_relationship(self):
@@ -107,7 +106,6 @@ class TaskManager:
             task_setup = filtered_task_setup.first()
         else:
             task_setup = self.get_task_setup()
-        print('task_setup', task_setup)
         update_task_setup(task, task_setup)
         self.pk = task.pk
 
@@ -123,6 +121,5 @@ class TaskManager:
 
 
 def update_task_setup(task, task_setup):
-    # print('update_task_setup', task_setup.cycle_condition)
     task.task_setup = task_setup
     task.save(update_fields=['task_setup'])

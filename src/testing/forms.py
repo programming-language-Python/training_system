@@ -41,7 +41,8 @@ class TaskForm(forms.ModelForm):
     weight = forms.IntegerField(label='Вес',
                                 widget=forms.NumberInput(
                                     attrs={
-                                        'class': 'uk-input uk-form-width-small uk-form-small'
+                                        'class': 'uk-input uk-form-width-small uk-form-small',
+                                        'value': 1
                                     }
                                 ))
 

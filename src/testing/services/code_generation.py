@@ -13,12 +13,6 @@ class RandomizerJava:
         self.cycle_condition = task_setup['cycle_condition']
         self.operator_nesting = task_setup['operator_nesting']
 
-        # self.is_if_operator = True
-        # self.condition_of_if_operator = 'Составное'
-        # self.presence_one_of_cycles = ['while', 'do-while']
-        # self.cycle_condition = 'Составное'
-        # self.operator_nesting = 'оператор if вложен в цикл'
-
         self.count_variables = ''
         self.variables = string.ascii_letters
         self.remove_poorly_readable_variables()
@@ -41,24 +35,34 @@ class RandomizerJava:
             '!=': ''
         }
         self.variables_bound_to_arithmetic_operators = {}
+
+        self.for_cycle = ''
         self.boolean_expression = ''
         self.body = ''
 
+        self.RANDOM_MIN_NUMBER = 1
+        self.RANDOM_MAX_NUMBER = 100
+        self.MIN_NUMBER_FOR_FOR_CYCLE = 1
+        self.MAX_NUMBER_FOR_FOR_CYCLE = 10
+
         # print(self.generate_code())
         # JavaToPythonConversion(self.code)
+
+    def remove_poorly_readable_variables(self):
+        excluded_variables = ['i', 'l', 'o', 'O']
+        for variable in excluded_variables:
+            self.variables = self.variables.replace(variable, '')
 
     def generate_initialized_variables(self):
         self.count_variables = randint(2, 3)
         # баг с 1 переменной
         for i in range(self.count_variables):
             random_variable = choice(self.variables)
-            self.initialized_variables[random_variable] = randint(0, 100)
+            self.initialized_variables[random_variable] = randint(1, 100)
             self.variables = self.variables.replace(random_variable, '')
 
-    def remove_poorly_readable_variables(self):
-        excluded_variables = ['i', 'l', 'o', 'O']
-        for variable in excluded_variables:
-            self.variables = self.variables.replace(variable, '')
+    def get_random_number(self):
+        return randint(self.RANDOM_MIN_NUMBER, self.RANDOM_MAX_NUMBER)
 
     def generate_code(self):
         # Формирование переменных
@@ -66,21 +70,13 @@ class RandomizerJava:
         if self.operator_nesting:
             self.code += self.get_nesting_of_operators()
         elif self.is_if_operator and self.presence_one_of_cycles:
-            self.code += self.get_condition_and_loop()
+            self.code += self.get_condition_and_cycle()
         elif self.is_if_operator:
             self.code += self.get_generated_condition()
         elif self.presence_one_of_cycles:
             self.code += self.get_generated_cycle()
         self.code += '\n' + self.get_print_of_variable()
-        print(self.code)
         return self.code
-
-    def get_condition_and_loop(self):
-        condition = self.get_generated_condition()
-        cycle = self.get_generated_cycle()
-        condition_and_cycle = [condition, cycle]
-        random_index = randint(0, 1)
-        return condition_and_cycle.pop(random_index) + '\n' + condition_and_cycle[0]
 
     def generate_variables(self):
         for key, value in self.initialized_variables.items():
@@ -88,7 +84,7 @@ class RandomizerJava:
 
     def get_nesting_of_operators(self):
         """
-        оператор if вложен в цикл
+        Оператор if вложен в
         цикл вложен в оператор if
         """
         if self.operator_nesting == 'оператор if вложен в цикл':
@@ -99,45 +95,6 @@ class RandomizerJava:
             nested_operator = self.get_generated_cycle(condition)
         return nested_operator
 
-    def get_generated_condition(self, nested_operator=''):
-        """Сгенерирует условие"""
-        operator = 'if'
-        condition = self.condition_of_if_operator
-        return self.get_boolean_expression_with_body(operator,
-                                                     condition,
-                                                     nested_operator)
-
-    def generate_compound_boolean_expression(self, operator):
-        """Сгенерирует составное логическое выражение"""
-        self.boolean_expression = ''
-        i = 1
-        is_while_or_do_while_loop = operator == 'while' or operator == 'do-while'
-        if is_while_or_do_while_loop:
-            comparison_and_their_arithmetic_operators = self.comparison_and_their_arithmetic_operators.copy()
-            del comparison_and_their_arithmetic_operators['==']
-            del comparison_and_their_arithmetic_operators['!=']
-        for variable in self.initialized_variables.keys():
-            if is_while_or_do_while_loop:
-                random_comparison_operator = self.get_random_dictionary_key(
-                    comparison_and_their_arithmetic_operators)
-                self.add_arithmetic_operators_used(random_comparison_operator)
-                self.variables_bound_to_arithmetic_operators[variable] = self.comparison_and_their_arithmetic_operators[
-                    random_comparison_operator]
-            else:
-                random_comparison_operator = self.get_random_comparison_operator()
-            rand_int = randint(0, 100)
-            logical_operator = self.get_random_logical_operator()
-            variable_comparison = f'{variable} {random_comparison_operator} {rand_int}'
-            if i == self.count_variables:
-                self.boolean_expression = f'(' + self.boolean_expression + f'{variable_comparison})'
-            else:
-                self.boolean_expression += f'{variable_comparison} {logical_operator} '
-            i += 1
-
-    def add_arithmetic_operators_used(self, comparison_operator):
-        self.arithmetic_operators_used += self.comparison_and_their_arithmetic_operators[
-            comparison_operator]
-
     def get_generated_cycle(self, nested_operator=''):
         """Сгенерирует цикл"""
         operator = choice(self.presence_one_of_cycles).title
@@ -147,96 +104,45 @@ class RandomizerJava:
             condition = self.cycle_condition
             return self.get_boolean_expression_with_body(operator, condition, nested_operator)
         elif operator == 'do-while':
-            return self.get_do_while_loop(nested_operator)
+            return self.get_do_while_cycle(nested_operator)
 
     def get_for_with_body(self, nested_operator):
         if self.cycle_condition == 'Составное':
-            pass
+            self.generate_compound_for_cycle()
+            self.generate_body(is_random_variables=False)
         else:
+            self.generate_simple_for_cycle()
             self.generate_body()
-            body_for = self.get_simple_for() + self.body
-            if nested_operator:
-                nested_operator = self.add_tabs_to_paragraphs(nested_operator)
-                return body_for + '\n' + nested_operator + '\n}'
-        return body_for + '\n}'
-
-    def get_boolean_expression_with_body(self, operator, condition, nested_operator):
-        self.generate_boolean_expression(operator, condition)
-        if operator == 'while':
-            self.generate_body(is_while_loop=True)
-            start_of_boolean_expression = operator + ' ' + self.boolean_expression + ' ' + '{\n' + self.body
-        else:
-            self.generate_body()
-            start_of_boolean_expression = operator + ' ' + self.boolean_expression + ' ' + '{\n' + self.body
         if nested_operator:
             nested_operator = self.add_tabs_to_paragraphs(nested_operator)
-            start_of_boolean_expression += '\n' + nested_operator
-        return start_of_boolean_expression + '\n}'
+            return self.for_cycle + self.body + '\n' + nested_operator + '\n}'
+        body_for = self.for_cycle + self.body + '\n}'
+        return body_for
 
-    def get_do_while_loop(self, nested_operator):
-        self.generate_boolean_expression('do-while', self.cycle_condition)
-        if nested_operator:
-            nested_operator = self.add_tabs_to_paragraphs(nested_operator)
-            self.generate_body(is_while_loop=True)
-            return 'do {\n' + self.body + '\n' + nested_operator + '\n}\n' \
-                + f'while {self.boolean_expression};'
-        return 'do {\n' + self.body + '\n}\n' + f'while {self.boolean_expression};'
-
-    def get_print_of_variable(self):
-        list_variables = list(self.initialized_variables)
-        random_variable = choice(list_variables)
-        # return f'print("{random_variable} =", {random_variable})'
-        return f'System.out.println("{random_variable} = " + {random_variable});'
-
-    @staticmethod
-    def add_tabs_to_paragraphs(text):
-        return '\n'.join(f'\t{word}' for word in text.split('\n'))
-
-    @staticmethod
-    def get_simple_for():
-        min_number = 1
-        max_number = 10
-        i = randint(min_number, max_number)
-        max_i = randint(min_number, max_number)
-        step = randint(min_number, max_number)
-        random_comparison_operator = choice(['<', '<='])
-        return f'for (int i = {i}; i {random_comparison_operator} {max_i}; i += {step}) ' + '{\n'
-
-    def generate_body(self, is_while_loop=False):
+    def generate_body(self, is_random_variables=True):
         """Сгенерирует тело"""
-        self.body = ''
-        if is_while_loop:
-            self.generate_body_of_while_or_do_while_loop()
+        if is_random_variables:
+            self.generate_body_with_random_variables()
         else:
-            random_variable = self.get_random_dictionary_key(self.initialized_variables)
-            random_arithmetic_operator = self.get_random_list_item(self.arithmetic_operators)
-            self.body = f'\t{random_variable} {random_arithmetic_operator}= {randint(0, 100)};'
+            self.generate_body_with_variables_bound_to_arithmetic_operators()
 
-    def generate_body_of_while_or_do_while_loop(self):
+    def generate_body_with_variables_bound_to_arithmetic_operators(self):
+        self.body = ''
         for variable, arithmetic_operators in self.variables_bound_to_arithmetic_operators.items():
             if arithmetic_operators:
                 random_arithmetic_operator = self.get_random_list_item(arithmetic_operators)
             else:
                 random_arithmetic_operator = self.get_random_list_item(self.arithmetic_operators)
-            self.body += f'\t{variable} {random_arithmetic_operator}= {randint(0, 100)};\n'
+            self.body += f'\t{variable} {random_arithmetic_operator}= {self.get_random_number()};\n'
 
-    def generate_boolean_expression(self, operator, condition):
-        if condition == 'Составное':
-            self.generate_compound_boolean_expression(operator)
-            return
-        return self.get_simple_boolean_expression()
+    @staticmethod
+    def get_random_list_item(roster):
+        return choice(roster)
 
-    def get_random_comparison_operator(self):
-        return choice(self.comparison_operators)
-
-    def get_random_logical_operator(self):
-        return choice(self.logical_operators)
-
-    def get_simple_boolean_expression(self):
+    def generate_body_with_random_variables(self):
         random_variable = self.get_random_dictionary_key(self.initialized_variables)
-        comparison_operator = self.get_random_comparison_operator()
-        rand_int = randint(0, 100)
-        return f'({random_variable} {comparison_operator} {rand_int})'
+        random_arithmetic_operator = self.get_random_list_item(self.arithmetic_operators)
+        self.body = f'\t{random_variable} {random_arithmetic_operator}= {self.get_random_number()};'
 
     def get_random_dictionary_key(self, dictionary):
         list_initialized_variables = self.get_list_dictionary_keys(dictionary)
@@ -246,10 +152,132 @@ class RandomizerJava:
     def get_list_dictionary_keys(dictionary):
         return list(dictionary.keys())
 
+    def generate_compound_for_cycle(self):
+        random_variable = self.get_random_dictionary_key(self.initialized_variables)
+        random_comparison_operator2 = self.get_random_comparison_operator()
+        self.add_variable_bound_to_arithmetic_operator(random_variable, random_comparison_operator2)
+        i = self.get_random_number()
+        random_comparison_operator = self.get_random_dictionary_key(self.get_greater_and_less_comparison_operators())
+        max_i = self.get_random_number()
+        random_logical_operator = self.get_random_logical_operator()
+        rand_int = self.get_random_number()
+        arithmetic_operators = self.comparison_and_their_arithmetic_operators[random_comparison_operator]
+        random_arithmetic_operator = self.get_random_list_item(arithmetic_operators)
+        step = self.get_random_number()
+        self.for_cycle = f'for (int i = {i}; i {random_comparison_operator} {max_i} {random_logical_operator} ' \
+                         f'{random_variable} {random_comparison_operator2} {rand_int}; ' \
+                         f'i {random_arithmetic_operator}= {step}) ' + '{\n'
+
+    def get_greater_and_less_comparison_operators(self):
+        greater_and_less_comparison_operators = self.comparison_and_their_arithmetic_operators.copy()
+        del greater_and_less_comparison_operators['==']
+        del greater_and_less_comparison_operators['!=']
+        return greater_and_less_comparison_operators
+
+    def get_random_logical_operator(self):
+        return choice(self.logical_operators)
+
+    def get_random_comparison_operator(self):
+        return choice(self.comparison_operators)
+
+    def generate_simple_for_cycle(self):
+        i = self.get_random_number()
+        max_i = self.get_random_number()
+        step = self.get_random_number()
+        random_comparison_operator = choice(['<', '<='])
+        self.for_cycle = f'for (int i = {i}; i {random_comparison_operator} {max_i}; i += {step}) ' + '{\n'
+
     @staticmethod
-    def get_random_list_item(roster):
-        return choice(roster)
+    def add_tabs_to_paragraphs(text):
+        return '\n'.join(f'\t{word}' for word in text.split('\n'))
 
+    def get_boolean_expression_with_body(self, operator, condition, nested_operator):
+        self.generate_boolean_expression(operator, condition)
+        if operator == 'while':
+            self.generate_body(is_random_variables=False)
+        else:
+            self.generate_body()
+        start_of_boolean_expression = operator + ' ' + self.boolean_expression + ' ' + '{\n' + self.body
+        # if operator == 'while':
+        #     self.generate_body()
+        #     start_of_boolean_expression = operator + ' ' + self.boolean_expression + ' ' + '{\n' + self.body
+        # else:
+        #     self.generate_body()
+        #     start_of_boolean_expression = operator + ' ' + self.boolean_expression + ' ' + '{\n' + self.body
+        if nested_operator:
+            nested_operator = self.add_tabs_to_paragraphs(nested_operator)
+            start_of_boolean_expression += '\n' + nested_operator
+        return start_of_boolean_expression + '\n}'
 
-if __name__ == '__main__':
-    RandomizerJava()
+    def generate_boolean_expression(self, operator, condition):
+        if condition == 'Составное':
+            self.generate_compound_boolean_expression(operator)
+            return
+        self.generate_simple_boolean_expression()
+
+    def generate_compound_boolean_expression(self, operator):
+        """Сгенерирует составное логическое выражение"""
+        self.boolean_expression = ''
+        i = 1
+        is_while_or_do_while_cycle = operator == 'while' or operator == 'do-while'
+        if is_while_or_do_while_cycle:
+            greater_and_less_comparison_operators = self.get_greater_and_less_comparison_operators()
+        for variable in self.initialized_variables.keys():
+            if is_while_or_do_while_cycle:
+                random_comparison_operator = self.get_random_dictionary_key(
+                    greater_and_less_comparison_operators)
+                self.add_arithmetic_operator_used(random_comparison_operator)
+                self.add_variable_bound_to_arithmetic_operator(variable, random_comparison_operator)
+            else:
+                random_comparison_operator = self.get_random_comparison_operator()
+            rand_int = self.get_random_number()
+            logical_operator = self.get_random_logical_operator()
+            variable_comparison = f'{variable} {random_comparison_operator} {rand_int}'
+            if i == self.count_variables:
+                self.boolean_expression = f'(' + self.boolean_expression + f'{variable_comparison})'
+            else:
+                self.boolean_expression += f'{variable_comparison} {logical_operator} '
+            i += 1
+
+    def generate_simple_boolean_expression(self):
+        random_variable = self.get_random_dictionary_key(self.initialized_variables)
+        comparison_operator = self.get_random_comparison_operator()
+        rand_int = self.get_random_number()
+        self.boolean_expression = f'({random_variable} {comparison_operator} {rand_int})'
+
+    def get_do_while_cycle(self, nested_operator):
+        self.generate_boolean_expression('do-while', self.cycle_condition)
+        self.generate_body(is_random_variables=False)
+        if nested_operator:
+            nested_operator = self.add_tabs_to_paragraphs(nested_operator)
+            return 'do {\n' + self.body + '\n' + nested_operator + '\n}\n' \
+                + f'while {self.boolean_expression};'
+        return 'do {\n' + self.body + '}\n' + f'while {self.boolean_expression};'
+
+    def get_generated_condition(self, nested_operator=''):
+        """Сгенерирует условие"""
+        operator = 'if'
+        condition = self.condition_of_if_operator
+        return self.get_boolean_expression_with_body(operator,
+                                                     condition,
+                                                     nested_operator)
+
+    def get_condition_and_cycle(self):
+        condition = self.get_generated_condition()
+        cycle = self.get_generated_cycle()
+        condition_and_cycle = [condition, cycle]
+        random_index = randint(0, 1)
+        return condition_and_cycle.pop(random_index) + '\n' + condition_and_cycle[0]
+
+    def get_print_of_variable(self):
+        list_variables = list(self.initialized_variables)
+        random_variable = choice(list_variables)
+        return f'System.out.println("{random_variable} = " + {random_variable});'
+
+    def add_arithmetic_operator_used(self, comparison_operator):
+        self.arithmetic_operators_used += self.comparison_and_their_arithmetic_operators[
+            comparison_operator]
+
+    def add_variable_bound_to_arithmetic_operator(self, variable, comparison_operator):
+        self.variables_bound_to_arithmetic_operators[variable] = self.comparison_and_their_arithmetic_operators[
+            comparison_operator]
