@@ -17,11 +17,11 @@
                     <h4>Структура программы:</h4>
                     <div class="body uk-child-width-1-2@s uk-text-justify" uk-grid>
                         <div>
-                            <p>
-                                {{ task_setup_form.use_of_all_variables.label }}
-                                {{ task_setup_form.use_of_all_variables }}
-                                {{ task_setup_form.use_of_all_variables.errors }}
-                            </p>
+                            {#                            <p>#}
+                            {#                                {{ task_setup_form.use_of_all_variables.label }}#}
+                            {#                                {{ task_setup_form.use_of_all_variables }}#}
+                            {#                                {{ task_setup_form.use_of_all_variables.errors }}#}
+                            {#                            </p>#}
                             <p>
                                 {{ task_setup_form.is_if_operator.label }}
                                 {{ task_setup_form.is_if_operator }}
@@ -53,7 +53,6 @@
                     </div>
                 </div>
                 <div class="uk-card-footer">
-                    {#                    {% if task_setup %}#}
                     {% if task %}
                         <button name="btn-update"
                                 type="submit"
@@ -68,13 +67,17 @@
                                 uk-tooltip="Отмена">
                         </button>
                     {% else %}
-                        <button class="uk-margin uk-button uk-button-secondary"
+                        <button onclick="location.reload()"
                                 type="submit"
                                 hx-post="."
-                                {#                                hx-target="#task-list"#}
-                                {#                                hx-swap="afterbegin"#}
+                                uk-icon="plus"
+                                uk-tooltip="Добавить"
                         >
-                            Добавить
+                        </button>
+                        <button onclick="location.reload()"
+                                type="button"
+                                uk-icon="close"
+                                uk-tooltip="Отмена">
                         </button>
                     {% endif %}
                 </div>

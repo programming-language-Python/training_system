@@ -32,28 +32,32 @@
                 </div>
             {% endfor %}
         {% else %}
-            <div class="uk-grid-small uk-child-width-expand@s uk-text-center" uk-grid>
-                <div>
-                    <div class="uk-card uk-card-default uk-card-body">Тестирование</div>
-                </div>
-                <div>
-                    <div class="uk-card uk-card-default uk-card-body">Оценка</div>
-                </div>
-            </div>
-            {% for completed_testing in home_list %}
+            {% if home_list %}
                 <div class="uk-grid-small uk-child-width-expand@s uk-text-center" uk-grid>
                     <div>
-                        <div class="uk-card uk-card-default uk-card-body">
-                            {{ completed_testing.testing }}
-                        </div>
+                        <div class="uk-card uk-card-default uk-card-body">Тестирование</div>
                     </div>
                     <div>
-                        <div class="uk-card uk-card-default uk-card-body">
-                            {{ completed_testing.assessment }}
-                        </div>
+                        <div class="uk-card uk-card-default uk-card-body">Оценка</div>
                     </div>
                 </div>
-            {% endfor %}
+                {% for completed_testing in home_list %}
+                    <div class="uk-grid-small uk-child-width-expand@s uk-text-center" uk-grid>
+                        <div>
+                            <div class="uk-card uk-card-default uk-card-body">
+                                {{ completed_testing.testing }}
+                            </div>
+                        </div>
+                        <div>
+                            <div class="uk-card uk-card-default uk-card-body">
+                                {{ completed_testing.assessment }}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <h2 class="uk-text-danger">Ни один тест не пройден</h2>
+            {% endif %}
         {% endif %}
     </section>
 {% endblock %}

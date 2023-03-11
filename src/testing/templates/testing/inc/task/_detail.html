@@ -1,7 +1,7 @@
 {% load model_manipulation %}
 
 <div class="task" hx-target="this">
-    <h2>id: {{ task.id }}</h2>
+{#    <h2>id: {{ task.id }}</h2>#}
     {% with task.task_setup as task_setup %}
         <div>
             <div class="uk-card uk-card-default uk-card-body">
@@ -18,14 +18,14 @@
                     <h4>Структура программы:</h4>
                     <div class="body uk-child-width-1-2 uk-text-justify" uk-grid>
                         <div>
-                            <p>
-                                {% get_verbose_name_for_field task_setup 'use_of_all_variables' %}:
-                                {% if task_setup.use_of_all_variables %}
-                                    Да
-                                {% else %}
-                                    Нет
-                                {% endif %}
-                            </p>
+{#                            <p>#}
+{#                                {% get_verbose_name_for_field task_setup 'use_of_all_variables' %}:#}
+{#                                {% if task_setup.use_of_all_variables %}#}
+{#                                    Да#}
+{#                                {% else %}#}
+{#                                    Нет#}
+{#                                {% endif %}#}
+{#                            </p>#}
                             <p>
                                 {% get_verbose_name_for_field task_setup 'is_if_operator' %}:
                                 {{ task_setup.is_if_operator }}
@@ -59,7 +59,7 @@
                             uk-tooltip="Обновить">
                     </button>
                     <button hx-post="{% url 'testing:task_delete' task.pk %}"
-                            hx-swap="outerHTML"
+                            onclick="location.reload()"
                             uk-icon="trash"
                             uk-tooltip="Удалить">
                     </button>

@@ -60,8 +60,8 @@ class TaskSetup(models.Model):
         simple = 'Простое', _('Простое')
         composite = 'Составное', _('Составное')
 
-    use_of_all_variables = models.BooleanField(default=False,
-                                               verbose_name='Использование обязательно всех переменных')
+    # use_of_all_variables = models.BooleanField(default=False,
+    #                                            verbose_name='Использование обязательно всех переменных')
     is_if_operator = models.CharField(max_length=25,
                                       choices=IsOperator.choices,
                                       default=IsOperator.absent,

@@ -37,6 +37,7 @@
             <div name="btns-testing" class="uk-flex uk-flex-column">
                 <div>
                     <button class="uk-margin uk-width-1-4 uk-button uk-button-primary"
+                            id="btn-update-testing"
                             hx-get="{% url 'testing:testing_update' testing.pk %}"
                             hx-target="#testing-title"
                             hx-swap="outerHTML">
@@ -52,6 +53,7 @@
                 </div>
                 <div>
                     <button id="btn-add-task-setup"
+                            name="btn-add-task-setup"
                             class="uk-button uk-width-1-4 uk-button-secondary"
                             type="button"
                             hx-get="{% url 'testing:add_task_form' %}"

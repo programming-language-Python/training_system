@@ -5,6 +5,7 @@ from testing.services.code_generation import RandomizerJava
 
 class JavaToPythonConversion:
     def __init__(self, code):
+        print('java\n' + code)
         self.code = code
         self.convert_code_to_python()
 
@@ -19,9 +20,20 @@ class JavaToPythonConversion:
         if self.is_symbol(start_symbol_do_while):
             do_while_boolean_expression = self.get_text_between_symbols('while (', ')')
             body_do_while = self.get_text_between_symbols(start_symbol_do_while, '}')
-            self.code = self.code.replace('do', 'while True').replace(f'while ({do_while_boolean_expression})', '') \
-                .replace(body_do_while,
-                         body_do_while + f'\n\tif {do_while_boolean_expression}: continue\n\telse: break')
+            # self.code = self.code.replace('do', 'while True').replace(f'while ({do_while_boolean_expression})', '') \
+            #     .replace(body_do_while,
+            #              body_do_while + f'\n\tif {do_while_boolean_expression}: continue\n\telse: break')
+            characters_between_while_and_closing_bracket = self.get_text_between_symbols(
+                '}',
+                f'while ({do_while_boolean_expression})'
+            )
+            self.code = self.code.replace('do', 'while True') \
+                .replace(f'while ({do_while_boolean_expression})',
+                         f'\tif {do_while_boolean_expression}: continue'
+                         f'{characters_between_while_and_closing_bracket}\telse: break')
+            # body_for = self.get_text_between_symbols(for_boolean_expression + ') {', '}')
+            # body_for_with_tabs_added = RandomizerJava.add_tabs_to_paragraphs(body_for)
+            # body_for_python = f'\n\tif {condition_in_for}:{body_for_with_tabs_added}'
 
     def convert_for(self):
         start = 'for ('

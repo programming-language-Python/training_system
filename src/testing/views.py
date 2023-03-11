@@ -52,7 +52,7 @@ class TestingDetailView(LoginRequiredMixin, DetailView):
             for task in tasks:
                 task_setup = task.task_setup
                 task_setup = {
-                    'use_of_all_variables': task_setup.use_of_all_variables,
+                    # 'use_of_all_variables': task_setup.use_of_all_variables,
                     'is_if_operator': task_setup.is_if_operator,
                     'condition_of_if_operator': task_setup.condition_of_if_operator,
                     'presence_one_of_cycles': task_setup.presence_one_of_cycles.all(),
@@ -90,7 +90,7 @@ class TestingDetailView(LoginRequiredMixin, DetailView):
             context['task_data'] = self.request.session[session_name]
             context['tasks'] = tasks
             # !!! УБРАТЬ ЕЁ ПОТОМ !!!
-            del self.request.session[session_name]
+            # del self.request.session[session_name]
         return context
 
     def post(self, request, *args, **kwargs):
@@ -153,7 +153,7 @@ def update_testing(request, id_of_one_test):
         'testing': testing,
         'form': form
     }
-    return render(request, 'inc/testing/_form.html', context)
+    return render(request, 'testing/testing_form.html', context)
 
 
 class TaskDetailView(DetailView):
@@ -259,8 +259,8 @@ def create_completed_test(request):
                                     testing=testing,
                                     student=request.user)
     # РАССКОМЕНТИТЬ ПОТОМ !!!
-    # session_name = request.GET.get('testing_pk')
-    # del request.session[session_name]
+    session_name = request.GET.get('testing_pk')
+    del request.session[session_name]
     return redirect('user:home')
 
 

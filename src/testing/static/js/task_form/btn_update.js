@@ -1,5 +1,8 @@
 $(document).ready(function () {
-    $("[name='btn-update']").click(() => {
+    $("[name='btn-update']").click(blockTasks)
+    $("#btn-add-task-setup").click(blockTasks)
+
+    function blockTasks() {
         let class_disabled = 'disabled'
         $("[name='btns-testing']").addClass(class_disabled)
         $('.task').addClass(class_disabled)
@@ -11,5 +14,5 @@ $(document).ready(function () {
                 event.stopPropagation();
             }
         })
-    })
+    }
 })

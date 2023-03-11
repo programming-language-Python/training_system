@@ -32,12 +32,12 @@ $(document).ready(function () {
                 if (is_absent)
                     block_field_select(blocking_field)
                 select.change((event) => {
-                    console.log(event.target.value + ' ' + first_select_value)
                     if (event.target.value === first_select_value) {
                         unblock_field_select(blocking_field)
                         select_first_option(id_condition_of_if_operator)
                     } else
                         block_field_select(blocking_field)
+                    block_or_unblock_field_multiple_select(id_operator_nesting)
                 })
             }
 
@@ -62,18 +62,18 @@ $(document).ready(function () {
             }
 
 
-            function block_or_unblock_field_multiple_select(select) {
+            function block_or_unblock_field_multiple_select(multiple_select) {
                 blocking_fields.forEach((blocking_field) => {
-                    if (is_options_selected(select[0]))
+                    if (is_options_selected(multiple_select[0]))
                         unblock_field_select(blocking_field)
                     else
                         block_field_select(blocking_field)
                 })
             }
 
-            function is_options_selected(select) {
+            function is_options_selected(multiple_select) {
                 let result = [],
-                    options = select && select.options,
+                    options = multiple_select && multiple_select.options,
                     opt
                 for (let i = 0, iLen = options.length; i < iLen; i++) {
                     opt = options[i]
@@ -81,6 +81,12 @@ $(document).ready(function () {
                         result.push(opt.value || opt.text)
                 }
                 return result.length > 0
+            }
+
+            function block_or_unlock_operator_nesting() {
+                id_presence_one_of_cycles.change(()=>{
+
+                })
             }
         }
     }

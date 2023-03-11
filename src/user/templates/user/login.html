@@ -4,13 +4,15 @@
     <section class="content__auth auth uk-cover-container uk-height-medium">
         <form method="POST" class="auth__form form uk-position-center uk-overlay uk-overlay-default">
             {% csrf_token %}
+            {% for error in form.non_field_errors %}
+                <span class="uk-text-danger">{{ error }}</span>
+            {% endfor %}
             <div class="uk-margin">
                 <div class="uk-inline">
                     <a class="uk-form-icon" href="" uk-icon="icon: pencil"></a>
                     {{ form.username }}
                 </div>
             </div>
-
             <div class="uk-margin">
                 <div class="uk-inline">
                     <a class="uk-form-icon" href="" uk-icon="icon: link"></a>

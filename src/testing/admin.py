@@ -55,7 +55,7 @@ class TaskSetupAdmin(admin.ModelAdmin):
     list_display = ('id', 'is_if_operator', 'condition_of_if_operator',
                     'cycle_condition')
     list_display_links = ('id',)
-    list_filter = ('id', 'use_of_all_variables', 'is_if_operator', 'condition_of_if_operator', 'presence_one_of_cycles',
+    list_filter = ('id', 'is_if_operator', 'condition_of_if_operator', 'presence_one_of_cycles',
                    'cycle_condition',
                    'operator_nesting')
     save_on_top = True
@@ -65,15 +65,6 @@ class TaskSetupAdmin(admin.ModelAdmin):
 
 
 @admin.register(models.Cycle)
-class CycleAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title')
-    list_display_links = ('id', 'title')
-    search_fields = ('title',)
-    list_filter = ('id', 'title')
-    save_on_top = True
-
-
-@admin.register(models.OperatorNesting)
 class CycleAdmin(admin.ModelAdmin):
     list_display = ('id', 'title')
     list_display_links = ('id', 'title')
