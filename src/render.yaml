@@ -1,7 +1,7 @@
 databases:
   - name: jebyfziv
     databaseName: jebyfziv
-    user: Roman
+    user: jebyfziv
 
 services:
   - type: web
