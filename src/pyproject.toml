@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "training-system"
+name = "config"
 version = "0.1.0"
 description = ""
 authors = ["Roman <maks3564195@gmail.com>"]
