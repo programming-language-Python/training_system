@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = 'RENDER' in os.environ
+DEBUG = 'RENDER' not in os.environ
 
 ALLOWED_HOSTS = []
 
@@ -45,10 +45,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'jquery',
-    # 'testing',
-    'testing.apps.TestingConfig',
-    # 'user',
-    'user.apps.UserConfig',
+    'testing',
+    'user',
     'debug_toolbar',
 ]
 
@@ -135,6 +133,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
+
+# Tell Django to copy statics to the `staticfiles` directory
+# in your application directory on Render.
+STATIC_ROOT = BASE_DIR / 'static'
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'config/static',
@@ -142,11 +144,7 @@ STATICFILES_DIRS = [
 ]
 
 # Following settings only make sense on production and may break development environments.
-if DEBUG:
-    # Tell Django to copy statics to the `staticfiles` directory
-    # in your application directory on Render.
-    STATIC_ROOT = BASE_DIR / 'static'
-
+if not DEBUG:
     # Turn on WhiteNoise storage backend that takes care of compressing static files
     # and creating unique names for each version so they can safely be cached forever.
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
