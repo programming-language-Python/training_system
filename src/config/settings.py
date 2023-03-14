@@ -45,8 +45,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'jquery',
-    'testing',
-    'user',
+    # 'testing',
+    'testing.apps.TestingConfig',
+    # 'user',
+    'user.apps.UserConfig',
     'debug_toolbar',
 ]
 
