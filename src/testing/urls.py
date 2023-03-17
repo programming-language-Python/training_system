@@ -8,20 +8,10 @@ urlpatterns = [
     path('testing_list/', TestingListView.as_view(), name='testing_list'),
     path('testing/<pk>/detail/', TestingDetailView.as_view(), name='testing_detail'),
     path('testing/<pk>/update/', TestingUpdateView.as_view(), name='testing_update'),
-    # path('testing/<pk>/delete/', TestingDeleteView.as_view(), name='testing_delete'),
-    # path('testing/<pk>/delete/', testing_delete, name='testing_delete'),
     path('testing/<pk>/delete/', TestingDeleteView.as_view(), name='testing_delete'),
-    # path('update_testing/<int:pk>/', UpdateTesting.as_view(), name='update_testing'),
-    # path('testing/create/', create_testing, name='create_testing'),
-    # path('task/<pk>/create/', create_task, name='create_task'),
-    # path('task/<pk>/detail/', task_detail, name='task_detail'),
-
-    # path('task/create/', TaskCreate.as_view(), name='task_create'),
-    # path('task/<testing_pk>/create/', task_create, name='task_create'),
     path('task/<pk>/detail/', TaskDetailView.as_view(), name='task_detail'),
     path('task/<pk>/update/', task_update, name='task_update'),
     path('task/<pk>/delete/', task_delete, name='task_delete'),
     path('add_task_form/', add_task_form, name='add_task_form'),
-
     path('create_completed_test/', create_completed_test, name='create_completed_test'),
 ]

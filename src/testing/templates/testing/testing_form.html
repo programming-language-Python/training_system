@@ -3,7 +3,8 @@
         {% csrf_token %}
         <section class="form__testing testing">
             <h2 class="testing__title">
-                Создать настройки задач для тестирования {{ form.title }}
+                Создать настройки задач для тестирования
+                {{ form.title }}
                 {{ form.title.errors }}
             </h2>
             <div class="testing__student-group">

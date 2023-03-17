@@ -5,7 +5,6 @@ from testing.services.code_generation import RandomizerJava
 
 class JavaToPythonConversion:
     def __init__(self, code):
-        print('java\n' + code)
         self.code = code
         self.convert_code_to_python()
 
@@ -90,6 +89,5 @@ class JavaToPythonConversion:
 
     def run_code(self):
         context = {}
-        print(self.code)
         exec(self.code, context)
         return round(context['result'], 2)

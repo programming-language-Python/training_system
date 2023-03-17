@@ -1,10 +1,12 @@
 <section class="content__task-list task-list uk-text-center"
          id="task-list">
-    {% for task in testing.task_set.all %}
-        {% with task_number=forloop.counter %}
-            {% for i in 'n'|rjust:task.count %}
-                {% include "testing/inc/task/_detail.html" %}
-            {% endfor %}
-        {% endwith %}
-    {% endfor %}
+    {% with task_number=1 %}
+        {% for task in testing.task_set.all %}
+            {% with task_number=forloop.counter %}
+                {% for i in 'n'|rjust:task.count %}
+                    {% include "testing/inc/task/_detail.html" %}
+                {% endfor %}
+            {% endwith %}
+        {% endfor %}
+    {% endwith %}
 </section>

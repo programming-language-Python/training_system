@@ -6,7 +6,6 @@ class RandomizerJava:
     def __init__(self, **task_setup):
         self.code = ''
 
-        # self.use_of_all_variables = task_setup['use_of_all_variables']
         self.is_if_operator = task_setup['is_if_operator'] == 'Присутствует'
         self.condition_of_if_operator = task_setup['condition_of_if_operator']
         self.presence_one_of_cycles = task_setup['presence_one_of_cycles']
@@ -48,9 +47,6 @@ class RandomizerJava:
         self.RANDOM_MAX_NUMBER = 100
         self.MIN_NUMBER_FOR_FOR_CYCLE = 1
         self.MAX_NUMBER_FOR_FOR_CYCLE = 10
-
-        # print(self.generate_code())
-        # JavaToPythonConversion(self.code)
 
     def remove_poorly_readable_variables(self):
         excluded_variables = ['i', 'l', 'o', 'O']

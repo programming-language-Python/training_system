@@ -12,14 +12,14 @@ class TestingForm(forms.ModelForm):
     title = forms.CharField(label='Наименование',
                             widget=forms.TextInput(
                                 attrs={
-                                    'class': 'uk-margin uk-input',
+                                    'class': 'uk-margin uk-input uk-form-width-medium',
                                     'name': 'title',
                                 }
                             ))
     student_groups = forms.ModelMultipleChoiceField(label='Группы студентов',
                                                     widget=forms.SelectMultiple(
                                                         attrs={
-                                                            'class': 'uk-margin uk-select',
+                                                            'class': 'uk-margin uk-select uk-form-width-medium',
                                                             'name': 'student_group',
                                                         }
                                                     ),
@@ -85,10 +85,7 @@ class TaskSetupForm(forms.ModelForm):
                                                  choices=choices_condition_operator)
     presence_one_of_cycles = forms.ModelMultipleChoiceField(label='Наличие одного из следующих циклов',
                                                             required=False,
-                                                            widget=forms.SelectMultiple(
-                                                                attrs={
-                                                                    'class': class_uk_select
-                                                                }
+                                                            widget=forms.CheckboxSelectMultiple(
                                                             ),
                                                             to_field_name='title',
                                                             queryset=Cycle.objects.all())
@@ -103,10 +100,7 @@ class TaskSetupForm(forms.ModelForm):
                                         choices=choices_condition_operator)
     operator_nesting = forms.ModelMultipleChoiceField(label='Вложенность операторов',
                                                       required=False,
-                                                      widget=forms.SelectMultiple(
-                                                          attrs={
-                                                              'class': class_uk_select
-                                                          }
+                                                      widget=forms.CheckboxSelectMultiple(
                                                       ),
                                                       to_field_name='title',
                                                       queryset=OperatorNesting.objects.all())

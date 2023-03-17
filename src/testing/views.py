@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Q
 from django.http import HttpResponseNotAllowed, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
@@ -28,8 +29,17 @@ class TestingListView(LoginRequiredMixin, ListView):
     model = Testing
 
     def get_queryset(self):
+        query = self.request.GET.get('search')
         if self.request.user.is_teacher:
+            if query:
+                return Testing.objects.filter(
+                    Q(user=self.request.user) & Q(title=query)
+                )
             return Testing.objects.filter(user=self.request.user)
+        if query:
+            return Testing.objects.filter(
+                Q(is_published=True, student_groups=self.request.user.student_group) & Q(title=query)
+            )
         return Testing.objects.filter(is_published=True, student_groups=self.request.user.student_group)
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -42,57 +52,125 @@ class TestingListView(LoginRequiredMixin, ListView):
 class TestingDetailView(LoginRequiredMixin, DetailView):
     model = Testing
 
+    def __init__(self, **kwargs):
+        super().__init__()
+        self.context = ''
+        self.tasks_context = {}
+        self.task_setup_data = {}
+        self.number = 1
+
     def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
+        self.context = super().get_context_data(**kwargs)
         if not self.request.user.is_teacher:
-            testing = [value for value in kwargs.values()][0]
-            tasks = testing.task_set.all()
-            tasks_context = {}
-            number = 1
-            for task in tasks:
-                task_setup = task.task_setup
-                task_setup = {
-                    # 'use_of_all_variables': task_setup.use_of_all_variables,
-                    'is_if_operator': task_setup.is_if_operator,
-                    'condition_of_if_operator': task_setup.condition_of_if_operator,
-                    'presence_one_of_cycles': task_setup.presence_one_of_cycles.all(),
-                    'cycle_condition': task_setup.cycle_condition,
-                    'operator_nesting': task_setup.operator_nesting.all()
-                }
-                if task.count > 1:
-                    number_recurring_tasks = 1
-                    for i in range(task.count):
-                        randomizer_java = RandomizerJava(**task_setup)
-                        task_data = {
-                            'number': number,
-                            'count': task.count,
-                            'weight': task.weight,
-                            'code': randomizer_java.generate_code(),
-                        }
-                        key = str(task.pk) + '_' + str(number_recurring_tasks)
-                        tasks_context[key] = task_data
-                        number_recurring_tasks += 1
-                        number += 1
-                else:
-                    randomizer_java = RandomizerJava(**task_setup)
-                    task_data = {
-                        'number': number,
-                        'count': task.count,
-                        'weight': task.weight,
-                        'code': randomizer_java.generate_code(),
-                    }
-                    tasks_context[task.pk] = task_data
-                    number += 1
+            self.create_context(kwargs)
+        # else:
+        #     testing = [value for value in kwargs.values()][0]
+        #     tasks = testing.task_set.all()
+        #     for task in tasks:
+        #
+        return self.context
 
-            session_name = 'testing_' + str(testing.pk)
-            if not (session_name in self.request.session.keys()):
-                self.request.session[session_name] = tasks_context
-            context['task_data'] = self.request.session[session_name]
-            context['tasks'] = tasks
-            # !!! УБРАТЬ ЕЁ ПОТОМ !!!
-            # del self.request.session[session_name]
-        return context
+    def create_context(self, kwargs):
+        testing = [value for value in kwargs.values()][0]
+        tasks = testing.task_set.all()
+        for task in tasks:
+            task_setup = task.task_setup
+            self.task_setup_data = {
+                # 'use_of_all_variables': task_setup.use_of_all_variables,
+                'is_if_operator': task_setup.is_if_operator,
+                'condition_of_if_operator': task_setup.condition_of_if_operator,
+                'presence_one_of_cycles': task_setup.presence_one_of_cycles.all(),
+                'cycle_condition': task_setup.cycle_condition,
+                'operator_nesting': task_setup.operator_nesting.all()
+            }
+            self.create_tasks_context(task)
+            self.number += 1
+        session_name = 'testing_' + str(testing.pk)
+        self.create_session(session_name)
+        self.context['task_data'] = self.request.session[session_name]
+        self.context['tasks'] = tasks
 
+    def create_tasks_context(self, task):
+        if task.count > 1:
+            self.create_context_for_recurring_tasks(task)
+        else:
+            self.create_task_context(task)
+
+    def create_context_for_recurring_tasks(self, task):
+        number_recurring_tasks = 1
+        for i in range(task.count):
+            randomizer_java = RandomizerJava(**self.task_setup_data)
+            task_data = {
+                'number': self.number,
+                'count': task.count,
+                'weight': task.weight,
+                'code': randomizer_java.generate_code(),
+            }
+            key = str(task.pk) + '_' + str(number_recurring_tasks)
+            self.tasks_context[key] = task_data
+            number_recurring_tasks += 1
+
+    def create_task_context(self, task):
+        randomizer_java = RandomizerJava(**self.task_setup_data)
+        task_data = {
+            'number': self.number,
+            'count': task.count,
+            'weight': task.weight,
+            'code': randomizer_java.generate_code(),
+        }
+        self.tasks_context[task.pk] = task_data
+
+    def create_session(self, session_name):
+        if not (session_name in self.request.session.keys()):
+            self.request.session[session_name] = self.tasks_context
+
+    # def get_context_data(self, *, object_list=None, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     if not self.request.user.is_teacher:
+    #         testing = [value for value in kwargs.values()][0]
+    #         tasks = testing.task_set.all()
+    #         tasks_context = {}
+    #         number = 1
+    #         for task in tasks:
+    #             task_setup = task.task_setup
+    #             task_setup = {
+    #                 # 'use_of_all_variables': task_setup.use_of_all_variables,
+    #                 'is_if_operator': task_setup.is_if_operator,
+    #                 'condition_of_if_operator': task_setup.condition_of_if_operator,
+    #                 'presence_one_of_cycles': task_setup.presence_one_of_cycles.all(),
+    #                 'cycle_condition': task_setup.cycle_condition,
+    #                 'operator_nesting': task_setup.operator_nesting.all()
+    #             }
+    #             if task.count > 1:
+    #                 number_recurring_tasks = 1
+    #                 for i in range(task.count):
+    #                     randomizer_java = RandomizerJava(**task_setup)
+    #                     task_data = {
+    #                         'number': number,
+    #                         'count': task.count,
+    #                         'weight': task.weight,
+    #                         'code': randomizer_java.generate_code(),
+    #                     }
+    #                     key = str(task.pk) + '_' + str(number_recurring_tasks)
+    #                     tasks_context[key] = task_data
+    #                     number_recurring_tasks += 1
+    #             else:
+    #                 randomizer_java = RandomizerJava(**task_setup)
+    #                 task_data = {
+    #                     'number': number,
+    #                     'count': task.count,
+    #                     'weight': task.weight,
+    #                     'code': randomizer_java.generate_code(),
+    #                 }
+    #                 tasks_context[task.pk] = task_data
+    #             number += 1
+    #         session_name = 'testing_' + str(testing.pk)
+    #         if not (session_name in self.request.session.keys()):
+    #             self.request.session[session_name] = tasks_context
+    #             print('create session ', self.request.session[session_name])
+    #         context['task_data'] = self.request.session[session_name]
+    #         context['tasks'] = tasks
+    #     return context
     def post(self, request, *args, **kwargs):
         if request.method == 'POST':
             testing = get_object_or_404(Testing, pk=kwargs['pk'])
@@ -120,22 +198,6 @@ class TestingUpdateView(LoginRequiredMixin, UpdateView):
 class TestingDeleteView(DeleteView):
     model = Testing
     success_url = reverse_lazy('testing:testing_list')
-
-
-# @login_required
-# @user_passes_test(is_teacher, login_url='user:home', redirect_field_name=None)
-# def testing_delete(request, pk):
-#     task_setup = get_object_or_404(Testing, id=pk)
-#
-#     if request.method == 'POST':
-#         task_setup.delete()
-#         return redirect('testing:testing_list')
-#
-#     return HttpResponseNotAllowed(
-#         [
-#             'POST',
-#         ]
-#     )
 
 
 @login_required
@@ -214,17 +276,11 @@ def task_delete(request, pk):
     )
 
 
-# class CreateTaskForm(CreateView):
-#     form_class = TaskSetupForm
-#     template_name = 'testing/task_form.html'
-
-
 @login_required
 @user_passes_test(is_teacher, login_url='user:home', redirect_field_name=None)
 def add_task_form(request):
     task_form = TaskForm()
     task_setup_form = TaskSetupForm()
-
     context = {
         'task_form': task_form,
         'task_setup_form': task_setup_form,
@@ -259,7 +315,7 @@ def create_completed_test(request):
                                     testing=testing,
                                     student=request.user)
     # РАССКОМЕНТИТЬ ПОТОМ !!!
-    session_name = request.GET.get('testing_pk')
+    session_name = 'testing_' + str(request.GET.get('testing_pk'))
     del request.session[session_name]
     return redirect('user:home')
 

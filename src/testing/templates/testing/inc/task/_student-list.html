@@ -4,7 +4,7 @@
         {% csrf_token %}
         <input name="testing_title" type="hidden" value="{{ testing.title }}">
         <input name="testing_pk" type="hidden" value="{{ testing.pk }}">
-        <button type="submit">Завершить тест</button>
+        <button class="uk-margin uk-button uk-button-primary" type="submit">Завершить тест</button>
         {% for key, values in task_data.items %}
             {% include "testing/inc/task/_student-detail.html" %}
         {% endfor %}

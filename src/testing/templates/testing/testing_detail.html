@@ -8,7 +8,6 @@
     <script type="text/javascript" src="{% static 'js/admin/form_task_setup.js' %}"></script>
 {% endblock %}
 {% block content %}
-    {{ title }}
     <section class="content__testing testing" id="testing">
         <div class="testing__title" id="testing-title">
             {% if user.is_teacher %}
@@ -65,7 +64,6 @@
             </div>
         {% endif %}
     </section>
-
     <section class="content__task-form task-form uk-margin" id="task-form"></section>
     {% if user.is_teacher %}
         {% include 'testing/inc/task/_list.html' %}

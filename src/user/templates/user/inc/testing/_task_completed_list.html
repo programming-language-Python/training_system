@@ -1,25 +1,25 @@
 {% for task in tasks %}
-    <div class="uk-margin">
-        <div class="uk-card uk-card-default uk-card-body">
-            <div class="uk-card-header">
-                <div class="uk-grid-small uk-flex-middle" uk-grid>
-                    <div class="uk-width-expand">
-                        <h3 class="uk-card-title uk-margin-remove-bottom">
-                            Задача №{{ forloop.counter }} (вес {{ task.weight }})
-                        </h3>
+     <div class="uk-margin uk-accordion-content">
+            <div class="uk-card uk-card-default uk-card-body">
+                <div class="uk-card-header">
+                    <div class="uk-grid-small uk-flex-middle" uk-grid>
+                        <div class="uk-width-expand">
+                            <h3 class="uk-card-title uk-margin-remove-bottom">
+                                Задача №{{ forloop.counter }} (вес {{ task.weight }})
+                            </h3>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="uk-card-body">
-                <p>Ответ: {{ task.answer }}</p>
-                <p>Ответ студента: {{ task.user_answer }}</p>
-                <h4>
-                    Определить выводимое на экран значение переменной по результатам выполнения
-                    программы на Java:
-                </h4>
-                <pre onmousedown="return false"
-                     class="uk-text-justify"><code>{{ task.code }}</code></pre>
+                <div class="uk-card-body">
+                    <p>Ответ: {{ task.answer }}</p>
+                    <p>Ответ студента: {{ task.user_answer }}</p>
+                    <h4>
+                        Определить выводимое на экран значение переменной по результатам выполнения
+                        программы на Java:
+                    </h4>
+                    <pre onmousedown="return false"
+                         class="uk-text-justify"><code>{{ task.code }}</code></pre>
+                </div>
             </div>
         </div>
-    </div>
 {% endfor %}
