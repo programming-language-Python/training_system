@@ -1,12 +1,24 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
 
 
 class User(AbstractUser):
+    class Gender(models.TextChoices):
+        male = 'м', _('Мужской')
+        female = 'ж', _('Женский')
+
+    gender = models.CharField(max_length=1,
+                              choices=Gender.choices,
+                              default=Gender.male,
+                              verbose_name='Пол')
     patronymic = models.CharField(max_length=150, blank=True, verbose_name='Отчество')
     is_teacher = models.BooleanField(default=False, verbose_name='Преподаватель')
-    student_group = models.ForeignKey('StudentGroup', on_delete=models.SET_NULL, null=True, blank=True,
+    student_group = models.ForeignKey('StudentGroup',
+                                      on_delete=models.SET_NULL,
+                                      null=True,
+                                      blank=True,
                                       verbose_name='Группа студента')
 
     def get_absolute_url(self):

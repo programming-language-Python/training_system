@@ -64,7 +64,6 @@ class RandomizerJava:
         return randint(self.RANDOM_MIN_NUMBER, self.RANDOM_MAX_NUMBER)
 
     def generate_code(self):
-        """Сгенерирует код"""
         self.generate_variables()
         if self.operator_nesting:
             self.generate_nesting_of_operators()
@@ -84,24 +83,19 @@ class RandomizerJava:
             self.code += f'int {key} = {value};\n'
 
     def generate_nesting_of_operators(self):
-        """
-        Оператор if вложен в
-        цикл вложен в оператор if
-        """
         operator_nesting = choice(self.operator_nesting).title
         if operator_nesting == 'оператор if вложен в цикл':
-            self.generate_cycle()
-            self.nested_operator = self.cycle
-            self.generate_condition()
-            self.code += self.condition
-        else:
             self.generate_condition()
             self.nested_operator = self.condition
             self.generate_cycle()
             self.code += self.cycle
+        else:
+            self.generate_cycle()
+            self.nested_operator = self.cycle
+            self.generate_condition()
+            self.code += self.condition
 
     def generate_cycle(self):
-        """Сгенерирует цикл"""
         operator = choice(self.presence_one_of_cycles).title
         if operator == 'for':
             self.generate_for_with_body()
@@ -123,7 +117,6 @@ class RandomizerJava:
         self.cycle += '}'
 
     def generate_body(self, is_random_variables=True):
-        """Сгенерирует тело"""
         if is_random_variables:
             self.generate_body_with_random_variables()
         else:
@@ -227,7 +220,6 @@ class RandomizerJava:
         self.generate_simple_boolean_expression(operator)
 
     def generate_compound_boolean_expression(self, operator):
-        """Сгенерирует составное логическое выражение"""
         self.boolean_expression = ''
         i = 1
         is_while_or_do_while_cycle = operator == 'while' or operator == 'do-while'
@@ -267,7 +259,6 @@ class RandomizerJava:
         self.cycle = self.boolean_expression_and_body
 
     def generate_condition(self):
-        """Сгенерирует условие"""
         operator = 'if'
         self.generate_boolean_expression_and_body(operator)
         self.condition = self.boolean_expression_and_body

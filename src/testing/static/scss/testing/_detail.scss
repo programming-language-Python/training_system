@@ -2,3 +2,9 @@
   pointer-events: none;
   opacity: 0.4;
 }
+
+.header {
+  &__student-groups {
+    display: inline-block;
+  }
+}

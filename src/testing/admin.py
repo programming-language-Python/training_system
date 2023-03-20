@@ -75,7 +75,7 @@ class CycleAdmin(admin.ModelAdmin):
 
 @admin.register(models.CompletedTesting)
 class CompletedTestingAdmin(admin.ModelAdmin):
-    list_display = ('id', 'assessment', 'total_weight', 'weight_of_student_tasks', 'tasks', 'testing', 'student')
+    list_display = ('id', 'assessment', 'total_weight', 'weight_of_student_tasks', 'testing', 'student')
     list_display_links = ('id', 'student')
     search_fields = ('assessment', 'total_weight', 'weight_of_student_tasks', 'testing', 'student')
     list_filter = ('assessment', 'total_weight', 'weight_of_student_tasks', 'testing', 'student')

@@ -1,6 +1,6 @@
 <section class="content__task-student-list task-student-list uk-flex uk-flex-column uk-text-center"
          id="task-student-list">
-    <form action="{% url 'testing:create_completed_test' %}" method="get">
+    <form action="{% url 'testing:completed_testing_create' %}" method="get">
         {% csrf_token %}
         <input name="testing_title" type="hidden" value="{{ testing.title }}">
         <input name="testing_pk" type="hidden" value="{{ testing.pk }}">

@@ -9,19 +9,19 @@ class JavaToPythonConversion:
         self.convert_code_to_python()
 
     def convert_code_to_python(self):
+        self.remove_carriage_return()
         self.convert_do_while()
         self.convert_for()
         self.replace_symbols()
         self.convert_print()
 
+    def remove_carriage_return(self):
+        self.code = self.code.replace('\r', '')
+
     def convert_do_while(self):
         start_symbol_do_while = 'do {'
         if self.is_symbol(start_symbol_do_while):
             do_while_boolean_expression = self.get_text_between_symbols('while (', ')')
-            body_do_while = self.get_text_between_symbols(start_symbol_do_while, '}')
-            # self.code = self.code.replace('do', 'while True').replace(f'while ({do_while_boolean_expression})', '') \
-            #     .replace(body_do_while,
-            #              body_do_while + f'\n\tif {do_while_boolean_expression}: continue\n\telse: break')
             characters_between_while_and_closing_bracket = self.get_text_between_symbols(
                 '}',
                 f'while ({do_while_boolean_expression})'
@@ -30,9 +30,6 @@ class JavaToPythonConversion:
                 .replace(f'while ({do_while_boolean_expression})',
                          f'\tif {do_while_boolean_expression}: continue'
                          f'{characters_between_while_and_closing_bracket}\telse: break')
-            # body_for = self.get_text_between_symbols(for_boolean_expression + ') {', '}')
-            # body_for_with_tabs_added = RandomizerJava.add_tabs_to_paragraphs(body_for)
-            # body_for_python = f'\n\tif {condition_in_for}:{body_for_with_tabs_added}'
 
     def convert_for(self):
         start = 'for ('
@@ -55,9 +52,10 @@ class JavaToPythonConversion:
         if is_compound_for:
             start_and_end = '; '
             condition_in_for = self.get_text_between_symbols(start_and_end, start_and_end)
-            body_for = self.get_text_between_symbols(for_boolean_expression + ') {', '}')
+            body_for = self.get_text_between_symbols(for_boolean_expression + ') {\n', '}')
+            indent_size_in_body = body_for.split('\n')[0].count('\t')
             body_for_with_tabs_added = RandomizerJava.add_tabs_to_paragraphs(body_for)
-            body_for_python = f'\n\tif {condition_in_for}:{body_for_with_tabs_added}'
+            body_for_python = '\t' * indent_size_in_body + f'if {condition_in_for}:\n{body_for_with_tabs_added}'
             self.code = self.code.replace(body_for, body_for_python)
 
     def convert_print(self):

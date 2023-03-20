@@ -2,10 +2,11 @@
 
 {% block content %}
     <section class="content__user">
-        <h1 class="user__title">
-            Добро пожаловать, {{ user.last_name }} {{ user.first_name }} {{ user.patronymic }}
-        </h1>
         {% if request.user.is_teacher %}
+            <h1 class="user__title">
+                <p>Добро пожаловать преподаватель{% if user.gender == 'ж' %}ница{% endif %}</p>
+                <p>{{ user.last_name }} {{ user.first_name }} {{ user.patronymic }}</p>
+            </h1>
             <h2>Студенты</h2>
             <form class="uk-margin" action="{% url 'user:search_student' %}">
                 <label>
@@ -47,6 +48,11 @@
                 <h2 class="uk-text-danger">Студенты не найдены</h2>
             {% endif %}
         {% else %}
+            <h1 class="user__title">
+                <p>Добро пожаловать студент{% if user.gender == 'ж' %}ка{% endif %}</p>
+                <p>{{ user.last_name }} {{ user.first_name }} {{ user.patronymic }}</p>
+                группы {{ user.student_group }}
+            </h1>
             <form class="uk-margin" action="{% url 'user:home' %}">
                 <label>
                     <input class="uk-input uk-width-1-4" name="search" type="text" placeholder="Поиск" required>

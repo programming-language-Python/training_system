@@ -22,7 +22,9 @@ class UserAdmin(OrigUserAdmin):
     list_filter = ('id', 'last_name', 'first_name', 'patronymic', 'username', 'email', 'student_group')
     fieldsets = (
         (None, {"fields": ("username", "password")}),
-        (_("Personal info"), {"fields": ("last_name", "first_name", "patronymic", "email", "student_group")}),
+        (_("Personal info"), {
+            "fields": ("last_name", "first_name", "patronymic", "gender", "email", "is_teacher", "student_group")
+        }),
         (
             _("Permissions"),
             {
@@ -30,7 +32,6 @@ class UserAdmin(OrigUserAdmin):
                     "is_active",
                     "is_staff",
                     "is_superuser",
-                    "is_teacher",
                     "groups",
                     "user_permissions",
                 ),

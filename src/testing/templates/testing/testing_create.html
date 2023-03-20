@@ -4,9 +4,11 @@
 {% block content %}
     <form class="form" method="post" center>
         {% csrf_token %}
-        {{ form }}
+        {{ form.as_div }}
         <div class="uk-margin">
-            <button class="uk-button uk-button-primary" type="submit" id="submit">Создать тест</button>
+            <button class="uk-button uk-button-primary" type="submit" id="submit">
+                Создать тест
+            </button>
         </div>
     </form>
 {% endblock %}

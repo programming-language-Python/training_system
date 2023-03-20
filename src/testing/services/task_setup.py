@@ -8,29 +8,69 @@ class TaskManager:
     def __init__(self, user, forms, testing):
         self.user = user
         self.task_form = forms['task_form']
+        self.task = Task.objects
         self.task_setup_form = forms['task_setup_form']
+        self.task_setup = TaskSetup.objects
+        self.weight = self.task_form.cleaned_data['weight']
+        self.is_if_operator = self.task_setup_form.cleaned_data['is_if_operator']
+        self.condition_of_if_operator = self.task_setup_form.cleaned_data['condition_of_if_operator']
+        self.cycle_condition = self.task_setup_form.cleaned_data['cycle_condition']
         self.testing = testing
         self.pk = None
 
     def add(self):
         """Добавляет задачу Task"""
-        task_setup = self.get_task_setup()
-        self.create(task_setup)
+        self.create_or_set_task_setup()
+        self.create_or_increase()
 
-    def create(self, task_setup):
-        weight = self.task_form.cleaned_data['weight']
-        task = Task.objects.filter(weight=weight,
-                                   testing=self.testing,
-                                   task_setup=task_setup)
-        if task.exists():
-            task.update(count=F('count') + 1)
-            self.pk = task.first().pk
+    def create_or_increase(self):
+        print('self.task_setup', self.task_setup)
+        self.task = self.task.filter(weight=self.weight,
+                                     testing=self.testing,
+                                     task_setup=self.task_setup)
+        if self.task.exists():
+            self.increase_count()
         else:
-            task = Task.objects.create(weight=weight,
-                                       testing=self.testing,
-                                       task_setup=task_setup,
-                                       count=1)
-            self.pk = task.pk
+            self.create()
+
+    def increase_count(self):
+        self.task.update(count=F('count') + 1)
+        self.pk = self.task.first().pk
+
+    def create(self):
+        self.task = self.task.create(weight=self.weight,
+                                     testing=self.testing,
+                                     task_setup=self.task_setup,
+                                     count=1)
+        self.pk = self.task.pk
+
+    def create_or_set_task_setup(self):
+        self.task_setup = self.task_setup.filter(
+            is_if_operator=self.is_if_operator,
+            condition_of_if_operator=self.condition_of_if_operator,
+            cycle_condition=self.cycle_condition)
+        if not self.task_setup.exists():
+            return self.create_task_setup()
+        self.task_setup = filter_many_to_many_relationship(
+            items_model=Cycle,
+            obj_to_filter=self.task_setup,
+            form=self.task_setup_form,
+            filter_field='presence_one_of_cycles')
+        if not self.task_setup.exists():
+            return self.create_task_setup()
+        self.task_setup = filter_many_to_many_relationship(
+            items_model=OperatorNesting,
+            obj_to_filter=self.task_setup,
+            form=self.task_setup_form,
+            filter_field='operator_nesting')
+        if not self.task_setup.exists():
+            return self.create_task_setup()
+        task_setup = self.task_setup.filter(users=self.user)
+        if task_setup.exists():
+            self.task_setup = task_setup.first()
+        else:
+            self.task_setup.first().users.add(self.user)
+            self.task_setup = self.task_setup.first()
 
     def get_task_setup(self):
         filtered_task_setup = self.get_filtered_setup_task()
@@ -42,20 +82,21 @@ class TaskManager:
         return self.create_task_setup()
 
     def get_filtered_setup_task(self):
-        filtered_many_to_many_relationship = self.get_filtered_many_to_many_relationship()
         is_if_operator = self.task_setup_form.cleaned_data['is_if_operator']
         condition_of_if_operator = self.task_setup_form.cleaned_data['condition_of_if_operator']
         cycle_condition = self.task_setup_form.cleaned_data['cycle_condition']
-        filtered_task_setup = filtered_many_to_many_relationship.filter(
+        filtered_task_setup = TaskSetup.objects.filter(
             is_if_operator=is_if_operator,
             condition_of_if_operator=condition_of_if_operator,
             cycle_condition=cycle_condition
         )
+        filtered_task_setup = self.get_filtered_many_to_many_relationship(filtered_task_setup)
         return filtered_task_setup
 
-    def get_filtered_many_to_many_relationship(self):
+    def get_filtered_many_to_many_relationship(self, obj_to_filter):
         obj_to_filter = filter_many_to_many_relationship(
             items_model=Cycle,
+            obj_to_filter=obj_to_filter,
             form=self.task_setup_form,
             filter_field='presence_one_of_cycles'
         )
@@ -68,12 +109,18 @@ class TaskManager:
         return filtered_many_to_many_relationship
 
     def create_task_setup(self):
-        task_setup = self.task_setup_form.save(commit=False)
-        task_setup.pk = None
-        task_setup.save()
+        self.task_setup = self.task_setup_form.save(commit=False)
+        self.task_setup.pk = None
+        self.task_setup.save()
         self.task_setup_form.save_m2m()
-        task_setup.users.add(self.user)
-        return task_setup
+        self.task_setup.users.add(self.user)
+
+    # def add_user(self):
+    #     self.task_setup = self.task_setup_form.save(commit=False)
+    #     self.task_setup.pk = None
+    #     self.task_setup.save()
+    #     self.task_setup_form.save_m2m()
+    #     self.task_setup.users.add(self.user)
 
     # проверить
     # не работает

@@ -1,3 +1,4 @@
+from django.http import request
 from django.urls import path
 
 from .views import *
@@ -13,5 +14,5 @@ urlpatterns = [
     path('task/<pk>/update/', task_update, name='task_update'),
     path('task/<pk>/delete/', task_delete, name='task_delete'),
     path('add_task_form/', add_task_form, name='add_task_form'),
-    path('create_completed_test/', create_completed_test, name='create_completed_test'),
+    path('completed_testing_create/', create_completed_testing, name='completed_testing_create'),
 ]

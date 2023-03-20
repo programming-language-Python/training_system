@@ -17,9 +17,8 @@ class TestingForm(forms.ModelForm):
                                 }
                             ))
     student_groups = forms.ModelMultipleChoiceField(label='Группы студентов',
-                                                    widget=forms.SelectMultiple(
+                                                    widget=forms.CheckboxSelectMultiple(
                                                         attrs={
-                                                            'class': 'uk-margin uk-select uk-form-width-medium',
                                                             'name': 'student_group',
                                                         }
                                                     ),

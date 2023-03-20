@@ -9,14 +9,24 @@
 {% endblock %}
 {% block content %}
     <section class="content__testing testing" id="testing">
-        <div class="testing__title" id="testing-title">
+        <div class="testing__header uk-margin" id="testing-title">
             {% if user.is_teacher %}
                 <h2>
                     Создать настройки задач для тестирования {{ testing.title }}
                 </h2>
-                <div>
-                    Группы студентов:
-                    {{ testing.student_groups.all|join:', ' }}
+                <div class="header__student-groups uk-text-center">
+                    <ul uk-accordion>
+                        <li>
+                            <a class="uk-accordion-title" href="#">Группы студентов</a>
+                            <div class="uk-accordion-content">
+                                {% for student_group in testing.student_groups.all %}
+                                    <div>
+                                        {{ student_group }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </li>
+                    </ul>
                 </div>
                 <div>
                     Опубликовано:

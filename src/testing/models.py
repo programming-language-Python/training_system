@@ -29,7 +29,8 @@ class Task(models.Model):
 
 class Testing(models.Model):
     title = models.CharField(max_length=25,
-                             verbose_name='Наименование')
+                             verbose_name='Наименование',
+                             unique=True)
     student_groups = models.ManyToManyField(StudentGroup,
                                             verbose_name='Группы студентов')
     user = models.ForeignKey(User,
@@ -138,7 +139,8 @@ class CompletedTesting(models.Model):
     weight_of_student_tasks = models.IntegerField(verbose_name='Вес задач студента')
     tasks = models.JSONField(verbose_name='Задачи')
     testing = models.ForeignKey(Testing,
-                                on_delete=models.CASCADE,
+                                on_delete=models.SET_NULL,
+                                null=True,
                                 verbose_name='Тестирование')
     student = models.ForeignKey(settings.AUTH_USER_MODEL,
                                 on_delete=models.CASCADE,
