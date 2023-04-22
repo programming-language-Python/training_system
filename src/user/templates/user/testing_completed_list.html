@@ -2,6 +2,10 @@
 {% load model_manipulation %}
 {% load static %}
 
+{% block link %}
+    <link rel="stylesheet" href="{% static 'css/assessment.css' %}">
+{% endblock %}
+
 {% block content %}
     <h1>{{ user.last_name }} {{ user.first_name }} {{ user.patronymic }}</h1>
     {% if completed_testings %}
@@ -29,7 +33,38 @@
                                     <div class="uk-grid-small uk-flex-middle" uk-grid>
                                         <div class="uk-width-expand">
                                             <h3 class="uk-card-title">
-                                                {% get_verbose_name_for_field completed_testing 'assessment' %}: {{ completed_testing.assessment }}
+                                                {% with completed_testing.assessment as assessment %}
+                                                    <span class="assessment
+                                                    {% if assessment <= 2 %}
+                                                        two
+                                                    {% elif assessment == 3 %}
+                                                        three
+                                                    {% elif assessment == 4 %}
+                                                        four
+                                                    {% elif assessment == 5 %}
+                                                        five
+                                                    {% endif %}">
+                                                        {% get_verbose_name_for_field completed_testing 'assessment' %}:
+                                                        {{ assessment }}
+                                                    </span>
+                                                {% endwith %}
+                                            </h3>
+                                            <h3 class="uk-card-title">
+                                                {% with completed_testing.assessment as assessment %}
+                                                    <span class="assessment
+                                                    {% if assessment <= 2 %}
+                                                        two
+                                                    {% elif assessment == 3 %}
+                                                        three
+                                                    {% elif assessment == 4 %}
+                                                        four
+                                                    {% elif assessment == 5 %}
+                                                        five
+                                                    {% endif %}">
+                                                        {% get_verbose_name_for_field completed_testing 'assessment' %} в %:
+                                                        {{ completed_testing.get_assessment_in_percentage }}%
+                                                    </span>
+                                                {% endwith %}
                                             </h3>
                                             <h3 class="uk-card-title">
                                                 {% get_verbose_name_for_field completed_testing 'total_weight' %}: {{ completed_testing.total_weight }}

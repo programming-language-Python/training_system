@@ -1,7 +1,6 @@
 {% load model_manipulation %}
 
-<div class="task" hx-target="this">
-    {#    <h2>id: {{ task.id }}</h2>#}
+<div class="task uk-margin" hx-target="this">
     {% with task.task_setup as task_setup %}
         <div>
             <div class="uk-card uk-card-default uk-card-body">
@@ -38,8 +37,8 @@
                                 {% get_verbose_name_for_field task_setup 'presence_one_of_cycles' %}:
                                 {{ task_setup.presence_one_of_cycles.all|join:', ' }}
                             </p>
-                        </div>
-                        <div>
+                            {#                        </div>#}
+                            {#                        <div>#}
                             <p>
                                 {% get_verbose_name_for_field task_setup 'cycle_condition' %}:
                                 {{ task_setup.cycle_condition }}
@@ -52,16 +51,16 @@
                     </div>
                 </div>
                 <div class="uk-card-footer">
-                    <button name="btn-update"
+                    <button class="btn-update"
                             hx-post="{% url 'testing:task_update' task.pk %}"
                             hx-swap="outerHTML"
                             uk-icon="refresh"
                             uk-tooltip="Обновить">
                     </button>
                     <button hx-post="{% url 'testing:task_delete' task.pk %}"
+                            hx-swap="outerHTML"
                             uk-icon="trash"
-                            uk-tooltip="Удалить"
-                            onclick="location.reload()">
+                            uk-tooltip="Удалить">
                     </button>
                 </div>
             </div>

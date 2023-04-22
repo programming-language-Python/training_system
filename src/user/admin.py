@@ -23,7 +23,7 @@ class UserAdmin(OrigUserAdmin):
     fieldsets = (
         (None, {"fields": ("username", "password")}),
         (_("Personal info"), {
-            "fields": ("last_name", "first_name", "patronymic", "gender", "email", "is_teacher", "student_group")
+            "fields": ("last_name", "first_name", "patronymic", "email", "is_teacher", "student_group")
         }),
         (
             _("Permissions"),

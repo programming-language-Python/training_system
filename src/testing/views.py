@@ -121,21 +121,21 @@ class TestingDetailView(LoginRequiredMixin, DetailView):
         if not (session_name in self.request.session.keys()):
             self.request.session[session_name] = self.tasks_context
 
-    def post(self, request, *args, **kwargs):
-        if request.method == 'POST':
-            testing = get_object_or_404(Testing, pk=kwargs['pk'])
-            task_form = TaskForm(request.POST or None)
-            task_setup_form = TaskSetupForm(request.POST or None)
-            context = {
-                'task_form': task_form,
-                'task_setup_form': task_setup_form,
-            }
-            is_valid_forms = task_form.is_valid() and task_setup_form.is_valid()
-            if is_valid_forms:
-                task_manager = TaskManager(request.user, context, testing)
-                task_manager.add()
-                return redirect('testing:task_detail', pk=task_manager.pk)
-            return render(request, 'testing/task_form.html', context=context)
+    @staticmethod
+    def post(request, *args, **kwargs):
+        testing = get_object_or_404(Testing, pk=kwargs['pk'])
+        task_form = TaskForm(request.POST or None)
+        task_setup_form = TaskSetupForm(request.POST or None)
+        context = {
+            'task_form': task_form,
+            'task_setup_form': task_setup_form,
+        }
+        is_valid_forms = task_form.is_valid() and task_setup_form.is_valid()
+        if is_valid_forms:
+            task_manager = TaskManager(request.user, context, testing)
+            task_manager.add()
+            return redirect('testing:task_detail', pk=task_manager.pk)
+        return render(request, 'testing/task_form.html', context=context)
 
 
 class TestingUpdateView(LoginRequiredMixin, UpdateView):

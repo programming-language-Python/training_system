@@ -3,6 +3,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
+from testing.utils import round_up
 from user.models import User, StudentGroup
 
 app_name = 'testing'
@@ -149,6 +150,9 @@ class CompletedTesting(models.Model):
     def get_absolute_url(self):
         return reverse('complete_testing_detail',
                        kwargs={'pk': self.pk})
+
+    def get_assessment_in_percentage(self):
+        return round_up(self.weight_of_student_tasks / self.total_weight * 100)
 
     class Meta:
         verbose_name = 'Завершённое тестирование'

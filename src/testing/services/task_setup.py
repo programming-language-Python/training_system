@@ -24,7 +24,6 @@ class TaskManager:
         self.create_or_increase()
 
     def create_or_increase(self):
-        print('self.task_setup', self.task_setup)
         self.task = self.task.filter(weight=self.weight,
                                      testing=self.testing,
                                      task_setup=self.task_setup)

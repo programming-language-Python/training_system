@@ -4,7 +4,7 @@
     <section class="content__user">
         {% if request.user.is_teacher %}
             <h1 class="user__title">
-                <p>Добро пожаловать преподаватель{% if user.gender == 'ж' %}ница{% endif %}</p>
+                <p>Добро пожаловать преподаватель</p>
                 <p>{{ user.last_name }} {{ user.first_name }} {{ user.patronymic }}</p>
             </h1>
             <h2>Студенты</h2>
@@ -49,7 +49,7 @@
             {% endif %}
         {% else %}
             <h1 class="user__title">
-                <p>Добро пожаловать студент{% if user.gender == 'ж' %}ка{% endif %}</p>
+                <p>Добро пожаловать студент</p>
                 <p>{{ user.last_name }} {{ user.first_name }} {{ user.patronymic }}</p>
                 группы {{ user.student_group }}
             </h1>

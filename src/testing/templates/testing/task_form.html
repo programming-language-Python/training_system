@@ -57,7 +57,6 @@
                         <button name="btn-update"
                                 type="submit"
                                 hx-post="{% url 'testing:task_update' task.pk %}"
-                                onclick="location.reload()"
                                 uk-icon="refresh"
                                 uk-tooltip="Обновить">
                         </button>
@@ -67,12 +66,11 @@
                                 uk-tooltip="Отмена">
                         </button>
                     {% else %}
-                        <button
-                                type="submit"
+                        <button id="btn-add" type="submit"
                                 hx-post="."
+                                hx-swap="outerHTML"
                                 uk-icon="plus"
-                                uk-tooltip="Добавить"
-                        >
+                                uk-tooltip="Добавить">
                         </button>
                         <button onclick="location.reload()"
                                 type="button"

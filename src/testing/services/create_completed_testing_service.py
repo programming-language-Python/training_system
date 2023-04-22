@@ -1,5 +1,6 @@
 from testing import models
 from testing.services.code_conversion import JavaToPythonConversion
+from testing.utils import round_up
 
 
 class CreateCompletedTestingService:
@@ -22,7 +23,7 @@ class CreateCompletedTestingService:
                                                tasks=self.tasks,
                                                testing=self.get_testing(),
                                                student=self.request.user)
-        self.delete_session()
+        # self.delete_session()
 
     def add_tasks(self):
         for self.task_weight, self.user_answer, self.code in zip(self.task_weights, self.user_answers, self.codes):
@@ -53,7 +54,3 @@ class CreateCompletedTestingService:
     def delete_session(self):
         session_name = 'testing_' + str(self.request.GET.get('testing_pk'))
         del self.request.session[session_name]
-
-
-def round_up(num):
-    return int(num + (0.5 if num > 0 else -0.5))
