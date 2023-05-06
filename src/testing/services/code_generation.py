@@ -25,7 +25,7 @@ class RandomizerJava:
         self.arithmetic_operators = increment_arithmetic_operators + decrement_arithmetic_operators
         self.arithmetic_operators_used = []
         self.arithmetic_operator = ''
-        self.comparison_and_their_arithmetic_operators = {
+        self.comparison_bound_to_arithmetic_operators = {
             '<': increment_arithmetic_operators,
             '<=': increment_arithmetic_operators,
             '>': decrement_arithmetic_operators,
@@ -33,7 +33,9 @@ class RandomizerJava:
             '==': '',
             '!=': ''
         }
+        # Связь: переменная -> оператор сравнения -> арифметический оператор
         self.variables_bound_to_arithmetic_operators = {}
+        self.variables_used_info = {}
 
         self.boolean_expression = ''
         self.body = ''
@@ -43,12 +45,6 @@ class RandomizerJava:
         self.cycle = ''
         self.nested_operator = ''
         self.generate_code()
-
-        # test = {'v': {
-        #     'ari': ['+'],
-        #     'g': ['dd']
-        # }
-        # }
 
     def remove_poorly_readable_variables(self):
         excluded_variables = ['i', 'l', 'o', 'O']
@@ -78,6 +74,7 @@ class RandomizerJava:
         elif self.presence_one_of_cycles:
             self.generate_cycle()
             self.code += self.cycle
+        self.code = f'#variables_used_info:{self.variables_used_info}\n' + self.code
         self.generate_print_of_variable()
 
     def generate_variables(self):
@@ -127,35 +124,41 @@ class RandomizerJava:
         else:
             self.generate_body_with_variables_bound_to_arithmetic_operators()
 
+    def generate_body_with_random_variables(self):
+        random_variable = self.get_random_dictionary_key(self.initialized_variables)
+        random_arithmetic_operator = choice(self.arithmetic_operators)
+        assignment_operator = self.get_assignment_operator(random_variable, random_arithmetic_operator)
+        self.add_variable_used_info(random_variable, random_arithmetic_operator)
+        self.body = f'\t{assignment_operator}'
+
+    def get_assignment_operator(self, variable, arithmetic_operator):
+        return f'{variable} {arithmetic_operator}= {self.get_random_number()};'
+
+    def add_variable_used_info(self, variable, arithmetic_operator):
+        if variable in self.variables_used_info:
+            self.variables_used_info[variable].append(arithmetic_operator)
+        else:
+            self.variables_used_info[variable] = [arithmetic_operator]
+
+    def get_random_dictionary_key(self, dictionary):
+        list_initialized_variables = self.get_list_dictionary_keys(dictionary)
+        return choice(list_initialized_variables)
+
     def generate_body_with_variables_bound_to_arithmetic_operators(self):
         self.body = ''
         i = 1
         for variable, arithmetic_operators in self.variables_bound_to_arithmetic_operators.items():
             if arithmetic_operators:
-                random_arithmetic_operator = self.get_random_list_item(arithmetic_operators)
+                random_arithmetic_operator = choice(arithmetic_operators)
             else:
-                random_arithmetic_operator = self.get_random_list_item(self.arithmetic_operators)
-            self.body += f'\t{variable} {random_arithmetic_operator}= {self.get_random_number()};'
+                random_arithmetic_operator = choice(self.arithmetic_operators)
+            assignment_operator = self.get_assignment_operator(variable, random_arithmetic_operator)
+            self.add_variable_used_info(variable, random_arithmetic_operator)
+            self.body += f'\t{assignment_operator}'
             is_last_variable = i != self.count_variables
             if is_last_variable:
                 self.body += '\n'
             i += 1
-
-    @staticmethod
-    def get_random_list_item(roster):
-        return choice(roster)
-
-    # def add_comment_on_arithmetic_operators_used(self):
-    #     self.code = f'{}\n' + self.code
-
-    def generate_body_with_random_variables(self):
-        random_variable = self.get_random_dictionary_key(self.initialized_variables)
-        random_arithmetic_operator = self.get_random_list_item(self.arithmetic_operators)
-        self.body = f'\t{random_variable} {random_arithmetic_operator}= {self.get_random_number()};'
-
-    def get_random_dictionary_key(self, dictionary):
-        list_initialized_variables = self.get_list_dictionary_keys(dictionary)
-        return choice(list_initialized_variables)
 
     @staticmethod
     def get_list_dictionary_keys(dictionary):
@@ -170,15 +173,15 @@ class RandomizerJava:
         max_i = self.get_random_i()
         random_logical_operator = self.get_random_logical_operator()
         rand_int = self.get_random_number()
-        arithmetic_operators = self.comparison_and_their_arithmetic_operators[random_comparison_operator]
-        random_arithmetic_operator = self.get_random_list_item(arithmetic_operators)
+        arithmetic_operators = self.comparison_bound_to_arithmetic_operators[random_comparison_operator]
+        random_arithmetic_operator = choice(arithmetic_operators)
         step = self.get_step()
         self.for_cycle = f'for (int i = {i}; i {random_comparison_operator} {max_i} {random_logical_operator} ' \
                          f'{random_variable} {random_comparison_operator2} {rand_int}; ' \
                          f'i {random_arithmetic_operator}= {step}) ' + '{\n'
 
     def get_greater_and_less_comparison_operators(self):
-        greater_and_less_comparison_operators = self.comparison_and_their_arithmetic_operators.copy()
+        greater_and_less_comparison_operators = self.comparison_bound_to_arithmetic_operators.copy()
         del greater_and_less_comparison_operators['==']
         del greater_and_less_comparison_operators['!=']
         return greater_and_less_comparison_operators
@@ -284,11 +287,11 @@ class RandomizerJava:
         self.code += f'\nSystem.out.println("{random_variable} = " + {random_variable});'
 
     def add_arithmetic_operator_used(self, comparison_operator):
-        self.arithmetic_operators_used += self.comparison_and_their_arithmetic_operators[
+        self.arithmetic_operators_used += self.comparison_bound_to_arithmetic_operators[
             comparison_operator]
 
     def add_variable_bound_to_arithmetic_operator(self, variable, comparison_operator):
-        self.variables_bound_to_arithmetic_operators[variable] = self.comparison_and_their_arithmetic_operators[
+        self.variables_bound_to_arithmetic_operators[variable] = self.comparison_bound_to_arithmetic_operators[
             comparison_operator]
 
     @staticmethod

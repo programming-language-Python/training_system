@@ -1,3 +1,4 @@
+import json
 import re
 
 from testing.services.code_generation import RandomizerJava
@@ -78,8 +79,15 @@ class JavaToPythonConversion:
         return self.code.partition(start)[2].partition(end)[0]
 
     def convert_arithmetic_operators(self):
-        for variable in self.variables:
-            self.get_text_between_symbols()
+        variables_used_info_str = self.get_text_between_symbols('#variables_used_info:', '\n').replace('\'', '"')
+        variables_used_info = json.loads(variables_used_info_str)
+        for variable, arithmetic_operators in variables_used_info.items():
+            for arithmetic_operator in arithmetic_operators:
+                left_side_of_assignment = f'{variable} {arithmetic_operator}='
+                value = self.get_text_between_symbols(left_side_of_assignment, '\n')
+                assignment_operation = f'{left_side_of_assignment}{value}'
+                replacement = f'{variable} = int({variable} {arithmetic_operator}{value})'
+                self.code = self.code.replace(assignment_operation, replacement)
 
     def replace_symbols(self):
         deleting_symbol = ''
@@ -100,9 +108,3 @@ class JavaToPythonConversion:
         context = {}
         exec(self.code, context)
         return round(context['result'], 2)
-
-
-if __name__ == "__main__":
-    code = 'int D = 70;\nint h = 69;\nfor (int i = 9; i >= 9 && D != 40; i/=9){\n\tD *= 85;\n\tif (D == 12 || h == 9){\n\t\tD /= 41;\n\t}\n}\nSystem.out.println("h = " + h);'
-    # code = 'int d = 70;\nint e = 80\nSystem.out.println("d = " + d);'
-    JavaToPythonConversion(code)
