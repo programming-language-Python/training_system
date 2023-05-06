@@ -14,7 +14,6 @@ from testing.services.decorators import is_teacher
 from testing.services.task_setup import TaskManager
 
 
-# Create your views here.
 class TestingCreateView(LoginRequiredMixin, CreateView):
     form_class = TestingForm
     template_name = 'testing/testing_create.html'
@@ -113,7 +112,8 @@ class TestingDetailView(LoginRequiredMixin, DetailView):
             'number': self.number,
             'count': task.count,
             'weight': task.weight,
-            'code': randomizer_java.generate_code(),
+            'code': randomizer_java.get_code(),
+            'code_for_user': randomizer_java.get_code_for_user(),
         }
         self.tasks_context[task.pk] = task_data
 

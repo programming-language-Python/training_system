@@ -42,11 +42,13 @@ class RandomizerJava:
         self.condition = ''
         self.cycle = ''
         self.nested_operator = ''
+        self.generate_code()
 
-        self.RANDOM_MIN_NUMBER = 1
-        self.RANDOM_MAX_NUMBER = 100
-        self.MIN_NUMBER_FOR_FOR_CYCLE = 1
-        self.MAX_NUMBER_FOR_FOR_CYCLE = 10
+        # test = {'v': {
+        #     'ari': ['+'],
+        #     'g': ['dd']
+        # }
+        # }
 
     def remove_poorly_readable_variables(self):
         excluded_variables = ['i', 'l', 'o', 'O']
@@ -57,11 +59,12 @@ class RandomizerJava:
         self.count_variables = randint(2, 3)
         for i in range(self.count_variables):
             random_variable = choice(self.variables)
-            self.initialized_variables[random_variable] = randint(1, 100)
+            self.initialized_variables[random_variable] = self.get_random_number()
             self.variables = self.variables.replace(random_variable, '')
 
-    def get_random_number(self):
-        return randint(self.RANDOM_MIN_NUMBER, self.RANDOM_MAX_NUMBER)
+    @staticmethod
+    def get_random_number():
+        return randint(1, 100)
 
     def generate_code(self):
         self.generate_variables()
@@ -76,11 +79,13 @@ class RandomizerJava:
             self.generate_cycle()
             self.code += self.cycle
         self.generate_print_of_variable()
-        return self.code
 
     def generate_variables(self):
+        variables_used = f'#variables_used:'
         for key, value in self.initialized_variables.items():
+            variables_used += f'{key} '
             self.code += f'int {key} = {value};\n'
+        self.code = variables_used + '\n' + self.code
 
     def generate_nesting_of_operators(self):
         operator_nesting = choice(self.operator_nesting).title
@@ -140,6 +145,9 @@ class RandomizerJava:
     def get_random_list_item(roster):
         return choice(roster)
 
+    # def add_comment_on_arithmetic_operators_used(self):
+    #     self.code = f'{}\n' + self.code
+
     def generate_body_with_random_variables(self):
         random_variable = self.get_random_dictionary_key(self.initialized_variables)
         random_arithmetic_operator = self.get_random_list_item(self.arithmetic_operators)
@@ -164,7 +172,7 @@ class RandomizerJava:
         rand_int = self.get_random_number()
         arithmetic_operators = self.comparison_and_their_arithmetic_operators[random_comparison_operator]
         random_arithmetic_operator = self.get_random_list_item(arithmetic_operators)
-        step = randint(1, 10)
+        step = self.get_step()
         self.for_cycle = f'for (int i = {i}; i {random_comparison_operator} {max_i} {random_logical_operator} ' \
                          f'{random_variable} {random_comparison_operator2} {rand_int}; ' \
                          f'i {random_arithmetic_operator}= {step}) ' + '{\n'
@@ -285,4 +293,15 @@ class RandomizerJava:
 
     @staticmethod
     def get_random_i():
-        return randint(0, 10)
+        return randint(0, 1)
+
+    @staticmethod
+    def get_step():
+        return randint(1, 2)
+
+    def get_code(self):
+        return self.code
+
+    def get_code_for_user(self):
+        code_for_user = '\n'.join(line for line in self.code.split('\n') if not line.startswith('#'))
+        return code_for_user

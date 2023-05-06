@@ -1,0 +1,9 @@
+.uk-card {
+  padding: 0;
+
+  .body {
+    & span {
+      font-weight: bold;
+    }
+  }
+}
