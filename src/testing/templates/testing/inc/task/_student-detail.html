@@ -1,5 +1,4 @@
 <div class="uk-text-left uk-grid-match" hx-target="this">
-{#    <h2>id: {{ key }}</h2>#}
     <div>
         <div class="uk-card uk-card-default uk-card-body">
             <div class="uk-card-header">
@@ -17,10 +16,11 @@
                     Определить выводимое на экран значение переменной <br> по результатам выполнения программы на Java:
                 </h4>
                 <pre onmousedown="return false"
-                     class="uk-text-justify"><code>{{ values.code_for_user }}</code></pre>
+                     class="uk-text-justify"><code>{{ values.code }}</code></pre>
                 <input name="code" type="hidden" value="{{ values.code }}">
                 <p>
-                    Ваш ответ: <input class="uk-input uk-form-width-medium uk-form-small" name="answer" type="number" required>
+                    Ваш ответ: <input class="uk-input uk-form-width-medium uk-form-small" name="answer" type="number"
+                                      required>
                 </p>
             </div>
         </div>

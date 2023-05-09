@@ -3,7 +3,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
-from testing.utils import round_up
+from testing.utils.utils import round_up
 from user.models import User, StudentGroup
 
 app_name = 'testing'

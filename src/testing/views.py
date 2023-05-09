@@ -8,9 +8,10 @@ from django.views.generic import ListView, CreateView, DetailView, UpdateView, D
 
 from testing.forms import TestingForm, TaskSetupForm, TaskForm
 from testing.models import Testing, Task
-from testing.services.code_generation import RandomizerJava
+
 from testing.services.create_completed_testing_service import CreateCompletedTestingService
 from testing.services.decorators import is_teacher
+from testing.services.generate_code.generate_java import GenerateJava
 from testing.services.task_setup import TaskManager
 
 
@@ -95,25 +96,24 @@ class TestingDetailView(LoginRequiredMixin, DetailView):
     def create_context_for_recurring_tasks(self, task):
         number_recurring_tasks = 1
         for i in range(task.count):
-            randomizer_java = RandomizerJava(**self.task_setup_data)
+            randomizer_java = GenerateJava(**self.task_setup_data)
             task_data = {
                 'number': self.number,
                 'count': task.count,
                 'weight': task.weight,
-                'code': randomizer_java.generate_code(),
+                'code': randomizer_java.get_code(),
             }
             key = str(task.pk) + '_' + str(number_recurring_tasks)
             self.tasks_context[key] = task_data
             number_recurring_tasks += 1
 
     def create_task_context(self, task):
-        randomizer_java = RandomizerJava(**self.task_setup_data)
+        randomizer_java = GenerateJava(**self.task_setup_data)
         task_data = {
             'number': self.number,
             'count': task.count,
             'weight': task.weight,
             'code': randomizer_java.get_code(),
-            'code_for_user': randomizer_java.get_code_for_user(),
         }
         self.tasks_context[task.pk] = task_data
 

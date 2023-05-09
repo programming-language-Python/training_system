@@ -1,11 +1,16 @@
 import string
 from random import randint, choice
 
+from testing.services.generate_code.config import Config
+from testing.utils.random_value import RandomValue
 
-class RandomizerJava:
-    def __init__(self, **task_setup):
+
+class GenerateJava:
+    def __init__(self, **task_setup: dict) -> None:
         self.code = ''
-
+        # is_generate_OOP = True
+        # if is_generate_OOP:
+        #     generate_java_OOP()
         self.is_if_operator = task_setup['is_if_operator'] == 'Присутствует'
         self.condition_of_if_operator = task_setup['condition_of_if_operator']
         self.presence_one_of_cycles = task_setup['presence_one_of_cycles']
@@ -13,26 +18,10 @@ class RandomizerJava:
         self.operator_nesting = task_setup['operator_nesting']
 
         self.count_variables = ''
-        self.variables = string.ascii_letters
-        self.remove_poorly_readable_variables()
+        self.variables = self.get_readable_variables()
         self.initialized_variables = {}
         self.generate_initialized_variables()
 
-        self.comparison_operators = ['<', '<=', '>', '>=', '==', '!=']
-        self.logical_operators = ['&&', '||']
-        increment_arithmetic_operators = ['+', '*']
-        decrement_arithmetic_operators = ['-', '/']
-        self.arithmetic_operators = increment_arithmetic_operators + decrement_arithmetic_operators
-        self.arithmetic_operators_used = []
-        self.arithmetic_operator = ''
-        self.comparison_bound_to_arithmetic_operators = {
-            '<': increment_arithmetic_operators,
-            '<=': increment_arithmetic_operators,
-            '>': decrement_arithmetic_operators,
-            '>=': decrement_arithmetic_operators,
-            '==': '',
-            '!=': ''
-        }
         # Связь: переменная -> оператор сравнения -> арифметический оператор
         self.variables_bound_to_arithmetic_operators = {}
         self.variables_used_info = {}
@@ -46,23 +35,23 @@ class RandomizerJava:
         self.nested_operator = ''
         self.generate_code()
 
-    def remove_poorly_readable_variables(self):
+    @staticmethod
+    def get_readable_variables() -> str:
+        variables = string.ascii_letters
         excluded_variables = ['i', 'l', 'o', 'O']
         for variable in excluded_variables:
-            self.variables = self.variables.replace(variable, '')
+            variables = variables.replace(variable, '')
+        return variables
 
-    def generate_initialized_variables(self):
+    def generate_initialized_variables(self) -> None:
         self.count_variables = randint(2, 3)
         for i in range(self.count_variables):
             random_variable = choice(self.variables)
-            self.initialized_variables[random_variable] = self.get_random_number()
+            # self.initialized_variables[random_variable] = RandomValue.get_random_positive_int()
+            self.initialized_variables[random_variable] = 1
             self.variables = self.variables.replace(random_variable, '')
 
-    @staticmethod
-    def get_random_number():
-        return randint(1, 100)
-
-    def generate_code(self):
+    def generate_code(self) -> None:
         self.generate_variables()
         if self.operator_nesting:
             self.generate_nesting_of_operators()
@@ -74,17 +63,17 @@ class RandomizerJava:
         elif self.presence_one_of_cycles:
             self.generate_cycle()
             self.code += self.cycle
-        self.code = f'#variables_used_info:{self.variables_used_info}\n' + self.code
+        # self.code = f'#variables_used_info:{self.variables_used_info}\n' + self.code
         self.generate_print_of_variable()
 
-    def generate_variables(self):
-        variables_used = f'#variables_used:'
+    def generate_variables(self) -> None:
+        # variables_used = f'#variables_used:'
         for key, value in self.initialized_variables.items():
-            variables_used += f'{key} '
+            # variables_used += f'{key} '
             self.code += f'int {key} = {value};\n'
-        self.code = variables_used + '\n' + self.code
+        # self.code = variables_used + '\n' + self.code
 
-    def generate_nesting_of_operators(self):
+    def generate_nesting_of_operators(self) -> None:
         operator_nesting = choice(self.operator_nesting).title
         if operator_nesting == 'оператор if вложен в цикл':
             self.generate_condition()
@@ -97,7 +86,7 @@ class RandomizerJava:
             self.generate_condition()
             self.code += self.condition
 
-    def generate_cycle(self):
+    def generate_cycle(self) -> None:
         operator = choice(self.presence_one_of_cycles).title
         if operator == 'for':
             self.generate_for_with_body()
@@ -105,7 +94,7 @@ class RandomizerJava:
             self.generate_boolean_expression_and_body(operator)
             self.cycle = self.boolean_expression_and_body
 
-    def generate_for_with_body(self):
+    def generate_for_with_body(self) -> None:
         if self.cycle_condition == 'Составное':
             self.generate_compound_for_cycle()
             self.generate_body(is_random_variables=False)
@@ -118,29 +107,31 @@ class RandomizerJava:
             self.cycle += nested_operator
         self.cycle += '}'
 
-    def generate_body(self, is_random_variables=True):
+    def generate_body(self, is_random_variables: bool = True) -> None:
         if is_random_variables:
             self.generate_body_with_random_variables()
         else:
             self.generate_body_with_variables_bound_to_arithmetic_operators()
 
-    def generate_body_with_random_variables(self):
+    def generate_body_with_random_variables(self) -> None:
         random_variable = self.get_random_dictionary_key(self.initialized_variables)
-        random_arithmetic_operator = choice(self.arithmetic_operators)
+        random_arithmetic_operator = choice(Config.ARITHMETIC_OPERATORS)
         assignment_operator = self.get_assignment_operator(random_variable, random_arithmetic_operator)
         self.add_variable_used_info(random_variable, random_arithmetic_operator)
         self.body = f'\t{assignment_operator}'
 
-    def get_assignment_operator(self, variable, arithmetic_operator):
-        return f'{variable} {arithmetic_operator}= {self.get_random_number()};'
+    @staticmethod
+    def get_assignment_operator(variable: str, arithmetic_operator: str) -> str:
+        # return f'{variable} {arithmetic_operator}= {RandomValue.get_random_positive_int()};'
+        return f'{variable} -= {RandomValue.get_random_positive_int()};'
 
-    def add_variable_used_info(self, variable, arithmetic_operator):
+    def add_variable_used_info(self, variable: str, arithmetic_operator: str) -> None:
         if variable in self.variables_used_info:
             self.variables_used_info[variable].append(arithmetic_operator)
         else:
             self.variables_used_info[variable] = [arithmetic_operator]
 
-    def get_random_dictionary_key(self, dictionary):
+    def get_random_dictionary_key(self, dictionary: dict) -> str:
         list_initialized_variables = self.get_list_dictionary_keys(dictionary)
         return choice(list_initialized_variables)
 
@@ -151,51 +142,46 @@ class RandomizerJava:
             if arithmetic_operators:
                 random_arithmetic_operator = choice(arithmetic_operators)
             else:
-                random_arithmetic_operator = choice(self.arithmetic_operators)
+                random_arithmetic_operator = choice(Config.ARITHMETIC_OPERATORS)
             assignment_operator = self.get_assignment_operator(variable, random_arithmetic_operator)
-            self.add_variable_used_info(variable, random_arithmetic_operator)
             self.body += f'\t{assignment_operator}'
             is_last_variable = i != self.count_variables
             if is_last_variable:
                 self.body += '\n'
             i += 1
+            self.add_variable_used_info(variable, random_arithmetic_operator)
 
     @staticmethod
-    def get_list_dictionary_keys(dictionary):
+    def get_list_dictionary_keys(dictionary: dict) -> list:
         return list(dictionary.keys())
 
-    def generate_compound_for_cycle(self):
+    def generate_compound_for_cycle(self) -> None:
         random_variable = self.get_random_dictionary_key(self.initialized_variables)
-        random_comparison_operator2 = self.get_random_comparison_operator()
+        random_comparison_operator2 = choice(Config.COMPARISON_OPERATORS)
         self.add_variable_bound_to_arithmetic_operator(random_variable, random_comparison_operator2)
         i = self.get_random_i()
         random_comparison_operator = self.get_random_dictionary_key(self.get_greater_and_less_comparison_operators())
         max_i = self.get_random_i()
-        random_logical_operator = self.get_random_logical_operator()
-        rand_int = self.get_random_number()
-        arithmetic_operators = self.comparison_bound_to_arithmetic_operators[random_comparison_operator]
+        random_logical_operator = choice(Config.LOGICAL_OPERATORS)
+        rand_int = RandomValue.get_random_positive_int()
+        arithmetic_operators = Config.COMPARISON_BOUND_TO_ARITHMETIC_OPERATORS[random_comparison_operator]
         random_arithmetic_operator = choice(arithmetic_operators)
         step = self.get_step()
         self.for_cycle = f'for (int i = {i}; i {random_comparison_operator} {max_i} {random_logical_operator} ' \
                          f'{random_variable} {random_comparison_operator2} {rand_int}; ' \
                          f'i {random_arithmetic_operator}= {step}) ' + '{\n'
 
-    def get_greater_and_less_comparison_operators(self):
-        greater_and_less_comparison_operators = self.comparison_bound_to_arithmetic_operators.copy()
+    @staticmethod
+    def get_greater_and_less_comparison_operators() -> dict:
+        greater_and_less_comparison_operators = Config.COMPARISON_BOUND_TO_ARITHMETIC_OPERATORS.copy()
         del greater_and_less_comparison_operators['==']
         del greater_and_less_comparison_operators['!=']
         return greater_and_less_comparison_operators
 
-    def get_random_logical_operator(self):
-        return choice(self.logical_operators)
-
-    def get_random_comparison_operator(self):
-        return choice(self.comparison_operators)
-
     def generate_simple_for_cycle(self):
-        i = self.get_random_number()
-        max_i = self.get_random_number()
-        step = self.get_random_number()
+        i = RandomValue.get_random_positive_int()
+        max_i = RandomValue.get_random_positive_int()
+        step = RandomValue.get_random_positive_int()
         random_comparison_operator = choice(['<', '<='])
         self.for_cycle = f'for (int i = {i}; i {random_comparison_operator} {max_i}; i += {step}) ' + '{\n'
 
@@ -238,13 +224,13 @@ class RandomizerJava:
             greater_and_less_comparison_operators = self.get_greater_and_less_comparison_operators()
         for variable in self.initialized_variables.keys():
             if operator == 'if':
-                random_comparison_operator = self.get_random_comparison_operator()
+                random_comparison_operator = choice(Config.COMPARISON_OPERATORS)
             else:
                 random_comparison_operator = self.get_random_dictionary_key(greater_and_less_comparison_operators)
                 self.add_arithmetic_operator_used(random_comparison_operator)
                 self.add_variable_bound_to_arithmetic_operator(variable, random_comparison_operator)
-            rand_int = self.get_random_number()
-            logical_operator = self.get_random_logical_operator()
+            rand_int = RandomValue.get_random_positive_int()
+            logical_operator = choice(Config.LOGICAL_OPERATORS)
             variable_comparison = f'{variable} {random_comparison_operator} {rand_int}'
             if i == self.count_variables:
                 self.boolean_expression = f'(' + self.boolean_expression + f'{variable_comparison})'
@@ -254,9 +240,9 @@ class RandomizerJava:
 
     def generate_simple_boolean_expression(self, operator):
         random_variable = self.get_random_dictionary_key(self.initialized_variables)
-        rand_int = self.get_random_number()
+        rand_int = RandomValue.get_random_positive_int()
         if operator == 'if':
-            random_comparison_operator = self.get_random_comparison_operator()
+            random_comparison_operator = choice(Config.COMPARISON_OPERATORS)
         else:
             greater_and_less_comparison_operators = self.get_greater_and_less_comparison_operators()
             random_comparison_operator = self.get_random_dictionary_key(greater_and_less_comparison_operators)
@@ -284,14 +270,16 @@ class RandomizerJava:
     def generate_print_of_variable(self):
         list_variables = list(self.initialized_variables)
         random_variable = choice(list_variables)
-        self.code += f'\nSystem.out.println("{random_variable} = " + {random_variable});'
+        # self.code += f'\nSystem.out.println("{random_variable} = " + {random_variable});'
+        self.code += f'\nSystem.out.println({random_variable});'
 
-    def add_arithmetic_operator_used(self, comparison_operator):
-        self.arithmetic_operators_used += self.comparison_bound_to_arithmetic_operators[
+    @staticmethod
+    def add_arithmetic_operator_used(comparison_operator):
+        Config.arithmetic_operators_used += Config.COMPARISON_BOUND_TO_ARITHMETIC_OPERATORS[
             comparison_operator]
 
     def add_variable_bound_to_arithmetic_operator(self, variable, comparison_operator):
-        self.variables_bound_to_arithmetic_operators[variable] = self.comparison_bound_to_arithmetic_operators[
+        self.variables_bound_to_arithmetic_operators[variable] = Config.COMPARISON_BOUND_TO_ARITHMETIC_OPERATORS[
             comparison_operator]
 
     @staticmethod
@@ -304,7 +292,3 @@ class RandomizerJava:
 
     def get_code(self):
         return self.code
-
-    def get_code_for_user(self):
-        code_for_user = '\n'.join(line for line in self.code.split('\n') if not line.startswith('#'))
-        return code_for_user

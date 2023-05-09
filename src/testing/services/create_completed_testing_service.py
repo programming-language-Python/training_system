@@ -1,6 +1,6 @@
 from testing import models
-from testing.services.code_conversion import JavaToPythonConversion
-from testing.utils import round_up
+from testing.services.run_code.run_java.run_java import RunJava
+from testing.utils.utils import round_up
 
 
 class CreateCompletedTestingService:
@@ -30,10 +30,15 @@ class CreateCompletedTestingService:
             self.add_task()
 
     def add_task(self):
-        java_to_python_conversion = JavaToPythonConversion(self.code)
-        answer = int(java_to_python_conversion.run_code())
-        if answer == int(self.user_answer):
+        is_body = True
+        run_java = RunJava(self.code, is_body)
+        raw_answer = run_java.execute()
+        answer = "".join(raw_answer.split())
+        if answer == self.user_answer:
             self.weight_of_student_tasks += self.task_weight
+        print('self.code', self.code)
+        print('ответ', answer)
+        print('self.user_answer', self.user_answer)
         task = {
             'weight': self.task_weight,
             'code': self.code,
