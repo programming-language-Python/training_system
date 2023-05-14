@@ -15,37 +15,53 @@
                 </div>
                 <div class="uk-card-body task__body body">
                     <h4>Структура программы:</h4>
-                    <div class="body uk-child-width-1-2@s uk-text-justify" uk-grid>
-                        <div>
-                            {#                            <p>#}
-                            {#                                {{ task_setup_form.use_of_all_variables.label }}#}
-                            {#                                {{ task_setup_form.use_of_all_variables }}#}
-                            {#                                {{ task_setup_form.use_of_all_variables.errors }}#}
-                            {#                            </p>#}
-                            <p>
+                    <div>
+                        {#                            <p>#}
+                        {#                                {{ task_setup_form.use_of_all_variables.label }}#}
+                        {#                                {{ task_setup_form.use_of_all_variables }}#}
+                        {#                                {{ task_setup_form.use_of_all_variables.errors }}#}
+                        {#                            </p>#}
+                        <div class="uk-margin">
+                            <span>
                                 {{ task_setup_form.is_if_operator.label }}
+                            </span>
+                            <div>
                                 {{ task_setup_form.is_if_operator }}
                                 {{ task_setup_form.is_if_operator.errors }}
-                            </p>
-                            <p>
+                            </div>
+                        </div>
+                        <div class="uk-margin">
+                            <span>
                                 {{ task_setup_form.condition_of_if_operator.label }}
+                            </span>
+                            <div>
                                 {{ task_setup_form.condition_of_if_operator }}
                                 {{ task_setup_form.condition_of_if_operator.errors }}
-                            </p>
-                            <div>
+                            </div>
+                        </div>
+                        <div class="uk-margin">
+                            <span>
                                 {{ task_setup_form.presence_one_of_cycles.label }}
+                            </span>
+                            <div>
                                 {{ task_setup_form.presence_one_of_cycles }}
                                 {{ task_setup_form.presence_one_of_cycles.errors }}
                             </div>
                         </div>
-                        <div>
-                            <p>
+                        <div class="uk-margin">
+                            <span>
                                 {{ task_setup_form.cycle_condition.label }}
+                            </span>
+                            <div>
                                 {{ task_setup_form.cycle_condition }}
                                 {{ task_setup_form.cycle_condition.errors }}
-                            </p>
-                            <div>
+                            </div>
+                        </div>
+                        <div class="uk-margin">
+                            <span>
                                 {{ task_setup_form.operator_nesting.label }}
+                            </span>
+                            <div>
                                 {{ task_setup_form.operator_nesting }}
                                 {{ task_setup_form.operator_nesting.errors }}
                             </div>

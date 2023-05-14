@@ -1,5 +1,7 @@
 from random import choice, randint, uniform
 
+from testing.utils.utils import get_list_dictionary_keys
+
 
 class RandomValue:
     def get_random_number(self) -> [int, float]:
@@ -10,6 +12,15 @@ class RandomValue:
         else:
             return self.get_random_float()
 
+    def get_assignment_operator(self, variable: str, arithmetic_operator: str) -> str:
+        return f'{variable} {arithmetic_operator}= {self.get_random_positive_int()};'
+
+    @staticmethod
+    def get_random_dictionary_key(dictionary: dict) -> str:
+        list_initialized_variables = get_list_dictionary_keys(dictionary)
+        return choice(list_initialized_variables)
+
+    # исключить рандомизацию с 0
     @staticmethod
     def get_random_int() -> int:
         return randint(-100, 100)
@@ -20,4 +31,4 @@ class RandomValue:
 
     @staticmethod
     def get_random_positive_int() -> int:
-        return randint(90, 100)
+        return randint(1, 100)

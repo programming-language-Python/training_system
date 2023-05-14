@@ -159,3 +159,5 @@ mimetypes.add_type("text/javascript", ".js", True)
 
 # для debug_toolbar
 INTERNAL_IPS = ['127.0.0.1']
+
+CACHE_BACKEND = 'dummy://'

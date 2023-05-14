@@ -1,9 +1,14 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block link %}
+    <link rel="stylesheet" href="{% static 'css/testing/_detail.css' %}">
+    {% if not user.is_teacher %}
+        <link rel="stylesheet" href="{% static 'css/testing/task/task__code.css' %}">
+    {% endif %}
+{% endblock %}
 {% block head_script %}
     <script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
-    <link rel="stylesheet" href="{% static 'css/testing/_detail.css' %}">
     <script type="text/javascript" src="{% static 'js/task_form/btn_update.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/admin/form_task_setup.js' %}"></script>
 {% endblock %}
