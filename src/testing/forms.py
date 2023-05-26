@@ -103,6 +103,8 @@ class TaskSetupForm(forms.ModelForm):
                                                       ),
                                                       to_field_name='title',
                                                       queryset=OperatorNesting.objects.all())
+    is_OOP = forms.CheckboxInput()
+    is_strings = forms.CheckboxInput()
 
     class Meta:
         model = TaskSetup

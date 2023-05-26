@@ -30,8 +30,7 @@ class CreateCompletedTestingService:
             self.add_task()
 
     def add_task(self):
-        is_body = True
-        run_java = RunJava(self.code, is_body)
+        run_java = RunJava(self.code)
         raw_answer = run_java.execute()
         answer = "".join(raw_answer.split())
         if answer == self.user_answer:

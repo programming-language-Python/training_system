@@ -57,7 +57,7 @@
                             {#                        <div>#}
                             <div class="uk-margin">
                                 <span>
-                                {% get_verbose_name_for_field task_setup 'cycle_condition' %}:
+                                    {% get_verbose_name_for_field task_setup 'cycle_condition' %}:
                                 </span>
                                 <div>
                                     {{ task_setup.cycle_condition }}
@@ -65,7 +65,7 @@
                             </div>
                             <div class="uk-margin">
                                 <span>
-                                {% get_verbose_name_for_field task_setup 'operator_nesting' %}:
+                                    {% get_verbose_name_for_field task_setup 'operator_nesting' %}:
                                 </span>
                                 <div>
                                     {% if task_setup.operator_nesting.all %}
@@ -74,6 +74,30 @@
                                         Не выбрано
                                     {% endif %}
                                 </div>
+                            </div>
+                        </div>
+                        <div class="uk-margin">
+                                <span>
+                                    {% get_verbose_name_for_field task_setup 'is_OOP' %}:
+                                </span>
+                            <div>
+                                {% if task_setup.is_OOP %}
+                                    Есть
+                                {% else %}
+                                    Нет
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="uk-margin">
+                                <span>
+                                    {% get_verbose_name_for_field task_setup 'is_strings' %}:
+                                </span>
+                            <div>
+                                {% if task_setup.is_strings %}
+                                    Есть
+                                {% else %}
+                                    Нет
+                                {% endif %}
                             </div>
                         </div>
                     </div>

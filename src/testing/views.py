@@ -76,7 +76,9 @@ class TestingDetailView(LoginRequiredMixin, DetailView):
                 'condition_of_if_operator': task_setup.condition_of_if_operator,
                 'presence_one_of_cycles': task_setup.presence_one_of_cycles.all(),
                 'cycle_condition': task_setup.cycle_condition,
-                'operator_nesting': task_setup.operator_nesting.all()
+                'operator_nesting': task_setup.operator_nesting.all(),
+                'is_OOP': task_setup.is_OOP,
+                'is_strings': task_setup.is_strings,
             }
             self.create_tasks_context(task)
             self.number += 1
@@ -96,24 +98,24 @@ class TestingDetailView(LoginRequiredMixin, DetailView):
     def create_context_for_recurring_tasks(self, task):
         number_recurring_tasks = 1
         for i in range(task.count):
-            randomizer_java = GenerateJava(**self.task_setup_data)
+            generate_java = GenerateJava(**self.task_setup_data)
             task_data = {
                 'number': self.number,
                 'count': task.count,
                 'weight': task.weight,
-                'code': randomizer_java.get_code(),
+                'code': generate_java.execute(),
             }
             key = str(task.pk) + '_' + str(number_recurring_tasks)
             self.tasks_context[key] = task_data
             number_recurring_tasks += 1
 
     def create_task_context(self, task):
-        randomizer_java = GenerateJava(**self.task_setup_data)
+        generate_java = GenerateJava(**self.task_setup_data)
         task_data = {
             'number': self.number,
             'count': task.count,
             'weight': task.weight,
-            'code': randomizer_java.get_code(),
+            'code': generate_java.execute(),
         }
         self.tasks_context[task.pk] = task_data
 

@@ -1,6 +1,3 @@
-import re
-
-
 def round_up(num: [int, float]) -> int:
     return int(num + (0.5 if num > 0 else -0.5))
 
@@ -16,7 +13,3 @@ def add_tabs_to_paragraphs(text: str) -> str:
 
 def get_list_dictionary_keys(dictionary: dict) -> list:
     return list(dictionary.keys())
-
-
-def remove_empty_paragraphs(text: str) -> str:
-    return re.sub('\n\n', '', text)

@@ -3,16 +3,19 @@ from random import randint, choice
 from testing.services.generate_code.config import Config, get_readable_variables, get_random_i, get_step
 from testing.utils.random_value import RandomValue
 from testing.utils.utils import add_tabs_to_paragraphs
+from .generate_java_OOP import GenerateJavaOOP
+from .generate_java_string import GenerateJavaString
 
 
 class GenerateJava:
+
     def __init__(self, **task_setup: dict) -> None:
         self.random_value = RandomValue()
         self.config = Config()
         self.code = ''
-        # is_generate_OOP = True
-        # if is_generate_OOP:
-        #     generate_java_OOP()
+
+        self.is_OOP = task_setup['is_OOP']
+        self.is_strings = task_setup['is_strings']
         self.is_if_operator = task_setup['is_if_operator'] == 'Присутствует'
         self.condition_of_if_operator = task_setup['condition_of_if_operator']
         self.presence_one_of_cycles = task_setup['presence_one_of_cycles']
@@ -44,17 +47,23 @@ class GenerateJava:
         self.condition = ''
         self.cycle = ''
         self.nested_operator = ''
-        self.generate_code()
 
     def generate_initialized_variables(self) -> None:
         self.count_variables = randint(2, 3)
         for i in range(self.count_variables):
             random_variable = choice(self.variables)
-            self.initialized_variables[random_variable] = self.random_value.get_random_positive_int()
+            self.initialized_variables[random_variable] = self.random_value.get_positive_int()
             # self.initialized_variables[random_variable] = 80
             self.variables = self.variables.replace(random_variable, '')
 
-    def generate_code(self) -> None:
+    def execute(self) -> str:
+        if self.is_OOP:
+            generate_java_OOP = GenerateJavaOOP()
+            return generate_java_OOP.execute()
+        if self.is_strings:
+            generate_java_string = GenerateJavaString()
+            generate_java_string.execute()
+            return generate_java_string.get_code()
         self.generate_variables()
         if self.operator_nesting:
             self.generate_nesting_of_operators()
@@ -68,6 +77,7 @@ class GenerateJava:
             self.code += self.cycle
         # self.code = f'#variables_used_info:{self.variables_used_info}\n' + self.code
         self.generate_print_of_variable()
+        return self.code
 
     def generate_variables(self) -> None:
         # variables_used = f'#variables_used:'
@@ -158,7 +168,7 @@ class GenerateJava:
         random_comparison_operator = self.random_value.get_random_dictionary_key(greater_and_less_comparison_operators)
         max_i = get_random_i()
         random_logical_operator = choice(Config.LOGICAL_OPERATORS)
-        rand_int = self.random_value.get_random_positive_int()
+        rand_int = self.random_value.get_positive_int()
         arithmetic_operators = Config.COMPARISON_BOUND_TO_ARITHMETIC_OPERATORS[random_comparison_operator]
         random_arithmetic_operator = choice(arithmetic_operators)
         step = get_step()
@@ -170,9 +180,9 @@ class GenerateJava:
                          f'i {random_arithmetic_operator}= {step}) ' + '{\n'
 
     def generate_simple_for_cycle(self):
-        i = self.random_value.get_random_positive_int()
-        max_i = self.random_value.get_random_positive_int()
-        step = self.random_value.get_random_positive_int()
+        i = get_random_i()
+        max_i = get_random_i()
+        step = get_step()
         random_comparison_operator = choice(['<', '<='])
         self.for_cycle = f'for (int i = {i}; i {random_comparison_operator} {max_i}; i += {step}) ' + '{\n'
 
@@ -217,7 +227,7 @@ class GenerateJava:
                     greater_and_less_comparison_operators)
                 self.config.add_arithmetic_operator_used(random_comparison_operator)
                 self.add_variable_bound_to_arithmetic_operator(variable, random_comparison_operator)
-            rand_int = self.random_value.get_random_positive_int()
+            rand_int = self.random_value.get_positive_int()
             logical_operator = choice(Config.LOGICAL_OPERATORS)
             variable_comparison = f'{variable} {random_comparison_operator} {rand_int}'
             if i == self.count_variables:
@@ -228,7 +238,7 @@ class GenerateJava:
 
     def generate_simple_boolean_expression(self, operator):
         random_variable = self.random_value.get_random_dictionary_key(self.initialized_variables)
-        rand_int = self.random_value.get_random_positive_int()
+        rand_int = self.random_value.get_positive_int()
         if operator == 'if':
             random_comparison_operator = choice(Config.COMPARISON_OPERATORS)
         else:
@@ -265,6 +275,3 @@ class GenerateJava:
     def add_variable_bound_to_arithmetic_operator(self, variable, comparison_operator):
         self.variables_bound_to_arithmetic_operators[variable] = Config.COMPARISON_BOUND_TO_ARITHMETIC_OPERATORS[
             comparison_operator]
-
-    def get_code(self):
-        return self.code

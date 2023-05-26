@@ -86,6 +86,10 @@ class TaskSetup(models.Model):
                                               blank=True,
                                               # null=True,
                                               verbose_name='Вложенность операторов')
+    is_OOP = models.BooleanField(default=False,
+                                 verbose_name='ООП')
+    is_strings = models.BooleanField(default=False,
+                                     verbose_name='Строки')
     users = models.ManyToManyField(User,
                                    blank=True,
                                    verbose_name='Пользователи')

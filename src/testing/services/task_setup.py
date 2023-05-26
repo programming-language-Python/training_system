@@ -5,6 +5,19 @@ from testing.services.filter import filter_many_to_many_relationship
 
 
 class TaskManager:
+    user = None
+    task_form = None
+    task = None
+    task_setup_form = None
+    task_setup = None
+    weight = None
+    is_OOP = None
+    is_if_operator = None
+    condition_of_if_operator = None
+    cycle_condition = None
+    testing = None
+    pk = None
+
     def __init__(self, user, forms, testing):
         self.user = user
         self.task_form = forms['task_form']
@@ -15,8 +28,9 @@ class TaskManager:
         self.is_if_operator = self.task_setup_form.cleaned_data['is_if_operator']
         self.condition_of_if_operator = self.task_setup_form.cleaned_data['condition_of_if_operator']
         self.cycle_condition = self.task_setup_form.cleaned_data['cycle_condition']
+        self.is_OOP = self.task_setup_form.cleaned_data['is_OOP']
+        self.is_strings = self.task_setup_form.cleaned_data['is_strings']
         self.testing = testing
-        self.pk = None
 
     def add(self):
         """Добавляет задачу Task"""
@@ -44,6 +58,14 @@ class TaskManager:
         self.pk = self.task.pk
 
     def create_or_set_task_setup(self):
+        self.task_setup = self.task_setup.filter(is_strings=self.is_strings)
+        is_not_created_strings = not self.task_setup.exists() and self.is_strings is True
+        if is_not_created_strings:
+            return self.create_task_setup()
+        self.task_setup = self.task_setup.filter(is_OOP=self.is_OOP)
+        is_not_created_OOP = not self.task_setup.exists() and self.is_OOP is True
+        if is_not_created_OOP:
+            return self.create_task_setup()
         self.task_setup = self.task_setup.filter(
             is_if_operator=self.is_if_operator,
             condition_of_if_operator=self.condition_of_if_operator,
@@ -81,13 +103,20 @@ class TaskManager:
         return self.create_task_setup()
 
     def get_filtered_setup_task(self):
-        is_if_operator = self.task_setup_form.cleaned_data['is_if_operator']
-        condition_of_if_operator = self.task_setup_form.cleaned_data['condition_of_if_operator']
-        cycle_condition = self.task_setup_form.cleaned_data['cycle_condition']
+        # is_if_operator = self.task_setup_form.cleaned_data['is_if_operator']
+        # condition_of_if_operator = self.task_setup_form.cleaned_data['condition_of_if_operator']
+        # cycle_condition = self.task_setup_form.cleaned_data['cycle_condition']
+        # filtered_task_setup = TaskSetup.objects.filter(
+        #     is_if_operator=is_if_operator,
+        #     condition_of_if_operator=condition_of_if_operator,
+        #     cycle_condition=cycle_condition
+        # )
         filtered_task_setup = TaskSetup.objects.filter(
-            is_if_operator=is_if_operator,
-            condition_of_if_operator=condition_of_if_operator,
-            cycle_condition=cycle_condition
+            is_strings=self.is_strings,
+            is_OOP=self.is_OOP,
+            is_if_operator=self.is_if_operator,
+            condition_of_if_operator=self.condition_of_if_operator,
+            cycle_condition=self.cycle_condition
         )
         filtered_task_setup = self.get_filtered_many_to_many_relationship(filtered_task_setup)
         return filtered_task_setup
@@ -114,35 +143,15 @@ class TaskManager:
         self.task_setup_form.save_m2m()
         self.task_setup.users.add(self.user)
 
-    # def add_user(self):
-    #     self.task_setup = self.task_setup_form.save(commit=False)
-    #     self.task_setup.pk = None
-    #     self.task_setup.save()
-    #     self.task_setup_form.save_m2m()
-    #     self.task_setup.users.add(self.user)
-
-    # проверить
-    # не работает
-    # print('not filtered_task_setup.exists() is_task_repeated')
-
-    # работает
-    # print('not filtered_task_setup.exists() not is_task_repeated')
     def update(self, task):
-        # self.block_fields()
         if task.count == 1:
+            print('1')
             self.update_non_recurring(task)
         else:
+            print('>1')
             task.count -= 1
             task.save(update_fields=['count'])
             self.add()
-
-    def block_fields(self):
-        is_if_operator_absent = self.task_setup_form.cleaned_data['is_if_operator'] == 'Отсутствует'
-        is_empty_presence_one_of_cycles = self.task_setup_form.cleaned_data['presence_one_of_cycles'] == ''
-        if is_if_operator_absent:
-            self.task_setup_form.cleaned_data['condition_of_if_operator'] = ''
-        if is_empty_presence_one_of_cycles:
-            self.task_setup_form.cleaned_data['cycle_condition'] = ''
 
     def update_non_recurring(self, task):
         self.update_weight(task)
