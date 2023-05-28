@@ -1,27 +1,34 @@
 from random import choice
 from testing.services.generate_code.config import Config, get_readable_variables
 from testing.utils.random_value import RandomValue
+from testing.utils.utils import remove_empty_paragraphs, add_tabs_to_paragraphs
 
 
 class GenerateJavaOOP:
+    variables: str = None
+    random_value: RandomValue = None
+    random_numeric_data_type: str = None
+    random_int_data_type: str = None
+    random_real_data_type: str = None
+    random_method_type: str = None
+    random_variable_type_1: str = None
+    random_variable_type_2: str = None
+    random_variable: str = None
+    random_method_1: str = None
+    random_method_2: str = None
+    class_example_random_variable: str = None
+    codes: list = None
+    suffix: str = ''
+
     def __init__(self) -> None:
         self.variables = get_readable_variables()
         self.random_value = RandomValue()
         self.random_numeric_data_type = choice(Config.NUMERIC_DATA_TYPES)
         self.random_int_data_type = choice(Config.INTEGER_DATA_TYPES)
         self.random_real_data_type = choice(Config.REAL_DATA_TYPES)
-        self.random_variable = None
-        self.random_method_1 = None
-        self.random_method_2 = None
-        self.class_example_random_variable = None
-        self.codes = None
         self.random_method_type = choice(Config.INTEGER_DATA_TYPES)
         self.random_variable_type_1 = choice(Config.INTEGER_DATA_TYPES)
         self.random_variable_type_2 = choice(Config.INTEGER_DATA_TYPES)
-        self.suffix = ''
-        self.set()
-
-    def set(self) -> None:
         self.random_variable = self.get_random_variable()
         self.random_method_1 = self.get_random_variable()
         self.random_method_2 = self.get_random_variable()
@@ -39,7 +46,7 @@ class GenerateJavaOOP:
 
     def execute(self) -> str:
         random_code = choice(self.codes)
-        return random_code
+        return remove_empty_paragraphs(random_code)
 
     def get_code_with_methods(self):
         is_integer_data_type = any(map(lambda v: v in self.random_numeric_data_type, Config.INTEGER_DATA_TYPES))
@@ -90,7 +97,7 @@ class Example {'{'}
         return f'''
 public class Main {'{'}
     public static void main(String[] args) {'{'}
-        {body}
+        {add_tabs_to_paragraphs(body)}
     {'}'}
 {'}'}'''
 

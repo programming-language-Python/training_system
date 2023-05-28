@@ -98,6 +98,7 @@ class TestingDetailView(LoginRequiredMixin, DetailView):
     def create_context_for_recurring_tasks(self, task):
         number_recurring_tasks = 1
         for i in range(task.count):
+            print('self.task_setup_data', self.task_setup_data)
             generate_java = GenerateJava(**self.task_setup_data)
             task_data = {
                 'number': self.number,

@@ -2,6 +2,7 @@ from random import choice
 
 from testing.services.generate_code.config import Config
 from testing.utils.random_value import RandomValue
+from testing.utils.utils import remove_empty_paragraphs
 
 
 class GenerateJavaString:
@@ -103,7 +104,7 @@ class GenerateJavaString:
         self.println = self.variable_1
 
     def get_code(self) -> str:
-        return self.code
+        return remove_empty_paragraphs(self.code)
 
 
 if __name__ == '__main__':
