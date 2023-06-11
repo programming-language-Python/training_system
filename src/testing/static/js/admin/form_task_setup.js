@@ -7,11 +7,11 @@ $(document).ready(function () {
         })
 
         function block_or_unblock_fields() {
-            let id_is_if_operator = $('#id_is_if_operator'),
-                id_condition_of_if_operator = $('#id_condition_of_if_operator'),
-                id_presence_one_of_cycles = $('#id_presence_one_of_cycles'),
-                id_cycle_condition = $('#id_cycle_condition'),
-                id_operator_nesting = $('#id_operator_nesting')
+            let $is_if_operator = $('#id_is_if_operator'),
+                $condition_of_if_operator = $('#id_condition_of_if_operator'),
+                $presence_one_of_cycles = $('#id_presence_one_of_cycles'),
+                $cycle_condition = $('#id_cycle_condition'),
+                $operator_nesting = $('#id_operator_nesting')
             $('option[value=""]').hide()
             block_or_unblock_fields()
 
@@ -22,17 +22,17 @@ $(document).ready(function () {
             }
 
             function block_or_unlock_field_operator_nesting() {
-                let value_is_if_operator = id_is_if_operator.val(),
-                    first_select_value = id_is_if_operator.find('option:first').val(),
-                    is_be_present = value_is_if_operator === first_select_value,
-                    checkbox_presence_one_of_cycles = id_presence_one_of_cycles.find('input:checkbox'),
+                let value_is_if_operator = $is_if_operator.val(),
+                    first_select_value = $is_if_operator.find('option:first').val(),
+                    is_if_operator = value_is_if_operator === first_select_value,
+                    checkbox_presence_one_of_cycles = $presence_one_of_cycles.find('input:checkbox'),
                     is_presence_one_of_cycles = checkbox_presence_one_of_cycles.is(":checked"),
-                    checkbox_operator_nesting = id_operator_nesting.find('input:checkbox')
-                if (is_be_present && is_presence_one_of_cycles) {
-                    unlock(id_operator_nesting)
+                    checkbox_operator_nesting = $operator_nesting.find('input:checkbox')
+                if (is_if_operator && is_presence_one_of_cycles) {
+                    unlock($operator_nesting)
                     checkbox_operator_nesting.removeAttr('disabled')
                 } else {
-                    block(id_operator_nesting)
+                    block($operator_nesting)
                     checkbox_operator_nesting.attr('disabled', true)
                 }
             }
@@ -46,18 +46,18 @@ $(document).ready(function () {
             }
 
             function block_or_unblock_field_condition_of_if_operator() {
-                let value_is_if_operator = id_is_if_operator.val(),
-                    first_select_value = id_is_if_operator.find('option:first').val(),
+                let value_is_if_operator = $is_if_operator.val(),
+                    first_select_value = $is_if_operator.find('option:first').val(),
                     is_be_present = value_is_if_operator === first_select_value
                 if (is_be_present)
-                    unlock(id_condition_of_if_operator)
+                    unlock($condition_of_if_operator)
                 else
-                    block(id_condition_of_if_operator)
-                id_is_if_operator.change(() => {
-                    block_or_unlock(id_condition_of_if_operator)
+                    block($condition_of_if_operator)
+                $is_if_operator.change(() => {
+                    block_or_unlock($condition_of_if_operator)
                     block_or_unlock_field_operator_nesting()
                 })
-                select_first_option(id_condition_of_if_operator)
+                select_first_option($condition_of_if_operator)
             }
 
             function block_or_unlock(field) {
@@ -69,17 +69,17 @@ $(document).ready(function () {
             }
 
             function block_or_unblock_field_cycle_condition() {
-                let checkbox_presence_one_of_cycles = id_presence_one_of_cycles.find('input:checkbox')
+                let checkbox_presence_one_of_cycles = $presence_one_of_cycles.find('input:checkbox')
                 if (checkbox_presence_one_of_cycles.is(':checked'))
-                    unlock(id_cycle_condition)
+                    unlock($cycle_condition)
                 else
-                    block(id_cycle_condition)
+                    block($cycle_condition)
                 checkbox_presence_one_of_cycles.click(() => {
                     block_or_unlock_field_operator_nesting()
                     if (checkbox_presence_one_of_cycles.is(':checked'))
-                        unlock(id_cycle_condition)
+                        unlock($cycle_condition)
                     else
-                        block(id_cycle_condition)
+                        block($cycle_condition)
                 })
             }
         }
@@ -98,21 +98,21 @@ $(document).ready(function () {
 //         function block_or_unblock_fields() {
 //             let id_is_if_operator = $('#id_is_if_operator'),
 //                 id_condition_of_if_operator = $('#id_condition_of_if_operator'),
-//                 id_presence_one_of_cycles = $('#id_presence_one_of_cycles'),
-//                 id_cycle_condition = $('#id_cycle_condition'),
-//                 id_operator_nesting = $('#id_operator_nesting'),
+//                 $presence_one_of_cycles = $('#id_presence_one_of_cycles'),
+//                 $cycle_condition = $('#id_cycle_condition'),
+//                 $operator_nesting = $('#id_operator_nesting'),
 //                 blocking_fields = []
 //             $('option[value=""]').hide()
-//             blocking_fields.push(id_cycle_condition, id_operator_nesting)
+//             blocking_fields.push($cycle_condition, $operator_nesting)
 //             block_or_unblock_field()
 //
 //             function block_or_unblock_field() {
 //                 block_or_unblock_field_select(id_is_if_operator, id_condition_of_if_operator)
-//                 id_presence_one_of_cycles.change(() => {
+//                 $presence_one_of_cycles.change(() => {
 //                     alert('dd')
-//                     block_or_unblock_field_multiple_select(id_presence_one_of_cycles)
-//                     select_first_option(id_cycle_condition)
-//                 }, block_or_unblock_field_multiple_select(id_presence_one_of_cycles))
+//                     block_or_unblock_field_multiple_select($presence_one_of_cycles)
+//                     select_first_option($cycle_condition)
+//                 }, block_or_unblock_field_multiple_select($presence_one_of_cycles))
 //             }
 //
 //             function block_or_unblock_field_select(select, blocking_field) {
@@ -127,7 +127,7 @@ $(document).ready(function () {
 //                         select_first_option(id_condition_of_if_operator)
 //                     } else
 //                         block_field_select(blocking_field)
-//                     block_or_unblock_field_multiple_select(id_operator_nesting)
+//                     block_or_unblock_field_multiple_select($operator_nesting)
 //                 })
 //             }
 //
@@ -174,7 +174,7 @@ $(document).ready(function () {
 //             }
 //
 //             function block_or_unlock_operator_nesting() {
-//                 id_presence_one_of_cycles.change(()=>{
+//                 $presence_one_of_cycles.change(()=>{
 //
 //                 })
 //             }

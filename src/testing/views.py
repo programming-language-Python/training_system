@@ -12,7 +12,7 @@ from testing.models import Testing, Task
 from testing.services.create_completed_testing_service import CreateCompletedTestingService
 from testing.services.decorators import is_teacher
 from testing.services.generate_code.generate_java import GenerateJava
-from testing.services.task_setup import TaskManager
+from testing.services.task_service import TaskService
 
 
 class TestingCreateView(LoginRequiredMixin, CreateView):
@@ -135,9 +135,9 @@ class TestingDetailView(LoginRequiredMixin, DetailView):
         }
         is_valid_forms = task_form.is_valid() and task_setup_form.is_valid()
         if is_valid_forms:
-            task_manager = TaskManager(request.user, context, testing)
-            task_manager.add()
-            return redirect('testing:task_detail', pk=task_manager.pk)
+            task_service = TaskService(request.user, context, testing)
+            task_service.add()
+            return redirect('testing:task_detail', pk=task_service.get_pk())
         return render(request, 'testing/task_form.html', context=context)
 
 
@@ -175,9 +175,9 @@ def task_update(request, pk):
             is_changed_data = task_form.changed_data or task_setup_form.changed_data
             if is_changed_data:
                 context.pop('task')
-                task_manager = TaskManager(request.user, context, task.testing)
-                task_manager.update(task)
-                return redirect('testing:task_detail', pk=task_manager.pk)
+                task_service = TaskService(request.user, context, task.testing)
+                task_service.update(task)
+                return redirect('testing:task_detail', pk=task_service.get_pk())
             change_number_of_tasks(task, '+')
             return redirect('testing:task_detail', pk=task.pk)
     return render(request, 'testing/task_form.html', context)

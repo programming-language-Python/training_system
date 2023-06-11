@@ -15,7 +15,7 @@ from . import models
 
 @admin.register(models.Task)
 class TaskAdmin(admin.ModelAdmin):
-    list_display = ('id',)
+    list_display = ('id', 'weight', 'testing', 'task_setup', 'count',)
     save_on_top = True
 
 
