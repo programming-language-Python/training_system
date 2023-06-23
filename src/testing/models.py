@@ -147,6 +147,7 @@ class CompletedTesting(models.Model):
                                 on_delete=models.SET_NULL,
                                 null=True,
                                 verbose_name='Тестирование')
+    # date_of_passage = models.DateTimeField(auto_now_add=True)
     student = models.ForeignKey(settings.AUTH_USER_MODEL,
                                 on_delete=models.CASCADE,
                                 verbose_name='Студент')

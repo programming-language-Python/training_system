@@ -27,7 +27,8 @@ class Config:
     INCREMENT_ARITHMETIC_OPERATORS = ['+', '*']
     DECREMENT_ARITHMETIC_OPERATORS = ['-', '/']
     ARITHMETIC_OPERATORS = INCREMENT_ARITHMETIC_OPERATORS + DECREMENT_ARITHMETIC_OPERATORS
-    arithmetic_operators_used = []
+    # TODO Скорее всего удалить
+    # arithmetic_operators_used = []
     arithmetic_operator = ''
     COMPARISON_BOUND_TO_ARITHMETIC_OPERATORS = {
         '<': INCREMENT_ARITHMETIC_OPERATORS,
@@ -46,9 +47,10 @@ class Config:
         self.variables = self.variables.replace(random_variable, '')
         return random_variable
 
-    def add_arithmetic_operator_used(self, comparison_operator):
-        self.arithmetic_operators_used += self.COMPARISON_BOUND_TO_ARITHMETIC_OPERATORS[
-            comparison_operator]
+    # TODO Скорее всего удалить тоже самое что и в generate_java. Я её хотел перенести сюда, но не до перенёс
+    # def add_arithmetic_operator_used(self, comparison_operator):
+    #     self.arithmetic_operators_used += self.COMPARISON_BOUND_TO_ARITHMETIC_OPERATORS[
+    #         comparison_operator]
 
     def get_greater_and_less_comparison_operators(self) -> dict:
         greater_and_less_comparison_operators = self.COMPARISON_BOUND_TO_ARITHMETIC_OPERATORS.copy()

@@ -28,9 +28,6 @@ class RandomValue:
     def get_digit(self):
         return randint(self.MIN_DIGIT, self.MAX_DIGIT)
 
-    def get_assignment_operator(self, variable: str, arithmetic_operator: str) -> str:
-        return f'{variable} {arithmetic_operator}= {self.get_positive_int()};'
-
     @staticmethod
     def get_random_dictionary_key(dictionary: dict) -> str:
         list_initialized_variables = get_list_dictionary_keys(dictionary)
@@ -45,6 +42,9 @@ class RandomValue:
 
     def get_positive_int(self) -> int:
         return randint(1, self.MAX_NUMBER)
+
+    def get_positive_int_for_value_variable(self) -> int:
+        return randint(2, self.MAX_NUMBER)
 
     def get_positive_result_from_zero(self) -> int:
         return randint(self.MIN_DIGIT, self.MAX_NUMBER)

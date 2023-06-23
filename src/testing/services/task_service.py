@@ -38,7 +38,7 @@ class TaskService:
             self.filter_field(field_name, field)
         self.task_setup_filter = self.task_setup_filter.filter(self.q_obj)
 
-    def filter_field(self, field_name, field, q_obj=Q()):
+    def filter_field(self, field_name, field):
         if isinstance(field, ModelMultipleChoiceField):
             self.filter_many_to_many_fields(field_name, field)
         else:
@@ -65,8 +65,6 @@ class TaskService:
         self.create_or_increase()
 
     def set_task_setup(self):
-        # for field_name, field in self.task_setups_fields:
-        #     print(field_name, self.task_setups_fields[field_name])
         if self.task_setup_filter.exists():
             task_setup = self.task_setup_filter.filter(users=self.user)
             if task_setup.exists():
@@ -85,20 +83,9 @@ class TaskService:
         self.task_setup.users.add(self.user)
 
     def create_or_increase(self):
-        # task_filter = {
-        #     'weight': self.weight,
-        #     'testing': self.testing,
-        #     'task_setup': self.task_setup
-        # }
-        print('weight', self.weight)
-        print('testing', self.testing)
-        print('task_setup', self.task_setup)
         self.task_filter = self.task.filter(weight=self.weight,
                                             testing=self.testing,
                                             task_setup=self.task_setup)
-        # self.task = self.task.filter(weight=self.weight,
-        #                              testing=self.testing,
-        #                              task_setup=self.task_setup)
         if self.task_filter.exists():
             self.increase_count(self.task_filter)
         else:
