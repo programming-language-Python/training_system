@@ -9,6 +9,7 @@ from .generate_java_string import GenerateJavaString
 from dataclasses import dataclass
 
 
+# TODO надо разделить код на части
 @dataclass
 class Variable:
     name: str
@@ -18,6 +19,9 @@ class Variable:
     value_in_condition: int = None
     arithmetic_operation_in_cycle: str = None
     arithmetic_operation_in_condition: str = None
+
+    def get_expression_in_if(self):
+        return f'{self.name} {self.arithmetic_operation_in_condition}= {self.value_in_condition}'
 
 
 # TODO add_arithmetic_operator_used она нужна?
@@ -118,7 +122,7 @@ class GenerateJava:
             condition = self._generate_simple_condition_for_while()
         else:
             condition = self._generate_compound_condition_for_while()
-        body = self._generate_body_with_variables_bound_to_arithmetic_operators()
+        body = self._generate_body_for_while()
         template_while = f'''
 while ({condition}){'{'}
     {body}
@@ -159,6 +163,25 @@ while ({condition}){'{'}
             i += 1
         return condition
 
+    def _generate_body_for_while(self, nested_operator: str = '') -> str:
+        if nested_operator:
+            for variable, data in self.variables_info.items():
+                # TODO проверка на None?
+                if data.arithmetic_operation_in_cycle == '-' \
+                        and data.arithmetic_operation_in_condition == '+' \
+                        and (
+                        data.value_in_cycle < data.value_in_condition
+                        or data.value_in_cycle == data.value_in_condition):
+                    pass
+                if data.arithmetic_operation_in_cycle == '+' \
+                        and data.arithmetic_operation_in_condition in ['-', '/'] \
+                        and (
+                        data.value_in_cycle < data.value_in_condition
+                        or data.value_in_cycle == data.value_in_condition):
+                    pass
+        else:
+            return self._generate_body_with_variables_bound_to_arithmetic_operators()
+
     def _generate_body_with_variables_bound_to_arithmetic_operators(self) -> str:
         cycle_body = ''
         i = 1
@@ -173,7 +196,6 @@ while ({condition}){'{'}
             i += 1
             self.variables_info[variable].value_in_cycle = value
             self.variables_info[variable].arithmetic_operation_in_cycle = arithmetic_operator
-            # self.add_variable_info(variable, arithmetic_operator)
         return cycle_body
 
     def generate_do_while(self, nested_operator: str = '') -> str:
