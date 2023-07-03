@@ -35,9 +35,6 @@ class CreateCompletedTestingService:
         answer = "".join(raw_answer.split())
         if answer == self.user_answer:
             self.weight_of_student_tasks += self.task_weight
-        print('self.code', self.code)
-        print('ответ', answer)
-        print('self.user_answer', self.user_answer)
         task = {
             'weight': self.task_weight,
             'code': self.code,

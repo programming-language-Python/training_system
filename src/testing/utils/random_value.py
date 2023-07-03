@@ -30,8 +30,7 @@ class RandomValue:
 
     @staticmethod
     def get_random_dictionary_key(dictionary: dict) -> str:
-        list_initialized_variables = get_list_dictionary_keys(dictionary)
-        return choice(list_initialized_variables)
+        return choice(get_list_dictionary_keys(dictionary))
 
     # TODO исключить рандомизацию с 0
     def get_int(self) -> int:
@@ -48,3 +47,11 @@ class RandomValue:
 
     def get_positive_result_from_zero(self) -> int:
         return randint(self.MIN_DIGIT, self.MAX_NUMBER)
+
+    @staticmethod
+    def get_random_i() -> int:
+        return randint(0, 10)
+
+    @staticmethod
+    def get_step() -> int:
+        return randint(1, 2)

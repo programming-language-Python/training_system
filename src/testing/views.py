@@ -11,6 +11,7 @@ from testing.models import Testing, Task
 
 from testing.services.create_completed_testing_service import CreateCompletedTestingService
 from testing.services.decorators import is_teacher
+from testing.services.generate_code.config import Config
 from testing.services.generate_code.generate_java import GenerateJava
 from testing.services.task_service import TaskService
 
@@ -98,8 +99,8 @@ class TestingDetailView(LoginRequiredMixin, DetailView):
     def create_context_for_recurring_tasks(self, task):
         number_recurring_tasks = 1
         for i in range(task.count):
-            print('self.task_setup_data', self.task_setup_data)
-            generate_java = GenerateJava(**self.task_setup_data)
+            config = Config(**self.task_setup_data)
+            generate_java = GenerateJava(config)
             task_data = {
                 'number': self.number,
                 'count': task.count,
