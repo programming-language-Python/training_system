@@ -64,6 +64,7 @@ class TaskSetup(models.Model):
 
     # use_of_all_variables = models.BooleanField(default=False,
     #                                            verbose_name='Использование обязательно всех переменных')
+    # TODO Сделать тип bool
     is_if_operator = models.CharField(max_length=25,
                                       choices=IsOperator.choices,
                                       default=IsOperator.absent,
@@ -141,7 +142,8 @@ class OperatorNesting(models.Model):
 class CompletedTesting(models.Model):
     assessment = models.IntegerField(verbose_name='Оценка')
     total_weight = models.IntegerField(verbose_name='Общий вес')
-    weight_of_student_tasks = models.IntegerField(verbose_name='Вес задач студента')
+    weight_of_student_tasks = models.IntegerField(
+        verbose_name='Вес задач студента')
     tasks = models.JSONField(verbose_name='Задачи')
     testing = models.ForeignKey(Testing,
                                 on_delete=models.SET_NULL,

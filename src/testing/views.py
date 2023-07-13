@@ -4,15 +4,17 @@ from django.db.models import Q
 from django.http import HttpResponseNotAllowed, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
+from django.views.generic import ListView, CreateView, DetailView, \
+    UpdateView, DeleteView
 
 from testing.forms import TestingForm, TaskSetupForm, TaskForm
 from testing.models import Testing, Task
 
-from testing.services.create_completed_testing_service import CreateCompletedTestingService
+from testing.services.create_completed_testing_service import \
+    CreateCompletedTestingService
 from testing.services.decorators import is_teacher
-from testing.services.generate_code.config import Config
 from testing.services.generate_code.generate_java import GenerateJava
+from testing.services.generate_code.types import Setting
 from testing.services.task_service import TaskService
 
 
@@ -39,25 +41,29 @@ class TestingListView(LoginRequiredMixin, ListView):
             return Testing.objects.filter(user=self.request.user)
         if query:
             return Testing.objects.filter(
-                Q(is_published=True, student_groups=self.request.user.student_group) & Q(title=query)
+                Q(is_published=True,
+                  student_groups=self.request.user.student_group) & Q(
+                    title=query)
             )
-        return Testing.objects.filter(is_published=True, student_groups=self.request.user.student_group)
+        return Testing.objects.filter(is_published=True,
+                                      student_groups=self.request.user.student_group)
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         is_teacher = self.request.user.is_teacher
-        context['card_footer_text'] = 'Настроить тестирование' if is_teacher else 'Пройти тест'
+        context[
+            'card_footer_text'] = 'Настроить тестирование' if is_teacher else 'Пройти тест'
         return context
 
 
 class TestingDetailView(LoginRequiredMixin, DetailView):
     model = Testing
+    setting: Setting
 
     def __init__(self, **kwargs):
         super().__init__()
         self.context = ''
         self.tasks_context = {}
-        self.task_setup_data = {}
         self.number = 1
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -71,22 +77,31 @@ class TestingDetailView(LoginRequiredMixin, DetailView):
         tasks = testing.task_set.all()
         for task in tasks:
             task_setup = task.task_setup
-            self.task_setup_data = {
-                # 'use_of_all_variables': task_setup.use_of_all_variables,
-                'is_if_operator': task_setup.is_if_operator,
-                'condition_of_if_operator': task_setup.condition_of_if_operator,
-                'presence_one_of_cycles': task_setup.presence_one_of_cycles.all(),
-                'cycle_condition': task_setup.cycle_condition,
-                'operator_nesting': task_setup.operator_nesting.all(),
-                'is_OOP': task_setup.is_OOP,
-                'is_strings': task_setup.is_strings,
-            }
+            # self.setting = {
+            #     # 'use_of_all_variables': task_setup.use_of_all_variables,
+            #     'is_if_operator': task_setup.is_if_operator,
+            #     'condition_of_if_operator': task_setup.condition_of_if_operator,
+            #     'presence_one_of_cycles': task_setup.presence_one_of_cycles.all(),
+            #     'cycle_condition': task_setup.cycle_condition,
+            #     'operator_nesting': task_setup.operator_nesting.all(),
+            #     'is_OOP': task_setup.is_OOP,
+            #     'is_strings': task_setup.is_strings,
+            # }
+            self.setting = Setting(
+                is_if_operator=task_setup.is_if_operator,
+                condition_of_if_operator=task_setup.condition_of_if_operator,
+                presence_one_of_cycles=task_setup.presence_one_of_cycles.all(),
+                cycle_condition=task_setup.cycle_condition,
+                operator_nesting=task_setup.operator_nesting.all(),
+                is_OOP=task_setup.is_OOP,
+                is_strings=task_setup.is_strings
+            )
             self.create_tasks_context(task)
             self.number += 1
         session_name = 'testing_' + str(testing.pk)
         self.create_session(session_name)
         self.context['task_data'] = self.request.session[session_name]
-        # УДАЛИТЬ ПОТОМ!!!
+        # TODO УДАЛИТЬ ПОТОМ!!!
         del self.request.session[session_name]
         self.context['tasks'] = tasks
 
@@ -99,27 +114,22 @@ class TestingDetailView(LoginRequiredMixin, DetailView):
     def create_context_for_recurring_tasks(self, task):
         number_recurring_tasks = 1
         for i in range(task.count):
-            config = Config(**self.task_setup_data)
-            generate_java = GenerateJava(config)
-            task_data = {
-                'number': self.number,
-                'count': task.count,
-                'weight': task.weight,
-                'code': generate_java.execute(),
-            }
             key = str(task.pk) + '_' + str(number_recurring_tasks)
-            self.tasks_context[key] = task_data
+            self.tasks_context[key] = self._get_task_data(task)
             number_recurring_tasks += 1
 
-    def create_task_context(self, task):
-        generate_java = GenerateJava(**self.task_setup_data)
+    def _get_task_data(self, task):
+        generate_java = GenerateJava(setting=self.setting)
         task_data = {
             'number': self.number,
             'count': task.count,
             'weight': task.weight,
             'code': generate_java.execute(),
         }
-        self.tasks_context[task.pk] = task_data
+        return task_data
+
+    def create_task_context(self, task):
+        self.tasks_context[task.pk] = self._get_task_data(task)
 
     def create_session(self, session_name):
         if not (session_name in self.request.session.keys()):
@@ -178,7 +188,8 @@ def task_update(request, pk):
                 context.pop('task')
                 task_service = TaskService(request.user, context, task.testing)
                 task_service.update(task)
-                return redirect('testing:task_detail', pk=task_service.get_pk())
+                return redirect('testing:task_detail',
+                                pk=task_service.get_pk())
             change_number_of_tasks(task, '+')
             return redirect('testing:task_detail', pk=task.pk)
     return render(request, 'testing/task_form.html', context)
@@ -193,7 +204,8 @@ def change_number_of_tasks(task, operand):
 
 
 @login_required
-@user_passes_test(is_teacher, login_url='testing:testing_detail', redirect_field_name=None)
+@user_passes_test(is_teacher, login_url='testing:testing_detail',
+                  redirect_field_name=None)
 def task_delete(request, pk):
     task = get_object_or_404(Task, id=pk)
 

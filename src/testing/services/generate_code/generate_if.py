@@ -1,58 +1,73 @@
 from random import choice
 
-from testing.services.generate_code.config import Config
-from testing.services.generate_code.generate_java import GenerateJava
-from testing.utils.utils import add_tabs_to_paragraphs
+from testing.services.generate_code import abstractions
+from testing.services.generate_code.config import COMPARISON_OPERATORS, \
+    LOGICAL_OPERATORS, ARITHMETIC_OPERATORS
+from testing.services.generate_code.interfaces import IBody, ICondition, \
+    ICompoundCondition
+from testing.services.generate_code.types import ConditionType
+from testing.utils.random_value import get_positive_int
 
 
-class GenerateIf:
-    def execute(self, nested_operator: str = '') -> str:
-        if self.condition_of_if_operator == 'Простое':
-            condition = self._generate_simple_condition(variable=self.get_random_initialized_variable())
-        else:
-            condition = self._generate_compound_condition()
+class GenerateIf(abstractions.Variable, IBody, ICondition, ICompoundCondition):
+    def execute(self, condition_type: ConditionType) -> str:
+        condition = self._get_condition(condition_type)
+        body = self._generate_body()
+        template = f'''
+if ({condition}){'{'}
+    {body}
+{'}'}'''
+        return template
 
-        variable = self.get_random_initialized_variable()
-        value = self.random_value.get_positive_int()
+    #
+    def _generate_body(self):
+        variable = self.get_random_used_variable()
+        # TODO Расскоментить
+        value = get_positive_int()
+        # value = 100
+        arithmetic_operation = choice(ARITHMETIC_OPERATORS)
+        # arithmetic_operation = choice(['-', '/'])
+        body = f'{variable} {arithmetic_operation}= {value};'
 
-        self.variables_info[variable].value_in_condition = value
-        body = f'{variable} {self.get_arithmetic_operator(nested_operator)}= {value};'
-        template_if = f'''
-    if ({condition}){'{'}
-        {body}
-        {add_tabs_to_paragraphs(nested_operator)}
-    {'}'}'''
-        return template_if
+        self.set_value_in_condition(
+            name=variable,
+            value=value
+        )
+        self.set_arithmetic_operation_in_condition(
+            name=variable,
+            arithmetic_operation=arithmetic_operation
+        )
 
-    def get_arithmetic_operator(self, nested_operator='') -> str:
-        if nested_operator:
-            for variable, data in self.variables_info.items():
-                # TODO проверка на None?
-                if data.arithmetic_operation_in_cycle == '*' and data.value < data.value_in_condition:
-                    return choice(Config.INCREMENT_ARITHMETIC_OPERATORS)
-                if data.arithmetic_operation_in_cycle == '*' and data.value == data.value_in_condition:
-                    return choice(['+', '*', '/'])
-        else:
-            return choice(Config.ARITHMETIC_OPERATORS)
+        return body
 
-    def _generate_simple_condition(self, variable: str) -> str:
-        comparison_operator = choice(Config.COMPARISON_OPERATORS)
-        rand_int = self.random_value.get_positive_int()
-        return f'{variable} {comparison_operator} {rand_int}'
+    def _get_condition(self, condition_type: ConditionType) -> str:
+        is_simple = condition_type == ConditionType.SIMPLE
+        if is_simple:
+            variable = self.get_random_used_variable()
+            return self._generate_simple_condition(variable)
+        return self._generate_compound_condition()
+
+    @staticmethod
+    def _generate_simple_condition(variable: str) -> str:
+        comparison_operator = choice(COMPARISON_OPERATORS)
+        value = get_positive_int()
+        simple_condition = f'{variable} {comparison_operator} {value}'
+        return simple_condition
 
     def _generate_compound_condition(self) -> str:
         condition = ''
         i = 1
-        for variable in self.initialized_variables.keys():
+        for variable in self.info.keys():
             condition = self._generate_condition(variable, i, condition)
             i += 1
         return condition
 
-    def _generate_condition(self, variable: str, i: int, condition: str) -> str:
+    def _generate_condition(self, variable: str, i: int,
+                            condition: str) -> str:
         simple_condition = self._generate_simple_condition(variable)
-        if i == self.count_variables:
+        if i == self.get_count():
             condition = f'{condition}{simple_condition}'
         else:
-            logical_operator = choice(Config.LOGICAL_OPERATORS)
+            logical_operator = choice(LOGICAL_OPERATORS)
             condition += f'{simple_condition} {logical_operator} '
         return condition

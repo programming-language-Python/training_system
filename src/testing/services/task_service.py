@@ -42,22 +42,30 @@ class TaskService:
         if isinstance(field, ModelMultipleChoiceField):
             self.filter_many_to_many_fields(field_name, field)
         else:
-            q_filter = {f'{field_name}': self.task_setup_form.cleaned_data[field_name]}
+            q_filter = {
+                f'{field_name}': self.task_setup_form.cleaned_data[field_name]}
             self.q_obj &= Q(**q_filter)
 
     def filter_many_to_many_fields(self, field_name, field):
         excluded_choices = [choice[1] for choice in field.choices]
         for item in self.task_setup_form.cleaned_data[field_name]:
             item_filter = {f'{field_name}__title': item.title}
-            self.task_setup_filter = self.task_setup_filter.filter(**item_filter)
+            self.task_setup_filter = self.task_setup_filter.filter(
+                **item_filter)
             excluded_choices.remove(f'{item}')
         if excluded_choices:
-            self.filter_excluded_many_to_many_fields(field_name, excluded_choices)
+            self.filter_excluded_many_to_many_fields(
+                field_name,
+                excluded_choices
+            )
 
-    def filter_excluded_many_to_many_fields(self, field_name, excluded_choices):
+    def filter_excluded_many_to_many_fields(self, field_name,
+                                            excluded_choices):
         for excluded_choice in excluded_choices:
             excluded_choice_filter = {f'{field_name}__title': excluded_choice}
-            self.task_setup_filter = self.task_setup_filter.exclude(**excluded_choice_filter)
+            self.task_setup_filter = self.task_setup_filter.exclude(
+                **excluded_choice_filter
+            )
 
     def add(self) -> None:
         """Добавляет задачу Task"""
@@ -83,9 +91,11 @@ class TaskService:
         self.task_setup.users.add(self.user)
 
     def create_or_increase(self):
-        self.task_filter = self.task.filter(weight=self.weight,
-                                            testing=self.testing,
-                                            task_setup=self.task_setup)
+        self.task_filter = self.task.filter(
+            weight=self.weight,
+            testing=self.testing,
+            task_setup=self.task_setup
+        )
         if self.task_filter.exists():
             self.increase_count(self.task_filter)
         else:
@@ -96,10 +106,12 @@ class TaskService:
         self.pk = task.first().pk
 
     def create(self):
-        self.task = self.task.create(weight=self.weight,
-                                     testing=self.testing,
-                                     task_setup=self.task_setup,
-                                     count=1)
+        self.task = self.task.create(
+            weight=self.weight,
+            testing=self.testing,
+            task_setup=self.task_setup,
+            count=1
+        )
         self.pk = self.task.pk
 
     def update(self, task):
@@ -115,9 +127,11 @@ class TaskService:
         self.update_weight(task)
         if self.task_setup_filter.exists():
             self.task_setup = self.task_setup_filter.first()
-            self.task_filter = self.task.filter(weight=self.weight,
-                                                testing=self.testing,
-                                                task_setup=self.task_setup)
+            self.task_filter = self.task.filter(
+                weight=self.weight,
+                testing=self.testing,
+                task_setup=self.task_setup
+            )
             if self.task_filter.exists():
                 task.delete()
                 task = self.task_filter
