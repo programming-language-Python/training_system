@@ -4,9 +4,7 @@ from testing.services.generate_code import abstractions
 from testing.services.generate_code.config import \
     INCREMENT_ARITHMETIC_OPERATORS, DECREMENT_ARITHMETIC_OPERATORS
 from testing.services.generate_code.types import Variable
-
-
-# from testing.services.generate_code.variable_service import VariableService
+from testing.utils.random_value import get_step_starting_from_2, get_step
 
 
 class CheckForLooping(abstractions.Variable, abstractions.Condition):
@@ -91,3 +89,10 @@ class CheckForLooping(abstractions.Variable, abstractions.Condition):
                 )
         )
         return is_looping_2
+
+
+def check_step(arithmetic_operator) -> int:
+    """Возвращает шаг начиная от 1 или от 2"""
+    if arithmetic_operator in ['*', '/']:
+        return get_step_starting_from_2()
+    return get_step()

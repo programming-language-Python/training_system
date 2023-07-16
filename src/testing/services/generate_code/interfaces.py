@@ -30,3 +30,17 @@ class IOperatorNesting(Protocol):
     def get_new_condition(self, variable_data: Variable,
                           arithmetic_operator: str) -> str:
         raise NotImplementedError
+
+
+class IOop(Protocol):
+    def get_class_example(self) -> str:
+        raise NotImplementedError
+
+    def generate_class_example_body(self) -> str:
+        raise NotImplementedError
+
+    def get_class_main(self) -> str:
+        raise NotImplementedError
+
+    def generate_class_main_body(self) -> str:
+        raise NotImplementedError

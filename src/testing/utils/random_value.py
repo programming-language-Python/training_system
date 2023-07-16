@@ -35,9 +35,12 @@ def get_random_dictionary_key(dictionary: Mapping) -> str:
     return choice(get_list_dictionary_keys(dictionary))
 
 
-# TODO исключить рандомизацию с 0
 def get_int() -> int:
-    return randint(MIN_NUMBER, MAX_NUMBER)
+    while True:
+        number = randint(MIN_NUMBER, MAX_NUMBER)
+        if number != 0:
+            break
+    return number
 
 
 def get_float() -> float:
@@ -61,4 +64,8 @@ def get_i() -> int:
 
 
 def get_step() -> int:
-    return randint(1, 2)
+    return randint(1, 10)
+
+
+def get_step_starting_from_2() -> int:
+    return randint(2, 10)

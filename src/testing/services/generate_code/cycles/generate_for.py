@@ -1,6 +1,7 @@
 from random import choice
 
 from testing.services.generate_code import abstractions
+from testing.services.generate_code.check_for_looping import check_step
 from testing.services.generate_code.config import COMPARISON_OPERATORS, \
     LOGICAL_OPERATORS, get_greater_and_less_comparison_operators, \
     COMPARISON_BOUND_TO_ARITHMETIC_OPERATORS, ARITHMETIC_OPERATORS
@@ -68,7 +69,7 @@ for ({condition}) {'{'}
         arithmetic_operator = self._get_arithmetic_operator(
             comparison_operator
         )
-        step = get_step()
+        step = check_step(arithmetic_operator)
         compound_condition = f'int i = {i}; ' \
                              f'i {comparison_operator} {max_i} ' \
                              f'{logical_operator} ' \

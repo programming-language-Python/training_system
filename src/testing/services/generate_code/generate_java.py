@@ -2,15 +2,16 @@ from random import choice
 
 from testing.utils.utils import remove_empty_paragraphs
 from . import abstractions
+from .OOP.OOP import generate_java_OOP
 from .check_for_looping import CheckForLooping
 from .cycles.generate_do_while import GenerateDoWhile
 from .cycles.generate_for import GenerateFor
 from .generate_if import GenerateIf
 from .cycles.generate_while import GenerateWhile
+from .generate_java_work_with_strings import GenerateJavaWorkWithStrings
 from .generate_operator_nesting import GenerateOperatorNesting
+from .templates import get_print_template
 from .types import OperatorPresenceType, NestingType
-from .generate_java_OOP import GenerateJavaOOP
-# from .generate_java_string import GenerateJavaString
 
 
 class GenerateJava(abstractions.Setting, abstractions.Variable):
@@ -21,13 +22,12 @@ class GenerateJava(abstractions.Setting, abstractions.Variable):
 
     def execute(self) -> str:
         code = ''
-        # if self.is_OOP:
-        #     return self.get_java_OOP()
-        # if self.is_strings:
-        #     return self.get_java_string()
-
+        if self.setting.is_OOP:
+            return generate_java_OOP()
+        if self.setting.is_strings:
+            return self.get_java_string()
         code += self.generate_variables()
-        if self.get_setting().operator_nesting:
+        if self.setting.operator_nesting:
             code += self.get_nesting_of_operators()
         else:
             code += self.get_operator()
@@ -36,18 +36,12 @@ class GenerateJava(abstractions.Setting, abstractions.Variable):
         return remove_empty_paragraphs(code)
 
     @staticmethod
-    def get_java_OOP() -> str:
-        generate_java_OOP = GenerateJavaOOP()
-        return generate_java_OOP.execute()
-
-    @staticmethod
     def get_java_string() -> str:
-        generate_java_string = GenerateJavaString()
-        generate_java_string.execute()
-        return generate_java_string.get_code()
+        generate_java_string = GenerateJavaWorkWithStrings()
+        return generate_java_string.execute()
 
     def get_nesting_of_operators(self) -> str:
-        operator_nesting = choice(self.get_setting().operator_nesting).title
+        operator_nesting = choice(self.setting.operator_nesting).title
         is_if_in_cycle = operator_nesting == NestingType.IF_IN_CYCLE
         if is_if_in_cycle:
             return self._get_condition_nested_in_cycle()
@@ -70,8 +64,9 @@ class GenerateJava(abstractions.Setting, abstractions.Variable):
         return generate_operator_nesting.generate_cycle_nested_in_condition()
 
     def get_operator(self) -> str:
-        is_condition = self.get_setting().is_if_operator == OperatorPresenceType.BE_PRESENT
-        is_cycle = self.get_setting().presence_one_of_cycles
+        is_condition = self.setting.is_if_operator == OperatorPresenceType \
+            .BE_PRESENT
+        is_cycle = self.setting.presence_one_of_cycles
         if is_condition and is_cycle:
             return self._get_random_order_of_operators()
         if is_condition:
@@ -96,12 +91,12 @@ class GenerateJava(abstractions.Setting, abstractions.Variable):
     def get_condition(self) -> str:
         generate_if = GenerateIf()
         condition = generate_if.execute(
-            self.get_setting().condition_of_if_operator
+            self.setting.condition_of_if_operator
         )
         return condition
 
     def get_cycle(self) -> str:
-        operator = choice(self.get_setting().presence_one_of_cycles).title
+        operator = choice(self.setting.presence_one_of_cycles).title
         if operator == 'while':
             return self._get_while()
         if operator == 'do-while':
@@ -109,26 +104,26 @@ class GenerateJava(abstractions.Setting, abstractions.Variable):
         if operator == 'for':
             return self._get_for()
 
-    # TODO Разобраться с condition_type и self.get_setting()
+    # TODO Разобраться с condition_type и self.setting
     def _get_while(self) -> str:
         generate_while = GenerateWhile()
-        condition_type = self.get_setting().cycle_condition
+        condition_type = self.setting.cycle_condition
         while_ = generate_while.execute(condition_type)
         return while_
 
     def _get_do_while(self) -> str:
         generate_do_while = GenerateDoWhile()
-        condition_type = self.get_setting().cycle_condition
+        condition_type = self.setting.cycle_condition
         do_while = generate_do_while.execute(condition_type)
         return do_while
 
     def _get_for(self) -> str:
         generate_for = GenerateFor()
-        condition_type = self.get_setting().cycle_condition
+        condition_type = self.setting.cycle_condition
         for_ = generate_for.execute(condition_type)
         return for_
 
     def generate_print_of_variable(self) -> str:
         list_variables = list(self.get_info())
-        random_variable = choice(list_variables)
-        return f'\nSystem.out.println({random_variable});'
+        variable = choice(list_variables)
+        return get_print_template(text=variable)

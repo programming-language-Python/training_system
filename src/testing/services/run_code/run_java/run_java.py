@@ -2,6 +2,7 @@ import subprocess
 import time
 import os
 
+from testing.exceptions import CompilationError
 from testing.utils.utils import write_to_file
 
 
@@ -47,7 +48,9 @@ class RunJava:
         compilation_output, compilation_error = compilation_process.communicate()
         # Проверяем наличие ошибок компиляции
         if compilation_error:
-            print('Ошибка компиляции:', compilation_error.decode())
+            error_text = f'Компилируемый код написан с ошибкой.\n' \
+                         f'Содержимое ошибки:\n{compilation_error.decode()}'
+            raise CompilationError(error_text)
         else:
             return self.run_compiled_file()
 

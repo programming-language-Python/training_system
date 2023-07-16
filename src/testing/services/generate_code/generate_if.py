@@ -19,7 +19,6 @@ if ({condition}){'{'}
 {'}'}'''
         return template
 
-    #
     def _generate_body(self):
         variable = self.get_random_used_variable()
         # TODO Расскоментить

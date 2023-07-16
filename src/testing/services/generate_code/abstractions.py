@@ -3,17 +3,24 @@ from collections import OrderedDict
 from random import randint, choice
 
 from testing.services.generate_code import types, config
-from testing.services.generate_code.config import COMPARISON_BOUND_TO_ARITHMETIC_OPERATORS
+from testing.services.generate_code.templates import get_template_class_main, \
+    get_template_class_example
+from testing.services.generate_code.config import \
+    COMPARISON_BOUND_TO_ARITHMETIC_OPERATORS
 from testing.utils.random_value import get_positive_int
 
 
 class Variable:
+    variables: str
     info: dict[types.Name, types.Variable] = OrderedDict()
     count: int
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.variables = self._get_readable_variables()
+
+    def get_variables(self) -> str:
+        return self.variables
 
     @staticmethod
     def _get_readable_variables() -> str:
@@ -22,9 +29,6 @@ class Variable:
         for variable in excluded_variables:
             variables = variables.replace(variable, '')
         return variables
-
-    # def get(self, name: Name) -> Variable:
-    #     return self.info[name]
 
     def generate_variables(self) -> str:
         count = randint(2, 3)
@@ -35,13 +39,13 @@ class Variable:
         return variables
 
     def add(self) -> None:
-        name = self._get_variable()
+        name = self.get_random()
         data_type = config.DEFAULT_TYPE
         value = get_positive_int()
         variable = types.Variable(name, data_type, value)
         self.set(variable)
 
-    def _get_variable(self) -> str:
+    def get_random(self) -> str:
         try:
             variable = choice(self.variables)
         except IndexError:
@@ -97,6 +101,8 @@ class Variable:
 
 
 class Setting:
+    setting: types.Setting
+
     def __init__(self, setting: types.Setting, **kwargs) -> None:
         super().__init__(**kwargs)
         self.setting = setting
@@ -106,12 +112,41 @@ class Setting:
 
 
 class Condition:
+    condition: str
+
     def __init__(self, condition: str, **kwargs) -> None:
         super().__init__(**kwargs)
         self.condition = condition
 
 
 class Cycle:
+    cycle: str
+
     def __init__(self, cycle: str, **kwargs) -> None:
         super().__init__(**kwargs)
         self.cycle = cycle
+
+
+class OOP(Variable):
+    variable: str
+
+    def __init__(self, **kwargs) -> None:
+        super().__init__(**kwargs)
+        self.variable = self.get_random()
+
+    def execute(self) -> str:
+        return self._get_class_example() + self._get_class_main()
+
+    def _get_class_example(self) -> str:
+        body = self._generate_class_example_body()
+        return get_template_class_example(body)
+
+    def _generate_class_example_body(self) -> str:
+        pass
+
+    def _get_class_main(self) -> str:
+        body = self._generate_class_main_body()
+        return get_template_class_main(body)
+
+    def _generate_class_main_body(self) -> str:
+        pass
