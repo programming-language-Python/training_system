@@ -104,12 +104,12 @@
                 </div>
                 <div class="uk-card-footer">
                     <button class="btn-update"
-                            hx-post="{% url 'testing:task_update' task.pk %}"
+                            hx-post="{% url 'testing:update_task' task.pk %}"
                             hx-swap="outerHTML"
                             uk-icon="refresh"
                             uk-tooltip="Обновить">
                     </button>
-                    <button hx-post="{% url 'testing:task_delete' task.pk %}"
+                    <button hx-post="{% url 'testing:delete_task' task.pk %}"
                             hx-swap="outerHTML"
                             uk-icon="trash"
                             uk-tooltip="Удалить">

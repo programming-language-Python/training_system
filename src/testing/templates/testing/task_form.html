@@ -33,7 +33,7 @@
                     {% if task %}
                         <button name="btn-update"
                                 type="submit"
-                                hx-post="{% url 'testing:task_update' task.pk %}"
+                                hx-post="{% url 'testing:update_task' task.pk %}"
                                 uk-icon="refresh"
                                 uk-tooltip="Обновить">
                         </button>

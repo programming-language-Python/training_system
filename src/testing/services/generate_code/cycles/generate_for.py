@@ -57,7 +57,6 @@ for ({condition}) {'{'}
 
         return body
 
-    # !TODO Разделить на части
     def _generate_compound_condition(self) -> str:
         i = get_i()
         comparison_operator = self._get_comparison_operator()
@@ -75,12 +74,10 @@ for ({condition}) {'{'}
                              f'{logical_operator} ' \
                              f'{variable} {comparison_operator2} {value}; ' \
                              f'i {arithmetic_operator}= {step}'
-
         self.set_arithmetic_operation_in_cycle_having_comparison_operator(
             name=variable,
             comparison_operator=comparison_operator2
         )
-
         return compound_condition
 
     @staticmethod

@@ -1,7 +1,7 @@
 from random import choice
 
 from testing.services.generate_code import abstractions
-from testing.services.generate_code.config import ARITHMETIC_OPERATORS
+from testing.services.generate_code.config import ARITHMETIC_OPERATORS, NUMERIC_DATA_TYPES
 from testing.services.generate_code.interfaces import IOop
 from testing.services.generate_code.templates import get_print_template
 from testing.utils.random_value import get_number, get_int
@@ -16,8 +16,8 @@ class GenerateOOPWithMethods(abstractions.OOP, IOop):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         # TODO Расскоментить
-        # self.numeric_data_type = choice(NUMERIC_DATA_TYPES)
-        self.numeric_data_type = 'float'
+        self.numeric_data_type = choice(NUMERIC_DATA_TYPES)
+        # self.numeric_data_type = 'float'
         self.method_1 = self.get_random()
         self.method_2 = self.get_random()
         self.class_example_variable = self.get_random()

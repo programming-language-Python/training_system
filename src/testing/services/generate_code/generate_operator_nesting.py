@@ -3,7 +3,8 @@ from testing.services.generate_code.check_for_looping import CheckForLooping
 from testing.utils.utils import add_tabs
 
 
-class GenerateOperatorNesting(CheckForLooping, abstractions.Condition, abstractions.Cycle):
+class GenerateOperatorNesting(CheckForLooping, abstractions.Condition,
+                              abstractions.Cycle):
     OLD = '}'
 
     def generate_cycle_nested_in_condition(self):

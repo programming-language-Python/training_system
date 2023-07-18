@@ -11,8 +11,8 @@ urlpatterns = [
     path('testing/<pk>/update/', TestingUpdateView.as_view(), name='testing_update'),
     path('testing/<pk>/delete/', TestingDeleteView.as_view(), name='testing_delete'),
     path('task/<pk>/detail/', TaskDetailView.as_view(), name='task_detail'),
-    path('task/<pk>/update/', task_update, name='task_update'),
-    path('task/<pk>/delete/', task_delete, name='task_delete'),
+    path('task/<pk>/update/', update_task, name='update_task'),
+    path('task/<pk>/delete/', delete_task, name='delete_task'),
     path('add_task_form/', add_task_form, name='add_task_form'),
     path('completed_testing_create/', create_completed_testing, name='completed_testing_create'),
 ]

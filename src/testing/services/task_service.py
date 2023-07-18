@@ -1,158 +1,128 @@
-from django.db.models import F, Q
-from django.forms import ModelMultipleChoiceField
+from typing import Mapping
 
-from testing.models import *
+from django.contrib.auth.models import User
+from django.db.models import F, Manager
+from django.forms import Form
+
+from testing.models import Task, TaskSetup, Testing
+from testing.services.filter_task_setup import FilterSetup
 
 
-# TODO Проверить дубликат self.task_setup.filter(**self.task_setups_fields).
-#  Подумать насчёт task (self.task)
-#  Посмотреть фильтрацию task_filter может её в init?
 class TaskService:
-    user: str = None
-    task_form = None
-    task = None
-    task_filter = None
-    task_setup_form = None
-    task_setup = None
-    weight = None
-    task_setups_fields = {}
-    testing = None
-    pk = None
-    task_setup_filter = None
-    q_obj: Q = None
+    user: User
+    testing: Testing
+    task: Manager[Task]
+    setup: Manager[TaskSetup]
+    task_form: Manager[Form]
+    weight: int
+    setup_form: Manager[Form]
+    setup_filter: Manager[FilterSetup]
+    pk: int
 
-    def __init__(self, user, forms, testing):
+    def __init__(self, user: User, forms: Mapping, testing: Testing) -> None:
         self.user = user
-        self.task = Task.objects
-        self.task_setup = TaskSetup.objects
-        self.task_form = forms['task_form']
-        self.task_setup_form = forms['task_setup_form']
-        self.weight = self.task_form.cleaned_data['weight']
-        self.filter_fields()
         self.testing = testing
+        self.task = Task.objects
+        self.setup = TaskSetup.objects
+        self.task_form = forms['task_form']
+        self.weight = self.task_form.cleaned_data['weight']
+        self.setup_form = forms['setup_form']
+        self.setup_filter = self._filter_setup()
 
-    def filter_fields(self):
-        self.task_setup_filter = self.task_setup
-        self.q_obj = Q()
-        for field_name, field in self.task_setup_form.fields.items():
-            self.filter_field(field_name, field)
-        self.task_setup_filter = self.task_setup_filter.filter(self.q_obj)
-
-    def filter_field(self, field_name, field):
-        if isinstance(field, ModelMultipleChoiceField):
-            self.filter_many_to_many_fields(field_name, field)
-        else:
-            q_filter = {
-                f'{field_name}': self.task_setup_form.cleaned_data[field_name]}
-            self.q_obj &= Q(**q_filter)
-
-    def filter_many_to_many_fields(self, field_name, field):
-        excluded_choices = [choice[1] for choice in field.choices]
-        for item in self.task_setup_form.cleaned_data[field_name]:
-            item_filter = {f'{field_name}__title': item.title}
-            self.task_setup_filter = self.task_setup_filter.filter(
-                **item_filter)
-            excluded_choices.remove(f'{item}')
-        if excluded_choices:
-            self.filter_excluded_many_to_many_fields(
-                field_name,
-                excluded_choices
-            )
-
-    def filter_excluded_many_to_many_fields(self, field_name,
-                                            excluded_choices):
-        for excluded_choice in excluded_choices:
-            excluded_choice_filter = {f'{field_name}__title': excluded_choice}
-            self.task_setup_filter = self.task_setup_filter.exclude(
-                **excluded_choice_filter
-            )
+    def _filter_setup(self) -> Manager[FilterSetup]:
+        filter_task = FilterSetup(self.setup, self.setup_form)
+        return filter_task.execute()
 
     def add(self) -> None:
         """Добавляет задачу Task"""
-        self.set_task_setup()
-        self.create_or_increase()
-
-    def set_task_setup(self):
-        if self.task_setup_filter.exists():
-            task_setup = self.task_setup_filter.filter(users=self.user)
-            if task_setup.exists():
-                self.task_setup = task_setup.first()
-            else:
-                self.task_setup.first().users.add(self.user)
-                self.task_setup = self.task_setup.first()
+        self._set_setup()
+        task_filter = self._get_filter()
+        if task_filter.exists():
+            task = _increase_count(task_filter)
+            pk = task.first().pk
         else:
-            self.create_task_setup()
+            task = self._create()
+            pk = task.pk
+        self._set_pk(pk)
 
-    def create_task_setup(self):
-        self.task_setup = self.task_setup_form.save(commit=False)
-        self.task_setup.pk = None
-        self.task_setup.save()
-        self.task_setup_form.save_m2m()
-        self.task_setup.users.add(self.user)
+    def _set_setup(self) -> None:
+        if self.setup_filter.exists():
+            setup = self.setup_filter.filter(users=self.user)
+            if setup.exists():
+                self.setup = setup.first()
+            else:
+                self.setup.first().users.add(self.user)
+                self.setup = self.setup.first()
+        else:
+            self._create_setup()
 
-    def create_or_increase(self):
-        self.task_filter = self.task.filter(
+    def _create_setup(self) -> None:
+        self.setup = self.setup_form.save(commit=False)
+        self.setup.pk = None
+        self.setup.save()
+        self.setup_form.save_m2m()
+        self.setup.users.add(self.user)
+
+    def _get_filter(self) -> Manager[Task]:
+        return self.task.filter(
             weight=self.weight,
             testing=self.testing,
-            task_setup=self.task_setup
+            setup=self.setup
         )
-        if self.task_filter.exists():
-            self.increase_count(self.task_filter)
-        else:
-            self.create()
 
-    def increase_count(self, task):
-        task.update(count=F('count') + 1)
-        self.pk = task.first().pk
+    def _set_pk(self, pk):
+        self.pk = pk
 
-    def create(self):
+    def _create(self) -> Manager:
         self.task = self.task.create(
             weight=self.weight,
             testing=self.testing,
-            task_setup=self.task_setup,
+            setup=self.setup,
             count=1
         )
-        self.pk = self.task.pk
+        return self.task
 
-    def update(self, task):
-        if self.task_setup_form.changed_data:
+    def update(self, task) -> None:
+        if self.setup_form.changed_data:
             if task.count == 1:
-                self.update_non_recurring(task)
+                self._update_non_recurring(task)
             else:
                 task.count -= 1
                 task.save(update_fields=['count'])
                 self.add()
 
-    def update_non_recurring(self, task):
-        self.update_weight(task)
-        if self.task_setup_filter.exists():
-            self.task_setup = self.task_setup_filter.first()
-            self.task_filter = self.task.filter(
-                weight=self.weight,
-                testing=self.testing,
-                task_setup=self.task_setup
-            )
-            if self.task_filter.exists():
+    def _update_non_recurring(self, task) -> None:
+        self._update_weight(task)
+        if self.setup_filter.exists():
+            self.setup = self.setup_filter.first()
+            task_filter = self._get_filter()
+            if task_filter.exists():
                 task.delete()
-                task = self.task_filter
-                self.increase_count(task)
-                self.pk = task.first().pk
+                task = _increase_count(task=task_filter)
+                pk = task.first().pk
             else:
-                update_task_setup(task, self.task_setup)
-                self.pk = task.pk
+                task = _update_setup(task, self.setup)
+                pk = task.pk
+            self._set_pk(pk)
         else:
             task.delete()
             self.add()
 
-    def update_weight(self, task):
+    def _update_weight(self, task) -> None:
         if self.task_form.changed_data:
             task.weight = self.task_form.cleaned_data['weight']
             task.save(update_fields=['weight'])
 
-    def get_pk(self):
+    def get_pk(self) -> int:
         return self.pk
 
 
-def update_task_setup(task, task_setup):
-    task.task_setup = task_setup
-    task.save(update_fields=['task_setup'])
+def _update_setup(task: Manager, setup: Manager) -> Manager:
+    task.setup = setup
+    task.save(update_fields=['setup'])
+    return task
+
+
+def _increase_count(task: Manager) -> Manager:
+    task.update(count=F('count') + 1)
+    return task
