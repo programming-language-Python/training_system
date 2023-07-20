@@ -1,13 +1,15 @@
 from django.db.models import Q, Manager
 from django.forms import ModelMultipleChoiceField, Form
 
+from testing.models import TaskSetup
+
 
 class FilterSetup:
-    setup_filter: Manager
+    setup_filter: Manager[TaskSetup]
     setup_form: Form
     q_obj: Q
 
-    def __init__(self, setup: Manager, setup_form: Form) -> None:
+    def __init__(self, setup: Manager[TaskSetup], setup_form: Form) -> None:
         self.setup_filter = setup
         self.setup_form = setup_form
         self.q_obj = Q()

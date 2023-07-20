@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Q
+from django.db.models import QuerySet
 from django.http import HttpResponseNotAllowed, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
@@ -13,7 +13,8 @@ from testing.models import Testing, Task
 from testing.services.create_completed_testing import CreateCompletedTesting
 from testing.services.create_context_for_student import CreateContextForStudent
 from testing.services.decorators import is_teacher
-from testing.services.task_service import TaskService
+from testing.services.filter_testing import FilterTesting
+from testing.services.task_service import TaskService, delete
 
 
 class TestingCreateView(LoginRequiredMixin, CreateView):
@@ -31,31 +32,20 @@ class TestingListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         query = self.request.GET.get('search')
-        if self.request.user.is_teacher:
-            if query:
-                return Testing.objects.filter(
-                    Q(user=self.request.user) & Q(title=query)
-                )
-            return Testing.objects.filter(user=self.request.user)
-        if query:
-            return Testing.objects.filter(
-                Q(
-                    is_published=True,
-                    student_groups=self.request.user.student_group
-                )
-                & Q(title=query)
-            )
-        return Testing.objects.filter(
-            is_published=True,
-            student_groups=self.request.user.student_group
-        )
+        return self._get_filtered_testing(query)
+
+    def _get_filtered_testing(self, query: QuerySet) -> QuerySet:
+        user = self.request.user
+        filter_testing = FilterTesting(user, query)
+        return filter_testing.execute()
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         is_teacher_ = self.request.user.is_teacher
-        context[
-            'card_footer_text'
-        ] = 'Настроить тестирование' if is_teacher_ else 'Пройти тест'
+        if is_teacher_:
+            context['card_footer_text'] = 'Настроить тестирование'
+        else:
+            context['card_footer_text'] = 'Пройти тест'
         return context
 
 
@@ -67,16 +57,15 @@ class TestingDetailView(LoginRequiredMixin, DetailView):
         if is_teacher_:
             context = super().get_context_data(**kwargs)
         else:
-            context = self._create_context_for_student(kwargs)
+            context = self._get_context_for_student(kwargs)
         return context
 
-    def _create_context_for_student(self, kwargs) -> dict[str, str]:
+    def _get_context_for_student(self, kwargs) -> dict[str, str]:
         create_context_for_student = CreateContextForStudent(self.request)
         return create_context_for_student.execute(kwargs)
 
     @staticmethod
     def post(request, *args, **kwargs) -> None:
-        testing = get_object_or_404(Testing, pk=kwargs['pk'])
         task_form = TaskForm(request.POST or None)
         task_setup_form = TaskSetupForm(request.POST or None)
         context = {
@@ -85,14 +74,13 @@ class TestingDetailView(LoginRequiredMixin, DetailView):
         }
         is_valid_forms = task_form.is_valid() and task_setup_form.is_valid()
         if is_valid_forms:
-            task_service = TaskService(
-                user=request.user,
-                forms=context,
-                testing=testing
-            )
+            user = request.user
+            forms = context
+            testing = get_object_or_404(Testing, pk=kwargs['pk'])
+            task_service = TaskService(user, forms, testing)
             task_service.add()
             return redirect('testing:task_detail', pk=task_service.get_pk())
-        return render(request, 'testing/task_form.html', context=context)
+        return render(request, 'testing/task_form.html', context)
 
 
 class TestingUpdateView(LoginRequiredMixin, UpdateView):
@@ -115,35 +103,26 @@ class TaskDetailView(DetailView):
 @user_passes_test(is_teacher, login_url='user:home', redirect_field_name=None)
 def update_task(request, pk):
     task = get_object_or_404(Task, pk=pk)
-    task_setup = task.task_setup
     task_form = TaskForm(request.POST or None, instance=task)
+    task_setup = task.task_setup
     task_setup_form = TaskSetupForm(request.POST or None, instance=task_setup)
     context = {
-        'task': task,
         'task_form': task_form,
-        'task_setup_form': task_setup_form
+        'task_setup_form': task_setup_form,
     }
     is_POST = request.method == 'POST'
     is_valid_forms = task_form.is_valid() and task_setup_form.is_valid()
-    if is_POST and is_valid_forms:
-        is_changed_data = task_form.changed_data or task_setup_form.changed_data
-        if is_changed_data:
-            context.pop('task')
-            task_service = TaskService(
-                user=request.user,
-                forms=context,
-                testing=task.testing
-            )
-            task_service.update(task)
-            return redirect('testing:task_detail', pk=task_service.get_pk())
-        _increase_number_tasks(task)
-        return redirect('testing:task_detail', pk=pk)
+    is_changed_data = task_form.changed_data or task_setup_form.changed_data
+    is_valid = is_POST and is_valid_forms and is_changed_data
+    if is_valid:
+        user = request.user
+        forms = context
+        testing = task.testing
+        task_service = TaskService(user, forms, testing)
+        updated_task = task_service.update(task)
+        return redirect('testing:task_detail', pk=updated_task.pk)
+    context['task'] = task
     return render(request, 'testing/task_form.html', context)
-
-
-def _increase_number_tasks(task: Task) -> None:
-    task.count += 1
-    task.save(update_fields=['count'])
 
 
 @login_required
@@ -153,17 +132,9 @@ def delete_task(request, pk):
     task = get_object_or_404(Task, id=pk)
     is_POST = request.method == 'POST'
     if is_POST:
-        if task.count > 1:
-            _reduce_number_tasks(task)
-        else:
-            task.delete()
+        delete(task)
         return HttpResponse('')
     return HttpResponseNotAllowed(['POST', ])
-
-
-def _reduce_number_tasks(task) -> None:
-    task.count -= 1
-    task.save(update_fields=['count'])
 
 
 @login_required
