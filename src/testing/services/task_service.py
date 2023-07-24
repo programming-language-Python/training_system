@@ -28,11 +28,11 @@ class TaskService:
         self.weight = self.task_form.cleaned_data['weight']
 
     def add(self) -> Manager[Task]:
-        """Добавляет задачу Task"""
+        """Добавляет задачу"""
         self.setup_service.set()
         task_filter = self._filter()
         if task_filter.exists():
-            self.task = self._increase_count(task=task_filter)
+            self.task = increase_count(task=task_filter)
         else:
             self.task = self._create()
         return self.task
@@ -44,7 +44,7 @@ class TaskService:
             task_setup=self.setup_service.get_pk()
         )
 
-    def _create(self) -> Manager:
+    def _create(self) -> Manager[Task]:
         self.task = self.task.create(
             weight=self.weight,
             testing=self.testing,
@@ -91,13 +91,13 @@ class TaskService:
         filtered_task = self._filter()
         if filtered_task.exists():
             task.delete()
-            self.task = self._increase_count(task=filtered_task)
+            self.task = increase_count(task=filtered_task)
         else:
             self.task = self.setup_service.update(task, setup)
         return self.task
 
     def _update_recurring(self, task) -> Manager[Task]:
-        _reduce_number_tasks(task)
+        reduce_count(task)
         return self.add()
 
     def get_pk(self) -> int:
@@ -106,23 +106,24 @@ class TaskService:
             return self.task.first().pk
         return self.task.pk
 
-    @staticmethod
-    def _increase_count(task: QuerySet[Task] | Task) -> Manager[Task] | None:
-        is_manager_task = type(task) is QuerySet[Task]
-        if is_manager_task:
-            task.update(count=F('count') + 1)
-            return task.first()
-        task.count += 1
-        task.save(update_fields=['count'])
+
+def increase_count(task: QuerySet[Task] | Task) -> Manager[Task]:
+    is_manager_task = type(task) is QuerySet[Task]
+    if is_manager_task:
+        task.update(count=F('count') + 1)
+        return task.first()
+    task.count += 1
+    task.save(update_fields=['count'])
+    return task
 
 
 def delete(task: Task) -> None:
     if task.count > 1:
-        _reduce_number_tasks(task)
+        reduce_count(task)
     else:
         task.delete()
 
 
-def _reduce_number_tasks(task: Task) -> None:
+def reduce_count(task: Task) -> None:
     task.count -= 1
     task.save(update_fields=['count'])

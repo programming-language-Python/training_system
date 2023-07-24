@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import QuerySet
+from django.db.models import QuerySet, Sum
 from django.http import HttpResponseNotAllowed, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
@@ -14,7 +14,7 @@ from testing.services.create_completed_testing import CreateCompletedTesting
 from testing.services.create_context_for_student import CreateContextForStudent
 from testing.services.decorators import is_teacher
 from testing.services.filter_testing import FilterTesting
-from testing.services.task_service import TaskService, delete
+from testing.services.task_service import TaskService, delete, increase_count
 
 
 class TestingCreateView(LoginRequiredMixin, CreateView):
@@ -101,7 +101,7 @@ class TaskDetailView(DetailView):
 
 @login_required
 @user_passes_test(is_teacher, login_url='user:home', redirect_field_name=None)
-def update_task(request, pk):
+def update_task(request, pk: int):
     task = get_object_or_404(Task, pk=pk)
     task_form = TaskForm(request.POST or None, instance=task)
     task_setup = task.task_setup
@@ -121,17 +121,32 @@ def update_task(request, pk):
         task_service = TaskService(user, forms, testing)
         updated_task = task_service.update(task)
         return redirect('testing:task_detail', pk=updated_task.pk)
+    if not is_POST:
+        return HttpResponseNotAllowed(['POST', ])
+    if not is_changed_data:
+        context['change_error'] = 'Данные не были изменены'
     context['task'] = task
     return render(request, 'testing/task_form.html', context)
 
 
 @login_required
-@user_passes_test(is_teacher, login_url='testing:testing_detail',
-                  redirect_field_name=None)
-def delete_task(request, pk):
-    task = get_object_or_404(Task, id=pk)
+@user_passes_test(is_teacher, login_url='user:home', redirect_field_name=None)
+def duplicate_task(request, pk: int):
+    task = get_object_or_404(Task, pk=pk)
     is_POST = request.method == 'POST'
     if is_POST:
+        duplicated_task = increase_count(task)
+        return redirect('testing:task_detail', pk=duplicated_task.pk)
+    return HttpResponseNotAllowed(['POST', ])
+
+
+@login_required
+@user_passes_test(is_teacher, login_url='testing:testing_detail',
+                  redirect_field_name=None)
+def delete_task(request, pk: int):
+    is_POST = request.method == 'POST'
+    if is_POST:
+        task = get_object_or_404(Task, id=pk)
         delete(task)
         return HttpResponse('')
     return HttpResponseNotAllowed(['POST', ])
@@ -150,6 +165,6 @@ def add_task_form(request):
 
 
 def create_completed_testing(request):
-    create_completed_testing_service = CreateCompletedTesting(request)
-    create_completed_testing_service.execute()
+    create_completed_testing_ = CreateCompletedTesting(request)
+    create_completed_testing_.execute()
     return redirect('user:home')

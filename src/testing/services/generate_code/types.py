@@ -3,6 +3,8 @@ from enum import Enum
 
 from django.db.models import QuerySet
 
+Weight = int
+
 
 class OperatorPresenceType(str, Enum):
     BE_PRESENT = 'Присутствует'

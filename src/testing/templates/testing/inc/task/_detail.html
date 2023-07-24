@@ -8,7 +8,7 @@
                     <div class="uk-grid-small uk-flex-middle" uk-grid>
                         <div class="uk-width-expand">
                             <h3 class="uk-card-title uk-margin-remove-bottom">
-                                Задача №{{ task_number }} (вес {{ task.weight }})
+                                Задача №<span class="task-number">{{ task_number }}</span> (вес {{ task.weight }})
                             </h3>
                         </div>
                     </div>
@@ -109,7 +109,14 @@
                             uk-icon="refresh"
                             uk-tooltip="Обновить">
                     </button>
-                    <button hx-post="{% url 'testing:delete_task' task.pk %}"
+                    <button class="btn-duplicate"
+                            hx-post="{% url 'testing:duplicate_task' task.pk %}"
+                            hx-swap="beforebegin"
+                            uk-icon="copy"
+                            uk-tooltip="Дублировать">
+                    </button>
+                    <button class="btn-delete"
+                            hx-post="{% url 'testing:delete_task' task.pk %}"
                             hx-swap="outerHTML"
                             uk-icon="trash"
                             uk-tooltip="Удалить">

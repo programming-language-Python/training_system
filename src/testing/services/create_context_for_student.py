@@ -38,6 +38,7 @@ class CreateContextForStudent:
             self.number += 1
         session_name = 'testing_' + str(testing.pk)
         self._create_session(session_name)
+        self.context['testing'] = testing
         self.context['task_data'] = self.request.session[session_name]
         # TODO УДАЛИТЬ ПОТОМ!!!
         del self.request.session[session_name]

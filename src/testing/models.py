@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.db.models import Sum
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
@@ -11,14 +12,20 @@ app_name = 'testing'
 
 class Task(models.Model):
     weight = models.IntegerField(default=1, verbose_name='Вес')
-    testing = models.ForeignKey('Testing',
-                                on_delete=models.CASCADE,
-                                verbose_name='Тестирование')
-    task_setup = models.ForeignKey('TaskSetup',
-                                   on_delete=models.CASCADE,
-                                   verbose_name='Настройка задачи')
-    count = models.IntegerField(default=0,
-                                verbose_name='Количество')
+    testing = models.ForeignKey(
+        'Testing',
+        on_delete=models.CASCADE,
+        verbose_name='Тестирование'
+    )
+    task_setup = models.ForeignKey(
+        'TaskSetup',
+        on_delete=models.CASCADE,
+        verbose_name='Настройка задачи'
+    )
+    count = models.IntegerField(
+        default=0,
+        verbose_name='Количество'
+    )
 
     def get_absolut_url(self):
         return reverse(app_name + ':task_detail', kwargs={'pk': self.pk})
@@ -29,18 +36,26 @@ class Task(models.Model):
 
 
 class Testing(models.Model):
-    title = models.CharField(max_length=25,
-                             verbose_name='Наименование',
-                             unique=True)
-    student_groups = models.ManyToManyField(StudentGroup,
-                                            verbose_name='Группы студентов')
-    user = models.ForeignKey(User,
-                             on_delete=models.SET_NULL,
-                             null=True,
-                             verbose_name='Пользователь')
-    is_published = models.BooleanField(blank=True,
-                                       default=True,
-                                       verbose_name='Опубликовано')
+    title = models.CharField(
+        max_length=25,
+        verbose_name='Наименование',
+        unique=True
+    )
+    student_groups = models.ManyToManyField(
+        StudentGroup,
+        verbose_name='Группы студентов'
+    )
+    user = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        verbose_name='Пользователь'
+    )
+    is_published = models.BooleanField(
+        blank=True,
+        default=True,
+        verbose_name='Опубликовано'
+    )
 
     def get_absolute_url(self):
         return reverse(app_name + ':testing_detail', kwargs={'pk': self.pk})
@@ -65,39 +80,48 @@ class TaskSetup(models.Model):
     # use_of_all_variables = models.BooleanField(default=False,
     #                                            verbose_name='Использование обязательно всех переменных')
     # TODO Сделать тип bool
-    is_if_operator = models.CharField(max_length=25,
-                                      choices=IsOperator.choices,
-                                      default=IsOperator.absent,
-                                      verbose_name='Наличие оператора if')
-    condition_of_if_operator = models.CharField(max_length=25,
-                                                choices=Condition.choices,
-                                                blank=True,
-                                                null=True,
-                                                verbose_name='Условие оператора if')
-    presence_one_of_cycles = models.ManyToManyField('Cycle',
-                                                    blank=True,
-                                                    # null=True,
-                                                    verbose_name='Наличие одного из следующих циклов')
-    cycle_condition = models.CharField(max_length=25,
-                                       choices=Condition.choices,
-                                       blank=True,
-                                       null=True,
-                                       verbose_name='Условие цикла')
-    operator_nesting = models.ManyToManyField('OperatorNesting',
-                                              blank=True,
-                                              # null=True,
-                                              verbose_name='Вложенность операторов')
-    is_OOP = models.BooleanField(default=False,
-                                 verbose_name='ООП')
-    is_strings = models.BooleanField(default=False,
-                                     verbose_name='Строки')
-    users = models.ManyToManyField(User,
-                                   blank=True,
-                                   verbose_name='Пользователи')
+    is_if_operator = models.CharField(
+        max_length=25,
+        choices=IsOperator.choices,
+        default=IsOperator.absent,
+        verbose_name='Наличие оператора if'
+    )
+    condition_of_if_operator = models.CharField(
+        max_length=25,
+        choices=Condition.choices,
+        blank=True,
+        null=True,
+        verbose_name='Условие оператора if'
+    )
+    presence_one_of_cycles = models.ManyToManyField(
+        'Cycle',
+        blank=True,
+        # null=True,
+        verbose_name='Наличие одного из следующих циклов'
+    )
+    cycle_condition = models.CharField(
+        max_length=25,
+        choices=Condition.choices,
+        blank=True,
+        null=True,
+        verbose_name='Условие цикла'
+    )
+    operator_nesting = models.ManyToManyField(
+        'OperatorNesting',
+        blank=True,
+        # null=True,
+        verbose_name='Вложенность операторов'
+    )
+    is_OOP = models.BooleanField(default=False, verbose_name='ООП')
+    is_strings = models.BooleanField(default=False, verbose_name='Строки')
+    users = models.ManyToManyField(
+        User,
+        blank=True,
+        verbose_name='Пользователи'
+    )
 
     def get_absolute_url(self):
-        return reverse(app_name + ':task_setup_detail',
-                       kwargs={'pk': self.pk})
+        return reverse(app_name + ':task_setup_detail', kwargs={'pk': self.pk})
 
     def __str__(self):
         return str(self.id)
@@ -108,12 +132,10 @@ class TaskSetup(models.Model):
 
 
 class Cycle(models.Model):
-    title = models.CharField(max_length=25,
-                             verbose_name='Цикл')
+    title = models.CharField(max_length=25, verbose_name='Цикл')
 
     def get_absolute_url(self):
-        return reverse('cycle_detail',
-                       kwargs={'pk': self.pk})
+        return reverse('cycle_detail', kwargs={'pk': self.pk})
 
     def __str__(self):
         return self.title
@@ -124,12 +146,13 @@ class Cycle(models.Model):
 
 
 class OperatorNesting(models.Model):
-    title = models.CharField(max_length=25,
-                             verbose_name='Вложенность операторов')
+    title = models.CharField(
+        max_length=25,
+        verbose_name='Вложенность операторов'
+    )
 
     def get_absolute_url(self):
-        return reverse('operator_nesting_detail',
-                       kwargs={'pk': self.pk})
+        return reverse('operator_nesting_detail', kwargs={'pk': self.pk})
 
     def __str__(self):
         return self.title
@@ -145,18 +168,21 @@ class CompletedTesting(models.Model):
     weight_of_student_tasks = models.IntegerField(
         verbose_name='Вес задач студента')
     tasks = models.JSONField(verbose_name='Задачи')
-    testing = models.ForeignKey(Testing,
-                                on_delete=models.SET_NULL,
-                                null=True,
-                                verbose_name='Тестирование')
+    testing = models.ForeignKey(
+        Testing,
+        on_delete=models.SET_NULL,
+        null=True,
+        verbose_name='Тестирование'
+    )
     # date_of_passage = models.DateTimeField(auto_now_add=True)
-    student = models.ForeignKey(settings.AUTH_USER_MODEL,
-                                on_delete=models.CASCADE,
-                                verbose_name='Студент')
+    student = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        verbose_name='Студент'
+    )
 
     def get_absolute_url(self):
-        return reverse('complete_testing_detail',
-                       kwargs={'pk': self.pk})
+        return reverse('complete_testing_detail', kwargs={'pk': self.pk})
 
     def get_assessment_in_percentage(self):
         return round_up(self.weight_of_student_tasks / self.total_weight * 100)

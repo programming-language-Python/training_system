@@ -3,14 +3,16 @@
 
 {% block link %}
     <link rel="stylesheet" href="{% static 'css/testing/_detail.css' %}">
-    {% if not user.is_teacher %}
+    {% if user.is_teacher %}
+        <link rel="stylesheet" href="{% static 'css/testing/error.css' %}">
+    {% else %}
         <link rel="stylesheet" href="{% static 'css/testing/task/task__code.css' %}">
     {% endif %}
 {% endblock %}
 {% block head_script %}
     <script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/task_form/btn_update.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/admin/form_task_setup.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/task-form/task-form.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/testing/testing.js' %}"></script>
 {% endblock %}
 {% block content %}
     <section class="content__testing testing" id="testing">
@@ -66,23 +68,30 @@
                     </form>
                 </div>
                 <div>
-                    <button id="btn-add-task-setup"
-                            name="btn-add-task-setup"
+                    <button id="btn-add-task"
+                            name="btn-add-task"
                             class="uk-button uk-width-1-4 uk-button-secondary"
                             type="button"
                             hx-get="{% url 'testing:add_task_form' %}"
                             hx-target="#task-list"
                             hx-swap="afterbegin">
-                        Добавить настройку задачи
+                        Добавить задачу
                     </button>
                 </div>
             </div>
         {% endif %}
     </section>
     <section class="content__task-form task-form uk-margin" id="task-form"></section>
+    <h2 class="task-form__count-tasks">
+        Количество задач: <span id="count-tasks"></span>
+    </h2>
     {% if user.is_teacher %}
         {% include 'testing/inc/task/_list.html' %}
     {% else %}
         {% include 'testing/inc/task/_student-list.html' %}
     {% endif %}
 {% endblock %}
+
+{% block script %}
+{% endblock %}
+
