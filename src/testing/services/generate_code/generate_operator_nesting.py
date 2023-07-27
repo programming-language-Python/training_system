@@ -1,4 +1,4 @@
-from testing.services.generate_code import abstractions
+from testing import abstractions
 from testing.services.generate_code.check_for_looping import CheckForLooping
 from testing.utils.utils import add_tabs
 

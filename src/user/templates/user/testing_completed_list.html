@@ -1,9 +1,11 @@
 {% extends "base.html" %}
-{% load model_manipulation %}
 {% load static %}
 
 {% block link %}
-    <link rel="stylesheet" href="{% static 'css/assessment.css' %}">
+    <link rel="stylesheet" href="{% static 'css/testing/assessment/testing__assessment.css' %}">
+    <link rel="stylesheet" href="{% static 'css/testing/testing.css' %}">
+    <link rel="stylesheet" href="{% static 'css/task-student-list/body/task-student-list__body.css' %}">
+    <link rel="stylesheet" href="{% static 'css/task-student-list/header/task-student-list__header.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -22,75 +24,7 @@
         </form>
         <ul uk-accordion="multiple: true">
             {% for completed_testing in completed_testings %}
-                <li>
-                    <a class="uk-accordion-title uk-text-lead" href="#">
-                        Тест {{ completed_testing.testing }}
-                    </a>
-                    <section class="uk-accordion-content content__testing testing" id="testing">
-                        <div class="uk-margin">
-                            <div class="uk-card uk-card-default uk-card-body">
-                                <div class="testing__title uk-card-header" id="testing-title">
-                                    <div class="uk-grid-small uk-flex-middle" uk-grid>
-                                        <div class="uk-width-expand">
-                                            <h3 class="uk-card-title">
-                                                {% with completed_testing.assessment as assessment %}
-                                                    <span class="assessment
-                                                    {% if assessment <= 2 %}
-                                                        two
-                                                    {% elif assessment == 3 %}
-                                                        three
-                                                    {% elif assessment == 4 %}
-                                                        four
-                                                    {% elif assessment == 5 %}
-                                                        five
-                                                    {% endif %}">
-                                                        {% get_verbose_name_for_field completed_testing 'assessment' %}:
-                                                        {{ assessment }}
-                                                    </span>
-                                                {% endwith %}
-                                            </h3>
-                                            <h3 class="uk-card-title">
-                                                {% with completed_testing.assessment as assessment %}
-                                                    <span class="assessment
-                                                    {% if assessment <= 2 %}
-                                                        two
-                                                    {% elif assessment == 3 %}
-                                                        three
-                                                    {% elif assessment == 4 %}
-                                                        four
-                                                    {% elif assessment == 5 %}
-                                                        five
-                                                    {% endif %}">
-                                                        {% get_verbose_name_for_field completed_testing 'assessment' %} в %:
-                                                        {{ completed_testing.get_assessment_in_percentage }}%
-                                                    </span>
-                                                {% endwith %}
-                                            </h3>
-                                            <h3 class="uk-card-title">
-                                                {% get_verbose_name_for_field completed_testing 'total_weight' %}: {{ completed_testing.total_weight }}
-                                            </h3>
-                                            <h3 class="uk-card-title">
-                                                {% get_verbose_name_for_field completed_testing 'weight_of_student_tasks' %}
-                                                : {{ completed_testing.weight_of_student_tasks }}
-                                            </h3>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="uk-card-body">
-                                    <section
-                                            class="content__task-student-list task-student-list uk-flex uk-flex-column uk-text-center"
-                                            id="task-student-list">
-                                        <ul uk-accordion>
-                                            {% with completed_testing.tasks as tasks %}
-                                                {% include 'user/inc/testing/_task_completed_list.html' %}
-                                            {% endwith %}
-                                        </ul>
-                                    </section>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-                </li>
+                {% include 'user/testing_completed_detail.html' %}
             {% endfor %}
         </ul>
     {% else %}

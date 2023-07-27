@@ -1,6 +1,6 @@
 from random import choice
 
-from testing.services.generate_code.abstractions import Variable
+from testing.abstractions import Variable
 from testing.services.generate_code.templates import get_string_template, \
     get_string_template_without_body
 from testing.utils.random_value import get_N_digits, get_digit, \

@@ -1,0 +1,12 @@
+.task-student-list {
+  &__body {
+    padding: 20px;
+    & p {
+      margin: 0;
+    }
+
+    & h4 {
+      margin: 10px;
+    }
+  }
+}

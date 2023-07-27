@@ -1,8 +1,8 @@
 from random import choice
 
-from testing.services.generate_code import abstractions
+from testing import abstractions
 from testing.services.generate_code.config import ARITHMETIC_OPERATORS, NUMERIC_DATA_TYPES
-from testing.services.generate_code.interfaces import IOop
+from testing.interfaces import IOop
 from testing.services.generate_code.templates import get_print_template
 from testing.utils.random_value import get_number, get_int
 

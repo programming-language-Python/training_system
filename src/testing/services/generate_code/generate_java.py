@@ -1,7 +1,6 @@
 from random import choice
 
 from testing.utils.utils import remove_empty_paragraphs
-from . import abstractions
 from .OOP.OOP import generate_java_OOP
 from .check_for_looping import CheckForLooping
 from .cycles.generate_do_while import GenerateDoWhile
@@ -11,7 +10,8 @@ from .cycles.generate_while import GenerateWhile
 from .generate_java_work_with_strings import GenerateJavaWorkWithStrings
 from .generate_operator_nesting import GenerateOperatorNesting
 from .templates import get_print_template
-from .types import OperatorPresenceType, NestingType
+from ... import abstractions
+from ...types import NestingType, OperatorPresenceType
 
 
 class GenerateJava(abstractions.Setting, abstractions.Variable):
@@ -66,7 +66,7 @@ class GenerateJava(abstractions.Setting, abstractions.Variable):
     def get_operator(self) -> str:
         is_condition = self.setting.is_if_operator == OperatorPresenceType \
             .BE_PRESENT
-        is_cycle = self.setting.presence_one_of_cycles
+        is_cycle = self.setting.cycle
         if is_condition and is_cycle:
             return self._get_random_order_of_operators()
         if is_condition:
@@ -96,7 +96,7 @@ class GenerateJava(abstractions.Setting, abstractions.Variable):
         return condition
 
     def get_cycle(self) -> str:
-        operator = choice(self.setting.presence_one_of_cycles).title
+        operator = choice(self.setting.cycle).title
         if operator == 'while':
             return self._get_while()
         if operator == 'do-while':

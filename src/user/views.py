@@ -67,7 +67,7 @@ class TestingCompletedListView(LoginRequiredMixin, DetailView):
         query = self.request.GET.get('search')
         if query:
             context['completed_testings'] = CompletedTesting.objects.filter(
-                Q(student__in=self.kwargs['pk']) & Q(testing__title=query)
+                Q(student__in=self.kwargs['pk']) & Q(title=query)
             )
         else:
             context['completed_testings'] = CompletedTesting.objects.filter(student_id=self.kwargs['pk'])

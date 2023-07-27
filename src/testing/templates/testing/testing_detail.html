@@ -11,8 +11,8 @@
 {% endblock %}
 {% block head_script %}
     <script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/task-form/task-form.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/testing/testing.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/task-form/task-form.js' %}"></script>
 {% endblock %}
 {% block content %}
     <section class="content__testing testing" id="testing">
@@ -38,6 +38,14 @@
                 <div>
                     Опубликовано:
                     {% if testing.is_published %}
+                        Да
+                    {% else %}
+                        Нет
+                    {% endif %}
+                </div>
+                <div>
+                    Просмотр результата студентом:
+                    {% if testing.is_review_of_result_by_student %}
                         Да
                     {% else %}
                         Нет

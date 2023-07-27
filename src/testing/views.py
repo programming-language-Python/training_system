@@ -1,13 +1,13 @@
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import QuerySet, Sum
+from django.db.models import QuerySet
 from django.http import HttpResponseNotAllowed, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DetailView, \
     UpdateView, DeleteView
 
-from testing.forms import TestingForm, TaskSetupForm, TaskForm
+from testing.forms import TestingForm, SettingForm, TaskForm
 from testing.models import Testing, Task
 
 from testing.services.create_completed_testing import CreateCompletedTesting
@@ -67,12 +67,12 @@ class TestingDetailView(LoginRequiredMixin, DetailView):
     @staticmethod
     def post(request, *args, **kwargs) -> None:
         task_form = TaskForm(request.POST or None)
-        task_setup_form = TaskSetupForm(request.POST or None)
+        setting_form = SettingForm(request.POST or None)
         context = {
             'task_form': task_form,
-            'task_setup_form': task_setup_form,
+            'setting_form': setting_form,
         }
-        is_valid_forms = task_form.is_valid() and task_setup_form.is_valid()
+        is_valid_forms = task_form.is_valid() and setting_form.is_valid()
         if is_valid_forms:
             user = request.user
             forms = context
@@ -104,15 +104,15 @@ class TaskDetailView(DetailView):
 def update_task(request, pk: int):
     task = get_object_or_404(Task, pk=pk)
     task_form = TaskForm(request.POST or None, instance=task)
-    task_setup = task.task_setup
-    task_setup_form = TaskSetupForm(request.POST or None, instance=task_setup)
+    setting = task.setting
+    setting_form = SettingForm(request.POST or None, instance=setting)
     context = {
         'task_form': task_form,
-        'task_setup_form': task_setup_form,
+        'setting_form': setting_form,
     }
     is_POST = request.method == 'POST'
-    is_valid_forms = task_form.is_valid() and task_setup_form.is_valid()
-    is_changed_data = task_form.changed_data or task_setup_form.changed_data
+    is_valid_forms = task_form.is_valid() and setting_form.is_valid()
+    is_changed_data = task_form.changed_data or setting_form.changed_data
     is_valid = is_POST and is_valid_forms and is_changed_data
     if is_valid:
         user = request.user
@@ -156,10 +156,10 @@ def delete_task(request, pk: int):
 @user_passes_test(is_teacher, login_url='user:home', redirect_field_name=None)
 def add_task_form(request):
     task_form = TaskForm()
-    task_setup_form = TaskSetupForm()
+    setting_form = SettingForm()
     context = {
         'task_form': task_form,
-        'task_setup_form': task_setup_form,
+        'setting_form': setting_form,
     }
     return render(request, 'testing/task_form.html', context)
 

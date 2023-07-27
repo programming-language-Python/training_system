@@ -3,8 +3,8 @@ from typing import Iterable, Mapping
 from django.core.handlers.wsgi import WSGIRequest
 
 from testing import models
-from testing.services.generate_code.types import Weight
 from testing.services.run_code.run_java.run_java import RunJava
+from testing.types import Weight
 from testing.utils.utils import round_up
 
 
@@ -27,16 +27,26 @@ class CreateCompletedTesting:
         self.weight_of_student_tasks = 0
         self.tasks = []
 
-    def execute(self):
+    def execute(self) -> None:
         self._add_tasks()
+        request_get = self.request.GET
+        title = request_get.get('testing_title')
+        start_passage = request_get.get('testing_start_passage')
+        testing_pk = request_get.get('testing_pk')
+        testing = models.Testing.objects.get(pk=testing_pk)
+        is_review_of_result_by_student = request_get.get('testing_is_review_of_result_by_student')
         models.CompletedTesting.objects.create(
+            title=title,
             assessment=self._get_assessment(),
             total_weight=self._get_total_weight(),
             weight_of_student_tasks=self.weight_of_student_tasks,
             tasks=self.tasks,
-            testing=self._get_testing(),
+            testing=testing,
+            start_passage=start_passage,
+            is_review_of_result_by_student=is_review_of_result_by_student,
             student=self.request.user
         )
+
         # TODO Расскоментить?
         # self._delete_session()
 

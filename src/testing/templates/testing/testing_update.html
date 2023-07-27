@@ -16,6 +16,11 @@
                 {{ form.is_published }}
                 {{ form.is_published.errors }}
             </div>
+            <div class="testing__is-review-of-result-by-student">
+                {{ form.is_review_of_result_by_student.label }}
+                {{ form.is_review_of_result_by_student }}
+                {{ form.is_review_of_result_by_student.errors }}
+            </div>
         </section>
         <button type="submit"
                 hx-post="{% url 'testing:testing_update' testing.pk %}"

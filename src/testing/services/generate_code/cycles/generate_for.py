@@ -1,13 +1,12 @@
 from random import choice
 
-from testing.services.generate_code import abstractions
+from testing import abstractions
+from testing.interfaces import IBody, ISimpleCondition, ICompoundCondition
 from testing.services.generate_code.check_for_looping import check_step
 from testing.services.generate_code.config import COMPARISON_OPERATORS, \
     LOGICAL_OPERATORS, get_greater_and_less_comparison_operators, \
     COMPARISON_BOUND_TO_ARITHMETIC_OPERATORS, ARITHMETIC_OPERATORS
-from testing.services.generate_code.interfaces import IBody, \
-    ISimpleCondition, ICompoundCondition
-from testing.services.generate_code.types import ConditionType
+from testing.types import ConditionType
 from testing.utils.random_value import get_i, get_step, \
     get_random_dictionary_key, get_positive_int
 

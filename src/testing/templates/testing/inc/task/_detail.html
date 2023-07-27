@@ -1,7 +1,7 @@
 {% load model_manipulation %}
 
 <div class="task" hx-target="this">
-    {% with task.task_setup as task_setup %}
+    {% with task.setting as setting %}
         <div>
             <div class="uk-card uk-card-default uk-card-body">
                 <div class="uk-card-header">
@@ -17,59 +17,49 @@
                     <h4>Структура программы:</h4>
                     <div class="uk-text-justify">
                         <div>
-                            {#                            <p>#}
-                            {#                                {% get_verbose_name_for_field task_setup 'use_of_all_variables' %}:#}
-                            {#                                {% if task_setup.use_of_all_variables %}#}
-                            {#                                    Да#}
-                            {#                                {% else %}#}
-                            {#                                    Нет#}
-                            {#                                {% endif %}#}
-                            {#                            </p>#}
                             <div class="uk-margin">
                                 <span>
-                                    {% get_verbose_name_for_field task_setup 'is_if_operator' %}:
+                                    {% get_verbose_name_for_field setting 'is_if_operator' %}:
                                 </span>
                                 <div>
-                                    {{ task_setup.is_if_operator }}
+                                    {{ setting.is_if_operator }}
                                 </div>
                             </div>
                             <div class="uk-margin">
                                 <span>
-                                    {% get_verbose_name_for_field task_setup 'condition_of_if_operator' %}:
+                                    {% get_verbose_name_for_field setting 'condition_of_if_operator' %}:
                                 </span>
                                 <div>
-                                    {{ task_setup.condition_of_if_operator }}
+                                    {{ setting.condition_of_if_operator }}
                                 </div>
                             </div>
                             <div class="uk-margin">
                                 <span>
-                                    {% get_verbose_name_for_field task_setup 'presence_one_of_cycles' %}:
+                                    {% get_verbose_name_for_field setting 'cycle' %}:
                                 </span>
                                 <div>
-                                    {% if task_setup.presence_one_of_cycles.all %}
-                                        {{ task_setup.presence_one_of_cycles.all|join:', ' }}
+                                    {% if setting.cycle.all %}
+                                        {{ setting.cycle.all|join:', ' }}
                                     {% else %}
                                         Не выбрано
                                     {% endif %}
                                 </div>
                             </div>
-                            {#                        </div>#}
-                            {#                        <div>#}
                             <div class="uk-margin">
                                 <span>
-                                    {% get_verbose_name_for_field task_setup 'cycle_condition' %}:
+                                    {% get_verbose_name_for_field setting 'cycle_condition' %}:
                                 </span>
                                 <div>
-                                    {{ task_setup.cycle_condition }}
+                                    {{ setting.cycle_condition }}
                                 </div>
                             </div>
                             <div class="uk-margin">
                                 <span>
-                                    {% get_verbose_name_for_field task_setup 'operator_nesting' %}:
+                                    {% get_verbose_name_for_field setting 'operator_nesting' %}:
                                 </span>
                                 <div>
-                                    {% if task_setup.operator_nesting.all %}
-                                        {{ task_setup.operator_nesting.all|join:', ' }}
+                                    {% if setting.operator_nesting.all %}
+                                        {{ setting.operator_nesting.all|join:', ' }}
                                     {% else %}
                                         Не выбрано
                                     {% endif %}
@@ -78,10 +68,10 @@
                         </div>
                         <div class="uk-margin">
                                 <span>
-                                    {% get_verbose_name_for_field task_setup 'is_OOP' %}:
+                                    {% get_verbose_name_for_field setting 'is_OOP' %}:
                                 </span>
                             <div>
-                                {% if task_setup.is_OOP %}
+                                {% if setting.is_OOP %}
                                     Есть
                                 {% else %}
                                     Нет
@@ -90,10 +80,10 @@
                         </div>
                         <div class="uk-margin">
                                 <span>
-                                    {% get_verbose_name_for_field task_setup 'is_strings' %}:
+                                    {% get_verbose_name_for_field setting 'is_strings' %}:
                                 </span>
                             <div>
-                                {% if task_setup.is_strings %}
+                                {% if setting.is_strings %}
                                     Есть
                                 {% else %}
                                     Нет

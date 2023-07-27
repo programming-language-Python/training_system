@@ -1,10 +1,11 @@
+import datetime
 from typing import Mapping
 
 from django.db.models import Manager
 
 from testing.models import Task
 from testing.services.generate_code.generate_java import GenerateJava
-from testing.services.generate_code.types import Setting
+from testing.types import Setting
 
 
 class CreateContextForStudent:
@@ -23,22 +24,23 @@ class CreateContextForStudent:
         testing = [value for value in kwargs.values()][0]
         tasks = testing.task_set.all()
         for task in tasks:
-            task_setup = task.task_setup
+            setting = task.setting
             self.setting = Setting(
-                # 'use_of_all_variables': task_setup.use_of_all_variables,
-                is_if_operator=task_setup.is_if_operator,
-                condition_of_if_operator=task_setup.condition_of_if_operator,
-                presence_one_of_cycles=task_setup.presence_one_of_cycles.all(),
-                cycle_condition=task_setup.cycle_condition,
-                operator_nesting=task_setup.operator_nesting.all(),
-                is_OOP=task_setup.is_OOP,
-                is_strings=task_setup.is_strings
+                # 'use_of_all_variables': setting.use_of_all_variables,
+                is_if_operator=setting.is_if_operator,
+                condition_of_if_operator=setting.condition_of_if_operator,
+                cycle=setting.cycle.all(),
+                cycle_condition=setting.cycle_condition,
+                operator_nesting=setting.operator_nesting.all(),
+                is_OOP=setting.is_OOP,
+                is_strings=setting.is_strings
             )
             self._create_tasks_context(task)
             self.number += 1
         session_name = 'testing_' + str(testing.pk)
         self._create_session(session_name)
         self.context['testing'] = testing
+        self.context['start_passage'] = str(datetime.datetime.now())
         self.context['task_data'] = self.request.session[session_name]
         # TODO УДАЛИТЬ ПОТОМ!!!
         del self.request.session[session_name]

@@ -3,6 +3,9 @@
     <form action="{% url 'testing:completed_testing_create' %}" method="get">
         {% csrf_token %}
         <input name="testing_title" type="hidden" value="{{ testing.title }}">
+        <input name="testing_start_passage" type="hidden" value="{{ start_passage }}">
+        <input name="testing_is_review_of_result_by_student" type="hidden"
+               value="{{ testing.is_review_of_result_by_student }}">
         <input name="testing_pk" type="hidden" value="{{ testing.pk }}">
         <button class="uk-margin uk-button uk-button-primary" type="submit">Завершить тест</button>
         <div class="uk-grid-match uk-child-width-1-3@m" uk-grid>

@@ -1,0 +1,44 @@
+<h1 class="user__title">
+    <p>Добро пожаловать преподаватель</p>
+    <p>{{ user.last_name }} {{ user.first_name }} {{ user.patronymic }}</p>
+</h1>
+<h2>Студенты</h2>
+<form class="uk-margin" action="{% url 'user:search_student' %}">
+    <label>
+        <input class="uk-input uk-width-1-4" name="search" type="text" placeholder="Поиск" required>
+    </label>
+    <button class="uk-search-toggle" uk-search-icon type="submit" uk-tooltip="Поиск"></button>
+</form>
+<form action="{% url 'user:home' %}">
+    <button class="uk-margin uk-button uk-button-primary" type="submit">
+        Показать всех студентов
+    </button>
+</form>
+{% if home_list %}
+    <div class="uk-grid-small uk-child-width-expand@s uk-text-center" uk-grid>
+        <div>
+            <div class="uk-card uk-card-default uk-card-body">Группа</div>
+        </div>
+        <div>
+            <div class="uk-card uk-card-default uk-card-body">ФИО</div>
+        </div>
+    </div>
+    {% for student in home_list %}
+        <div class="uk-grid-small uk-child-width-expand@s uk-text-center" uk-grid>
+            <div>
+                <div class="uk-card uk-card-default uk-card-body">
+                    {{ student.student_group }}
+                </div>
+            </div>
+            <div>
+                <div class="uk-card uk-card-default uk-card-body">
+                    <a href="{{ student.get_absolute_url }}">
+                        {{ student.last_name }} {{ student.first_name }} {{ student.patronymic }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% else %}
+    <h2 class="uk-text-danger">Студенты не найдены</h2>
+{% endif %}

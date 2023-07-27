@@ -9,13 +9,13 @@ from . import models
 #     model = models.Testing
 
 
-# class TaskSetupInLineAdmin(admin.TabularInline):
-#     model = models.TaskSetup
+# class SettingInLineAdmin(admin.TabularInline):
+#     model = models.Setting
 
 
 @admin.register(models.Task)
 class TaskAdmin(admin.ModelAdmin):
-    list_display = ('id', 'weight', 'testing', 'task_setup', 'count',)
+    list_display = ('id', 'weight', 'testing', 'setting', 'count',)
     save_on_top = True
 
 
@@ -29,8 +29,8 @@ class TestingAdmin(admin.ModelAdmin):
     #
     # setting.short_description = 'settings'
 
-    # filter_vertical = [TaskSetupInLineAdmin]
-    # inlines = [TaskSetupInLineAdmin]
+    # filter_vertical = [SettingInLineAdmin]
+    # inlines = [SettingInLineAdmin]
     list_display = ('id', 'title')
     list_display_links = ('id',)
     search_fields = ('title',)
@@ -39,8 +39,8 @@ class TestingAdmin(admin.ModelAdmin):
     save_on_top = True
 
 
-@admin.register(models.TaskSetup)
-class TaskSetupAdmin(admin.ModelAdmin):
+@admin.register(models.Setting)
+class SettingAdmin(admin.ModelAdmin):
     def testing(self, user) -> str:
         testings = []
         for testing in user.testings.all():
@@ -49,19 +49,25 @@ class TaskSetupAdmin(admin.ModelAdmin):
 
     testing.short_description = 'testings'
     # inlines = [TestingInLineAdmin]
-    presence_one_of_cycles = {
+    cycle = {
         models.Cycle: {'widget': CheckboxSelectMultiple},
     }
-    list_display = ('id', 'is_if_operator', 'condition_of_if_operator',
-                    'cycle_condition')
+    list_display = (
+        'id',
+        'is_if_operator',
+        'condition_of_if_operator',
+        'cycle_condition'
+    )
     list_display_links = ('id',)
-    list_filter = ('id', 'is_if_operator', 'condition_of_if_operator', 'presence_one_of_cycles',
-                   'cycle_condition',
-                   'operator_nesting')
+    list_filter = (
+        'id',
+        'is_if_operator',
+        'condition_of_if_operator',
+        'cycle',
+        'cycle_condition',
+        'operator_nesting'
+    )
     save_on_top = True
-
-    class Media:
-        js = ("js/admin/form_task_setup.js",)
 
 
 @admin.register(models.Cycle)
@@ -73,12 +79,31 @@ class CycleAdmin(admin.ModelAdmin):
     save_on_top = True
 
 
+@admin.register(models.OperatorNesting)
+class OperatorNestingAdmin(admin.ModelAdmin):
+    list_display = ('id', 'title')
+    list_display_links = ('id', 'title')
+    search_fields = ('title',)
+    list_filter = ('id', 'title')
+    save_on_top = True
+
+
 @admin.register(models.CompletedTesting)
 class CompletedTestingAdmin(admin.ModelAdmin):
-    list_display = ('id', 'assessment', 'total_weight', 'weight_of_student_tasks', 'testing', 'student')
+    fields_ = (
+        'title',
+        'assessment',
+        'total_weight',
+        'weight_of_student_tasks',
+        'start_passage',
+        'end_passage',
+        'student'
+    )
+    readonly_fields = ('start_passage', 'end_passage',)
+    list_display = ('id',) + fields_
     list_display_links = ('id', 'student')
-    search_fields = ('assessment', 'total_weight', 'weight_of_student_tasks', 'testing', 'student')
-    list_filter = ('assessment', 'total_weight', 'weight_of_student_tasks', 'testing', 'student')
+    search_fields = fields_
+    list_filter = fields_
     save_on_top = True
 
 

@@ -1,6 +1,6 @@
 from django import forms
 
-from testing.models import TaskSetup, Cycle, OperatorNesting, Testing, Task
+from testing.models import Setting, Cycle, OperatorNesting, Testing, Task
 from user.models import StudentGroup
 
 CLASS_UK_SELECT = 'uk-select'
@@ -36,10 +36,24 @@ class TestingForm(forms.ModelForm):
             }
         )
     )
+    is_review_of_result_by_student = forms.BooleanField(
+        label='Просмотр результата студентом',
+        required=False,
+        widget=forms.CheckboxInput(
+            attrs={
+                'class': 'uk-checkbox'
+            }
+        )
+    )
 
     class Meta:
         model = Testing
-        fields = ('title', 'student_groups', 'is_published')
+        fields = (
+            'title',
+            'student_groups',
+            'is_published',
+            'is_review_of_result_by_student'
+        )
 
 
 class TaskForm(forms.ModelForm):
@@ -58,14 +72,13 @@ class TaskForm(forms.ModelForm):
         fields = ('weight',)
 
 
-class TaskSetupForm(forms.ModelForm):
-    be_present = TaskSetup.IsOperator.be_present
-    absent = TaskSetup.IsOperator.absent
+class SettingForm(forms.ModelForm):
+    BE_PRESENT = 'Присутствует'
+    ABSENT = 'Отсутствует'
     choices_is_operator = (
-        (be_present, be_present),
-        (absent, absent)
+        (BE_PRESENT, BE_PRESENT),
+        (ABSENT, ABSENT)
     )
-    # use_of_all_variables = forms.CheckboxInput()
     is_if_operator = forms.ChoiceField(
         label='Наличие оператора if',
         widget=forms.Select(
@@ -76,12 +89,12 @@ class TaskSetupForm(forms.ModelForm):
         choices=choices_is_operator
     )
 
-    simple = TaskSetup.Condition.simple
-    composite = TaskSetup.Condition.composite
+    SIMPLE = 'Простое'
+    COMPOSITE = 'Составное'
     choices_condition_operator = (
         ('', '----'),
-        (simple, simple),
-        (composite, composite)
+        (SIMPLE, SIMPLE),
+        (COMPOSITE, COMPOSITE)
     )
     condition_of_if_operator = forms.ChoiceField(
         label='Условие оператора if',
@@ -94,11 +107,10 @@ class TaskSetupForm(forms.ModelForm):
         ),
         choices=choices_condition_operator
     )
-    presence_one_of_cycles = forms.ModelMultipleChoiceField(
-        label='Наличие одного из следующих циклов',
+    cycle = forms.ModelMultipleChoiceField(
+        label='Цикл',
         required=False,
-        widget=forms.CheckboxSelectMultiple(
-        ),
+        widget=forms.CheckboxSelectMultiple(),
         to_field_name='title',
         queryset=Cycle.objects.all()
     )
@@ -124,15 +136,6 @@ class TaskSetupForm(forms.ModelForm):
     is_strings = forms.CheckboxInput()
 
     class Meta:
-        model = TaskSetup
+        model = Setting
         fields = '__all__'
         exclude = ['users', 'testing']
-
-# TaskSetupFormSet = inlineformset_factory(
-#     Testing,
-#     TaskSetup,
-#     form=TaskSetupForm,
-#     min_num=1,  # минимальное количество форм, которые необходимо заполнить
-#     extra=1,  # количество пустых форм для отображения
-#     can_delete=False  # показать флажок в каждой форме, чтобы удалить строку
-# )

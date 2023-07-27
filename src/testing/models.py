@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.db import models
-from django.db.models import Sum
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
@@ -8,6 +7,7 @@ from testing.utils.utils import round_up
 from user.models import User, StudentGroup
 
 app_name = 'testing'
+MAX_LENGTH = 50
 
 
 class Task(models.Model):
@@ -17,10 +17,10 @@ class Task(models.Model):
         on_delete=models.CASCADE,
         verbose_name='Тестирование'
     )
-    task_setup = models.ForeignKey(
-        'TaskSetup',
+    setting = models.ForeignKey(
+        'Setting',
         on_delete=models.CASCADE,
-        verbose_name='Настройка задачи'
+        verbose_name='Настройка'
     )
     count = models.IntegerField(
         default=0,
@@ -37,7 +37,7 @@ class Task(models.Model):
 
 class Testing(models.Model):
     title = models.CharField(
-        max_length=25,
+        max_length=MAX_LENGTH,
         verbose_name='Наименование',
         unique=True
     )
@@ -56,6 +56,11 @@ class Testing(models.Model):
         default=True,
         verbose_name='Опубликовано'
     )
+    is_review_of_result_by_student = models.BooleanField(
+        blank=True,
+        default=True,
+        verbose_name='Просмотр результата студентом'
+    )
 
     def get_absolute_url(self):
         return reverse(app_name + ':testing_detail', kwargs={'pk': self.pk})
@@ -68,40 +73,38 @@ class Testing(models.Model):
         verbose_name_plural = 'Тестирования'
 
 
-class TaskSetup(models.Model):
-    class IsOperator(models.TextChoices):
-        be_present = 'Присутствует', _('Присутствует')
-        absent = 'Отсутствует', _('Отсутствует')
+class Setting(models.Model):
+    class OperatorPresenceType(models.TextChoices):
+        BE_PRESENT = 'Присутствует', _('Присутствует')
+        ABSENT = 'Отсутствует', _('Отсутствует')
 
-    class Condition(models.TextChoices):
-        simple = 'Простое', _('Простое')
-        composite = 'Составное', _('Составное')
+    class ConditionType(models.TextChoices):
+        SIMPLE = 'Простое', _('Простое')
+        COMPOSITE = 'Составное', _('Составное')
 
-    # use_of_all_variables = models.BooleanField(default=False,
-    #                                            verbose_name='Использование обязательно всех переменных')
     # TODO Сделать тип bool
     is_if_operator = models.CharField(
-        max_length=25,
-        choices=IsOperator.choices,
-        default=IsOperator.absent,
+        max_length=MAX_LENGTH,
+        choices=OperatorPresenceType.choices,
+        default=OperatorPresenceType.ABSENT,
         verbose_name='Наличие оператора if'
     )
     condition_of_if_operator = models.CharField(
-        max_length=25,
-        choices=Condition.choices,
+        max_length=MAX_LENGTH,
+        choices=ConditionType.choices,
         blank=True,
         null=True,
         verbose_name='Условие оператора if'
     )
-    presence_one_of_cycles = models.ManyToManyField(
+    cycle = models.ManyToManyField(
         'Cycle',
         blank=True,
         # null=True,
-        verbose_name='Наличие одного из следующих циклов'
+        verbose_name='Цикл'
     )
     cycle_condition = models.CharField(
-        max_length=25,
-        choices=Condition.choices,
+        max_length=MAX_LENGTH,
+        choices=ConditionType.choices,
         blank=True,
         null=True,
         verbose_name='Условие цикла'
@@ -121,18 +124,18 @@ class TaskSetup(models.Model):
     )
 
     def get_absolute_url(self):
-        return reverse(app_name + ':task_setup_detail', kwargs={'pk': self.pk})
+        return reverse(app_name + ':setting_detail', kwargs={'pk': self.pk})
 
     def __str__(self):
         return str(self.id)
 
     class Meta:
-        verbose_name = 'Настройка задачи'
-        verbose_name_plural = 'Настройки задач'
+        verbose_name = 'Настройка'
+        verbose_name_plural = 'Настройки'
 
 
 class Cycle(models.Model):
-    title = models.CharField(max_length=25, verbose_name='Цикл')
+    title = models.CharField(max_length=MAX_LENGTH, verbose_name='Цикл')
 
     def get_absolute_url(self):
         return reverse('cycle_detail', kwargs={'pk': self.pk})
@@ -147,7 +150,7 @@ class Cycle(models.Model):
 
 class OperatorNesting(models.Model):
     title = models.CharField(
-        max_length=25,
+        max_length=MAX_LENGTH,
         verbose_name='Вложенность операторов'
     )
 
@@ -163,10 +166,14 @@ class OperatorNesting(models.Model):
 
 
 class CompletedTesting(models.Model):
+    title = models.CharField(
+        max_length=MAX_LENGTH,
+        verbose_name='Наименование',
+        unique=True
+    )
     assessment = models.IntegerField(verbose_name='Оценка')
     total_weight = models.IntegerField(verbose_name='Общий вес')
-    weight_of_student_tasks = models.IntegerField(
-        verbose_name='Вес задач студента')
+    weight_of_student_tasks = models.IntegerField(verbose_name='Вес задач студента')
     tasks = models.JSONField(verbose_name='Задачи')
     testing = models.ForeignKey(
         Testing,
@@ -174,7 +181,16 @@ class CompletedTesting(models.Model):
         null=True,
         verbose_name='Тестирование'
     )
-    # date_of_passage = models.DateTimeField(auto_now_add=True)
+    start_passage = models.DateTimeField(verbose_name='Начало прохождения')
+    end_passage = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Окончание прохождения'
+    )
+    is_review_of_result_by_student = models.BooleanField(
+        blank=True,
+        default=True,
+        verbose_name='Просмотр результата студентом'
+    )
     student = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,

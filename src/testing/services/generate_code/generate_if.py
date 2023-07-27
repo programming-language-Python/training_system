@@ -1,11 +1,10 @@
 from random import choice
 
-from testing.services.generate_code import abstractions
+from testing import abstractions
 from testing.services.generate_code.config import COMPARISON_OPERATORS, \
     LOGICAL_OPERATORS, ARITHMETIC_OPERATORS
-from testing.services.generate_code.interfaces import IBody, ICondition, \
-    ICompoundCondition
-from testing.services.generate_code.types import ConditionType
+from testing.interfaces import IBody, ICondition, ICompoundCondition
+from testing.types import ConditionType
 from testing.utils.random_value import get_positive_int
 
 

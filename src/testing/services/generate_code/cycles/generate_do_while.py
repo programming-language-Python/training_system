@@ -1,5 +1,5 @@
 from testing.services.generate_code.cycles.generate_while import GenerateWhile
-from testing.services.generate_code.types import ConditionType
+from testing.types import ConditionType
 
 
 class GenerateDoWhile(GenerateWhile):

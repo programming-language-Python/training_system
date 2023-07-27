@@ -1,9 +1,9 @@
 from random import choice
 
-from testing.services.generate_code import abstractions
+from testing import abstractions
 from testing.services.generate_code.config import \
     INCREMENT_ARITHMETIC_OPERATORS, DECREMENT_ARITHMETIC_OPERATORS
-from testing.services.generate_code.types import Variable
+from testing.types import Variable
 from testing.utils.random_value import get_step_starting_from_2, get_step
 
 
