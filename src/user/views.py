@@ -5,6 +5,7 @@ from django.db.models.functions import Concat
 from django.views.generic import ListView, DetailView
 
 from testing.models import CompletedTesting
+from testing.services.find_testing import find_completed_testings
 from .forms import UserLoginForm
 from .models import User
 
@@ -24,16 +25,11 @@ class HomeListView(LoginRequiredMixin, ListView):
             return User.objects.filter(is_teacher=False)
         query = self.request.GET.get('search')
         if query:
-            return self._find_completed_testings(query).order_by('-pub_date')
+            return find_completed_testings(
+                user=self.request.user,
+                query=query
+            )
         return CompletedTesting.objects.filter(student=self.request.user)
-
-    def _find_completed_testings(self, query):
-        q_obj = Q(student=self.request.user)
-        if query.isdigit():
-            q_obj &= Q(assessment=query)
-        else:
-            q_obj &= Q(testing__title=query)
-        return CompletedTesting.objects.filter(q_obj)
 
 
 class SearchStudentView(HomeListView):

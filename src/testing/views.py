@@ -14,6 +14,7 @@ from testing.services.create_completed_testing import CreateCompletedTesting
 from testing.services.create_context_for_student import CreateContextForStudent
 from testing.services.decorators import is_teacher
 from testing.services.filter_testing import FilterTesting
+from testing.services.find_testing import find_testings
 from testing.services.task_service import TaskService, delete, increase_count
 
 
@@ -30,13 +31,18 @@ class TestingListView(LoginRequiredMixin, ListView):
     login_url = 'user:login'
     model = Testing
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         query = self.request.GET.get('search')
-        return self._get_filtered_testing(query)
+        if query:
+            return find_testings(
+                user=self.request.user,
+                title=query
+            )
+        return self._get_filtered_testing()
 
-    def _get_filtered_testing(self, query: QuerySet) -> QuerySet:
+    def _get_filtered_testing(self) -> QuerySet:
         user = self.request.user
-        filter_testing = FilterTesting(user, query)
+        filter_testing = FilterTesting(user)
         return filter_testing.execute()
 
     def get_context_data(self, *, object_list=None, **kwargs):
