@@ -1,6 +1,7 @@
 from django import forms
 
 from testing.models import Setting, Cycle, OperatorNesting, Testing, Task
+from testing.types import OperatorPresenceType, ConditionType
 from user.models import StudentGroup
 
 CLASS_UK_SELECT = 'uk-select'
@@ -134,6 +135,37 @@ class SettingForm(forms.ModelForm):
     )
     is_OOP = forms.CheckboxInput()
     is_strings = forms.CheckboxInput()
+
+    def clean(self):
+        cleaned_data = super().clean()
+        is_if_operator = cleaned_data.get('is_if_operator')
+        cycle = cleaned_data.get('cycle')
+        is_OOP = cleaned_data.get('is_OOP')
+        is_strings = cleaned_data.get('is_strings')
+
+        is_absent_if_operator = is_if_operator == OperatorPresenceType.ABSENT
+        if is_absent_if_operator:
+            cleaned_data['condition_of_if_operator'] = ConditionType.SIMPLE
+        if cycle:
+            cleaned_data['cycle_condition'] = ConditionType.SIMPLE
+        is_lock_nesting_of_operators = is_absent_if_operator or not cycle
+        if is_lock_nesting_of_operators:
+            cleaned_data['operator_nesting'] = OperatorNesting.objects.none()
+        if is_OOP:
+            cleaned_data = self._set_default_basic_fields(cleaned_data)
+            cleaned_data['is_strings'] = False
+        if is_strings:
+            cleaned_data = self._set_default_basic_fields(cleaned_data)
+            cleaned_data['is_OOP'] = False
+
+    @staticmethod
+    def _set_default_basic_fields(cleaned_data: dict) -> dict:
+        cleaned_data['is_if_operator'] = OperatorPresenceType.ABSENT
+        cleaned_data['condition_of_if_operator'] = ConditionType.SIMPLE
+        cleaned_data['cycle'] = Cycle.objects.none()
+        cleaned_data['cycle_condition'] = ConditionType.SIMPLE
+        cleaned_data['operator_nesting'] = OperatorNesting.objects.none()
+        return cleaned_data
 
     class Meta:
         model = Setting

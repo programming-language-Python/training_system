@@ -56,7 +56,6 @@ class GenerateJava(abstractions.Setting, abstractions.Variable):
         return generate_operator_nesting.generate_condition_nested_in_cycle()
 
     def _get_cycle_nested_in_condition(self) -> str:
-        # TODO variable_service избыточна?
         generate_operator_nesting = GenerateOperatorNesting(
             condition=self.get_condition(),
             cycle=self.get_cycle()
@@ -74,7 +73,6 @@ class GenerateJava(abstractions.Setting, abstractions.Variable):
         if is_cycle:
             return self.get_cycle()
 
-    # TODO сделать на проверку бесконечного выполнения
     def _get_random_order_of_operators(self) -> str:
         operators = [self.get_condition(), self.get_cycle()]
         operator_1 = choice(operators)

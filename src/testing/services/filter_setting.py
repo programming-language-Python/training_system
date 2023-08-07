@@ -6,6 +6,11 @@ from django.forms import ModelMultipleChoiceField, Form, ChoiceField
 from testing.models import Setting
 from testing.types import Cycle
 
+PRIORITY_FIELDS = (
+    'is_OOP',
+    'is_strings'
+)
+
 
 class FilterSetting:
     setting_filter: Manager[Setting]
@@ -17,7 +22,7 @@ class FilterSetting:
         self.setting_form = setting_form
         self.q_obj = Q()
 
-    def execute(self) -> Manager:
+    def execute(self) -> Manager[Setting]:
         for field_name, field in self.setting_form.fields.items():
             self._filter_field(field_name, field)
         return self.setting_filter.filter(self.q_obj)
