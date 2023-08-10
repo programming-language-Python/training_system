@@ -2,7 +2,7 @@
 {% load model_manipulation %}
 <li>
     {% if user.is_teacher %}
-        <a class="uk-accordion-title uk-text-lead" href="#">
+        <a class="uk-accordion-title uk-text-lead" href="#testing{{ testing.pk }}">
             Тест {{ completed_testing.testing }}
         </a>
     {% else %}

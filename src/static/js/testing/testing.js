@@ -5,7 +5,8 @@ $(document).ready(function () {
     putDownNumbering();
 
     // testing
-    $("#btn-add-task-setting").click(blockTasks);
+    $("#btn-add-task").on("click", blockTasks);
+    $("#btn-update-testing").on("click", blockTasks);
 
     // task
     $taskList.on("click", "[name = 'btn-update']", () => {

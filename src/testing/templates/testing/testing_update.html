@@ -1,4 +1,4 @@
-<div class="uk-margin" hx-target="this" hx-swap="outerHTML">
+<div class="uk-margin">
     <form class="form" method="POST">
         {% csrf_token %}
         <section class="form__testing testing">
@@ -22,10 +22,11 @@
                 {{ form.is_review_of_result_by_student.errors }}
             </div>
         </section>
-        <button type="submit"
+        <button onclick="location.reload()"
+                type="submit"
                 hx-post="{% url 'testing:testing_update' testing.pk %}"
-                hx-target="#wrapper"
-                hx-swap="outerHTML"
+                {#                hx-target="#wrapper"#}
+                {#                hx-swap="outerHTML"#}
                 uk-icon="refresh"
                 uk-tooltip="Обновить">
         </button>

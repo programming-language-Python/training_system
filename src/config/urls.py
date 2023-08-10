@@ -23,6 +23,7 @@ urlpatterns = [
     path('', include('user.urls', namespace='user')),
     path('', include('testing.urls', namespace='testing')),
     path('__debug__/', include('debug_toolbar.urls')),
+    path('', include('pwa.urls')),
 ]
 
 if settings.DEBUG:

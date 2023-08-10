@@ -14,7 +14,13 @@ $(document).ready(function () {
             $cycleCondition = $('#id_cycle_condition'),
             $operatorNesting = $('#id_operator_nesting'),
             $isOOP = $('#id_is_OOP'),
-            $isStrings = $('#id_is_strings');
+            $isStrings = $('#id_is_strings'),
+
+            checkboxCycle = $cycle.find('input:checkbox'),
+
+            valueIsIfOperator = $isIfOperator.val(),
+            firstSelectValue = $isIfOperator.find('option:first').val(),
+            isBePresent = valueIsIfOperator === firstSelectValue;
         const CLASS_DISABLED = "disabled";
         $('option[value=""]').hide();
         blockOrUnblockFields();
@@ -23,17 +29,22 @@ $(document).ready(function () {
             blockOrUnlockFieldOperatorNesting();
             blockOrUnblockFieldConditionOfIfOperator();
             blockOrUnblockFieldCycleCondition();
-            blockOrUnlockFieldsDependingOnConditionAndCycle();
+            if ($isOOP.is(':checked')) {
+                blockOrUnlockAllFieldsExceptOne($isOOP);
+            }
+            $isOOP.click(() => blockOrUnlockAllFieldsExceptOne($isOOP));
+            if ($isStrings.is(':checked')) {
+                blockOrUnlockAllFieldsExceptOne($isStrings);
+            }
+            $isStrings.click(() => blockOrUnlockAllFieldsExceptOne($isStrings));
         }
 
         function blockOrUnlockFieldOperatorNesting() {
             let valueIsIfOperator = $isIfOperator.val(),
                 firstSelectValue = $isIfOperator.find('option:first').val(),
                 isIfOperator = valueIsIfOperator === firstSelectValue,
-                checkboxCycle = $cycle.find('input:checkbox'),
-                isCycle = checkboxCycle.is(":checked"),
                 checkbox_operator_nesting = $operatorNesting.find('input:checkbox');
-            if (isIfOperator && isCycle) {
+            if (isIfOperator && checkboxCycle.is(':checked')) {
                 unlock($operatorNesting)
                 checkbox_operator_nesting.removeAttr(CLASS_DISABLED);
             } else {
@@ -51,10 +62,7 @@ $(document).ready(function () {
         }
 
         function blockOrUnblockFieldConditionOfIfOperator() {
-            let valueIsIfOperator = $isIfOperator.val(),
-                firstSelectValue = $isIfOperator.find('option:first').val(),
-                is_be_present = valueIsIfOperator === firstSelectValue;
-            if (is_be_present) {
+            if (isBePresent) {
                 unlock($conditionOfIfOperator);
             } else {
                 block($conditionOfIfOperator);
@@ -75,7 +83,6 @@ $(document).ready(function () {
         }
 
         function blockOrUnblockFieldCycleCondition() {
-            let checkboxCycle = $cycle.find('input:checkbox')
             if (checkboxCycle.is(':checked')) {
                 unlock($cycleCondition);
             } else {
@@ -91,48 +98,22 @@ $(document).ready(function () {
             })
         }
 
-        function blockOrUnlockFieldsDependingOnConditionAndCycle() {
-            let valueIsIfOperator = $isIfOperator.val(),
-                firstSelectValue = $isIfOperator.find('option:first').val(),
-                isIfOperator = valueIsIfOperator === firstSelectValue,
-
-                checkboxCycle = $cycle.find('input:checkbox'),
-                isCycle = checkboxCycle.is(":checked"),
-
-                isBlock = isIfOperator || isCycle;
-            if (isBlock) {
-                blockFieldsDependingOnConditionAndCycle();
-            } else {
-                unlockFieldsDependingOnConditionAndCycle();
-            }
-            checkboxCycle.click(() => {
-                let valueIsIfOperator = $isIfOperator.val(),
-                    isIfOperator = valueIsIfOperator === firstSelectValue;
-                if (isIfOperator || checkboxCycle.is(':checked')) {
-                    blockFieldsDependingOnConditionAndCycle();
+        function blockOrUnlockAllFieldsExceptOne($doNotBlockField) {
+            $('.task__body div[id], .task__body select[id], .task__body input[id]').each(function (i, obj) {
+                let $field = $('#' + obj.id),
+                    isCycle = checkboxCycle.is(":checked"),
+                    isContinue = obj.id === $doNotBlockField.attr('id')
+                        || $field.is($cycleCondition) && !isCycle
+                        || $field.is($conditionOfIfOperator) && !isBePresent;
+                if (isContinue) {
+                    return;
+                }
+                if ($field.parent().hasClass(CLASS_DISABLED)) {
+                    unlock($field);
                 } else {
-                    unlockFieldsDependingOnConditionAndCycle();
+                    block($field);
                 }
             });
-            $isIfOperator.change(() => {
-                let valueIsIfOperator = $isIfOperator.val(),
-                    isIfOperator = valueIsIfOperator === firstSelectValue;
-                if (isIfOperator || checkboxCycle.is(':checked')) {
-                    blockFieldsDependingOnConditionAndCycle();
-                } else {
-                    unlockFieldsDependingOnConditionAndCycle();
-                }
-            });
-        }
-
-        function blockFieldsDependingOnConditionAndCycle() {
-            block($isOOP);
-            block($isStrings);
-        }
-
-        function unlockFieldsDependingOnConditionAndCycle() {
-            unlock($isOOP);
-            unlock($isStrings);
         }
     }
 });

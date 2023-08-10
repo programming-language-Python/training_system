@@ -1,5 +1,6 @@
 {% load static %}
 {% load cache %}
+{% load pwa %}
 <!doctype html>
 <html lang="ru">
 <head>
@@ -7,9 +8,10 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>{% block title %}Система обучения{% endblock %}</title>
+    <title>{% block title %}Тренажёрно-обучающая система{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/uikit/uikit.min.css' %}"/>
     <link rel="stylesheet" href="{% static 'css/style.css' %}"/>
+    <link rel="shortcut icon" href="{% static 'img/logo.png' %}" type="images/png">
     {% block link %}{% endblock %}
     <script src="{% static 'js/uikit/uikit.min.js' %}"></script>
     <script src="{% static 'js/uikit/uikit-icons.min.js' %}"></script>
@@ -17,6 +19,7 @@
             integrity="sha384-oGA+prIp5Vchu6we2YkI51UtVzN9Jpx2Z7PnR1I78PnZlN8LkrCT4lqqqmDkyrvI"
             crossorigin="anonymous"></script>
     {#    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.js"/>#}
+    {% progressive_web_app_meta %}
     {% block head_script %}{% endblock %}
 </head>
 <body>
