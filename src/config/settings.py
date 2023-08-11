@@ -43,6 +43,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # 'testing.apps.TestingConfig',
+    # 'user.apps.UserConfig',
+
     'jquery',
     'testing',
     'user',
@@ -87,18 +90,18 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
-    # }
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': config('NAME'),
-        'USER': config('USER'),
-        'PASSWORD': config('PASSWORD'),
-        'HOST': config('HOST'),
-        'PORT': config('PORT'),
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #     'NAME': config('NAME'),
+    #     'USER': config('USER'),
+    #     'PASSWORD': config('PASSWORD'),
+    #     'HOST': config('HOST'),
+    #     'PORT': config('PORT'),
+    # }
 }
 
 # Password validation
@@ -136,7 +139,14 @@ USE_TZ = True
 
 # Tell Django to copy statics to the `staticfiles` directory
 # in your application directory on Render.
-STATIC_ROOT = BASE_DIR / 'static'
+
+# Following settings only make sense on production and may break development environments.
+if not DEBUG:
+    STATIC_ROOT = BASE_DIR / 'static'
+
+    # Turn on WhiteNoise storage backend that takes care of compressing static files
+    # and creating unique names for each version so they can safely be cached forever.
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'config/static',
