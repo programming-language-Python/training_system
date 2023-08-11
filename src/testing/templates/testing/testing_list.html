@@ -36,7 +36,13 @@
                                 </div>
                                 {% if user.is_teacher %}
                                     <div class="uk-card-body">
-                                        <p>Группы: {{ testing.student_groups.all|join:', ' }}</p>
+                                        {% with testing.student_groups.all as student_groups %}
+                                            {% if student_groups %}
+                                                <p>Группы: {{ student_groups|join:', ' }}</p>
+                                            {% else %}
+                                                <p>Группы: не выбраны</p>
+                                            {% endif %}
+                                        {% endwith %}
                                     </div>
                                 {% endif %}
                                 <div class="uk-card-footer">

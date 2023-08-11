@@ -43,6 +43,7 @@ class Testing(models.Model):
     )
     student_groups = models.ManyToManyField(
         StudentGroup,
+        blank=True,
         verbose_name='Группы студентов'
     )
     user = models.ForeignKey(

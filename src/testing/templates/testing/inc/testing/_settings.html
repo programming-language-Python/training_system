@@ -1,0 +1,74 @@
+<section class="content__testing-settings" id="testing-settings">
+    {% if user.is_teacher %}
+        <h2>
+            Создать настройки задач для тестирования {{ testing.title }}
+        </h2>
+        <div class="header__student-groups uk-text-center">
+            <ul class="uk-margin-small" uk-accordion>
+                <li>
+                    {% with testing.student_groups.all as student_groups %}
+                        {% if student_groups %}
+                            <a class="uk-accordion-title" href="#">Группы студентов</a>
+                            <div class="uk-accordion-content">
+                                {% for student_group in testing.student_groups.all %}
+                                    <div>
+                                        {{ student_group }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            Группы студентов не выбраны
+                        {% endif %}
+                    {% endwith %}
+                </li>
+            </ul>
+        </div>
+        <div>
+            Опубликовано:
+            {% if testing.is_published %}
+                Да
+            {% else %}
+                Нет
+            {% endif %}
+        </div>
+        <div>
+            Просмотр результата студентом:
+            {% if testing.is_review_of_result_by_student %}
+                Да
+            {% else %}
+                Нет
+            {% endif %}
+        </div>
+        <div name="btns-testing" class="uk-flex uk-flex-column">
+            <div class="uk-margin-small-top">
+                <a class="uk-width-1-5 uk-button uk-button-primary"
+                   href="{% url 'testing:testing_update' testing.pk %}"
+                   id="btn-update-testing">
+                    Обновить тестирование
+                </a>
+            </div>
+            <div class="uk-margin-small-top">
+                <form action="{% url 'testing:testing_delete' testing.pk %}">
+                    <button type="submit" class="uk-width-1-5 uk-button uk-button-danger">
+                        Удалить тестирование
+                    </button>
+                </form>
+            </div>
+            <div class="uk-margin-small-top">
+                <button id="btn-add-task"
+                        name="btn-add-task"
+                        class="uk-width-1-5 uk-button uk-button-secondary"
+                        type="button"
+                        hx-get="{% url 'testing:add_task_form' %}"
+                        hx-target="#task-list"
+                        hx-swap="afterbegin">
+                    Добавить задачу
+                </button>
+            </div>
+        </div>
+    {% else %}
+        <h2>
+            Тест {{ testing.title }}
+        </h2>
+    {% endif %}
+</section>

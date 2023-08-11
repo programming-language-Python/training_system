@@ -76,7 +76,7 @@ class TestingDetailView(LoginRequiredMixin, DetailView):
         setting_form = SettingForm(request.POST or None)
         context = {
             'task_form': task_form,
-            'setting_form': setting_form,
+            'setting_form': setting_form
         }
         is_valid_forms = task_form.is_valid() and setting_form.is_valid()
         if is_valid_forms:

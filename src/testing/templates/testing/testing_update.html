@@ -1,7 +1,10 @@
-<div class="uk-margin">
-    <form class="form" method="POST">
-        {% csrf_token %}
-        <section class="form__testing testing">
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+    <div class="uk-margin">
+        <form class="form__testing testing" method="POST">
+            {% csrf_token %}
             <h2 class="testing__title">
                 Создать настройки задач для тестирования {{ form.title }}
                 {{ form.title.errors }}
@@ -21,18 +24,11 @@
                 {{ form.is_review_of_result_by_student }}
                 {{ form.is_review_of_result_by_student.errors }}
             </div>
-        </section>
-        <button onclick="location.reload()"
-                type="submit"
-                hx-post="{% url 'testing:testing_update' testing.pk %}"
-                {#                hx-target="#wrapper"#}
-                {#                hx-swap="outerHTML"#}
-                uk-icon="refresh"
-                uk-tooltip="Обновить">
-        </button>
-        <a href="{% url 'testing:testing_detail' testing.pk %}"
-           uk-icon="close"
-           uk-tooltip="Отмена">
-        </a>
-    </form>
-</div>
+            <button type="submit" uk-icon="refresh" uk-tooltip="Обновить"></button>
+            <a href="{% url 'testing:testing_detail' testing.pk %}"
+               uk-icon="close"
+               uk-tooltip="Отмена">
+            </a>
+        </form>
+    </div>
+{% endblock %}
