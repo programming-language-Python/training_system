@@ -1,0 +1,11 @@
+databases:
+  - name: db.sqlite3
+    databaseName: db.sqlite3
+    user: Admin
+
+services:
+  - type: web
+    name: config
+    runtime: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn config.wsgi:application"
