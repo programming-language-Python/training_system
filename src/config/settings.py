@@ -42,10 +42,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
-    'testing.apps.TestingConfig',
-    'user.apps.UserConfig',
-
     'jquery',
     'testing',
     'user',
