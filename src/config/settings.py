@@ -43,8 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # 'testing.apps.TestingConfig',
-    # 'user.apps.UserConfig',
+    'testing.apps.TestingConfig',
+    'user.apps.UserConfig',
 
     'jquery',
     'testing',
