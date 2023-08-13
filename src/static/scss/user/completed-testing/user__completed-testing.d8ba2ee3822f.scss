@@ -1,0 +1,9 @@
+.completed-testing {
+  &_link {
+    all: unset;
+
+    &::before {
+      all: unset;
+    }
+  }
+}

@@ -1,0 +1,11 @@
+.testing {
+  &__title {
+    & h3 {
+      margin: 10px;
+    }
+  }
+
+  & .uk-card {
+    padding: 0;
+  }
+}
