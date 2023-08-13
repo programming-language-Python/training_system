@@ -211,3 +211,5 @@ PWA_APP_SCREENSHOTS = [
         "type": "image/png"
     }
 ]
+
+DEBUG_PROPAGATE_EXCEPTIONS = True
