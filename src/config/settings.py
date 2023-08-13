@@ -26,7 +26,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = 'RENDER' not in os.environ
 
-ALLOWED_HOSTS = ["test-training-system.onrender.com"]
+ALLOWED_HOSTS = ["test-training-system.onrender.com", ]
 
 # Deploy Render
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'jquery',
     'testing',
     'user',
-    # 'debug_toolbar',
+    'debug_toolbar',
     'pwa',
 ]
 
@@ -164,7 +164,7 @@ number_of_forms = 0
 mimetypes.add_type("text/javascript", ".js", True)
 
 # для debug_toolbar
-# INTERNAL_IPS = ['127.0.0.1']
+INTERNAL_IPS = ['127.0.0.1']
 
 CACHE_BACKEND = 'dummy://'
 
