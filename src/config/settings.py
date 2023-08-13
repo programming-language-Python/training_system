@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'jquery',
     'testing',
     'user',
-    'debug_toolbar',
+    # 'debug_toolbar',
     'pwa',
 ]
 
@@ -135,7 +135,12 @@ USE_TZ = True
 
 # Tell Django to copy statics to the `staticfiles` directory
 # in your application directory on Render.
-
+STATIC_URL = 'static/'
+STATICFILES_DIRS = [
+    BASE_DIR / 'config/static',
+    BASE_DIR / 'testing/static',
+    BASE_DIR / 'user/static',
+]
 # Following settings only make sense on production and may break development environments.
 if not DEBUG:
     STATIC_ROOT = BASE_DIR / 'static'
@@ -143,11 +148,6 @@ if not DEBUG:
     # Turn on WhiteNoise storage backend that takes care of compressing static files
     # and creating unique names for each version so they can safely be cached forever.
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-STATIC_URL = 'static/'
-STATICFILES_DIRS = [
-    BASE_DIR / 'config/static',
-    BASE_DIR / 'testing/static',
-]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
