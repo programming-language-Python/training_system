@@ -164,7 +164,7 @@ number_of_forms = 0
 mimetypes.add_type("text/javascript", ".js", True)
 
 # для debug_toolbar
-INTERNAL_IPS = ['127.0.0.1']
+# INTERNAL_IPS = ['127.0.0.1']
 
 CACHE_BACKEND = 'dummy://'
 
