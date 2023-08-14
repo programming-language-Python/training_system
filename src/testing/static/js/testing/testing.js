@@ -5,13 +5,11 @@ $(document).ready(function () {
     putDownNumbering();
 
     // testing
-    $("#testing-settings").on("click", "#btn-add-task", () => {
+    const $testingSetings = $("#testing-settings");
+    $testingSetings.on("click", "#btn-add-task", () => {
         setTimeout(blockTasks, TIMEOUT);
     });
-    // $("#btn-add-task").on("click", () => {
-    //     blockTasks();
-    // });
-    $("#btn-update-testing").on("click", blockTasks);
+    $testingSetings.on("click", "btn-update-testing", blockTasks);
 
     // task
     $taskList.on("click", "[name = 'btn-update']", () => {
