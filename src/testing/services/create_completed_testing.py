@@ -48,7 +48,7 @@ class CreateCompletedTesting:
         )
 
         # TODO Расскоментить?
-        # self._delete_session()
+        self._delete_session()
 
     def _add_tasks(self):
         for self.task_weight, self.user_answer, self.code in zip(self.task_weights, self.user_answers, self.codes):

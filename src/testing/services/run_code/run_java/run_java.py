@@ -7,8 +7,9 @@ from testing.utils.utils import write_to_file
 
 
 class RunJava:
+    code: str
     class_name_main: str
-    class_name_example: str
+    class_name_example: str | None
     file: str
 
     def __init__(self, code: str):
@@ -20,6 +21,8 @@ class RunJava:
         if is_class_example:
             self.class_name_example = f'Example_{int(time.time())}'
             self.code = self.code.replace('Example', self.class_name_example)
+        else:
+            self.class_name_example = None
 
         is_class_main = 'class Main' in self.code
         if is_class_main:

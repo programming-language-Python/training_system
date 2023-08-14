@@ -43,7 +43,7 @@ class CreateContextForStudent:
         self.context['start_passage'] = str(datetime.datetime.now())
         self.context['task_data'] = self.request.session[session_name]
         # TODO УДАЛИТЬ ПОТОМ!!!
-        del self.request.session[session_name]
+        # del self.request.session[session_name]
         self.context['tasks'] = tasks
         return self.context
 
