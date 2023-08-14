@@ -5,7 +5,12 @@ $(document).ready(function () {
     putDownNumbering();
 
     // testing
-    $("#btn-add-task").on("click", blockTasks);
+    $("#testing-settings").on("click", "#btn-add-task", () => {
+        setTimeout(blockTasks, TIMEOUT);
+    });
+    // $("#btn-add-task").on("click", () => {
+    //     blockTasks();
+    // });
     $("#btn-update-testing").on("click", blockTasks);
 
     // task
