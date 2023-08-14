@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    const TIMEOUT = 500;
+    const TIMEOUT = 1000;
     $("#task-list").on("click", ".btn-update", () => {
         setTimeout(blockOrUnblockFields, TIMEOUT);
     });

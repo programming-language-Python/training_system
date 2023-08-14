@@ -7,10 +7,11 @@ from testing.utils.utils import write_to_file
 
 
 class RunJava:
+    class_name_main: str
+    class_name_example: str
+    file: str
+
     def __init__(self, code: str):
-        self.class_name_main = None
-        self.class_name_example = None
-        self.file = None
         self.code = code
         self.set()
 

@@ -1,6 +1,6 @@
 $(document).ready(function () {
     let $taskList = $("#task-list");
-    const TIMEOUT = 500;
+    const TIMEOUT = 1000;
 
     putDownNumbering();
 
