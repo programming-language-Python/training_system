@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
-{% load static %}
+{#{% load static %}#}
 
-{% if not request.user.is_teacher %}
-    {% block link %}
-        <link rel="stylesheet" href="{% static 'css/user/completed-testing/user__completed-testing.css' %}"/>
-        <link rel="stylesheet" href="{% static 'css/testing/testing.css' %}">
-        <link rel="stylesheet" href="{% static 'css/testing/assessment/testing__assessment.css' %}">
-        <link rel="stylesheet" href="{% static 'css/task-student-list/header/task-student-list__header.css' %}">
-    {% endblock %}
-{% endif %}
+{#{% if not request.user.is_teacher %}#}
+{#    {% block link %}#}
+{#        <link rel="stylesheet" href="{% static 'css/user/completed-testing/user__completed-testing.css' %}"/>#}
+{#        <link rel="stylesheet" href="{% static 'css/testing/testing.css' %}">#}
+{#        <link rel="stylesheet" href="{% static 'css/testing/assessment/testing__assessment.css' %}">#}
+{#        <link rel="stylesheet" href="{% static 'css/task-student-list/header/task-student-list__header.css' %}">#}
+{#    {% endblock %}#}
+{#{% endif %}#}
 
 {% block content %}
     <section class="content__user user">

@@ -199,7 +199,7 @@ PWA_APP_ICONS_APPLE = [
 ]
 PWA_APP_SPLASH_SCREEN = [
     {
-        'src': '/static/img/фон страницы регистрации.jpg',
+        'src': '/static/img/background.jpg',
         'media': '(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)'
     }
 ]
@@ -214,7 +214,7 @@ PWA_APP_SHORTCUTS = [
 ]
 PWA_APP_SCREENSHOTS = [
     {
-        'src': '/static/img/фон страницы регистрации.jpg',
+        'src': '/static/img/background.jpg',
         'sizes': '750x1334',
         "type": "image/png"
     }

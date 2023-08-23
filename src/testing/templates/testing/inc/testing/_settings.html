@@ -10,7 +10,7 @@
                         {% if student_groups %}
                             <a class="uk-accordion-title" href="#">Группы студентов</a>
                             <div class="uk-accordion-content">
-                                {% for student_group in testing.student_groups.all %}
+                                {% for student_group in student_groups %}
                                     <div>
                                         {{ student_group }}
                                     </div>
