@@ -1,4 +1,16 @@
 .task {
+  &__card {
+    padding: 0;
+
+    .body {
+      padding: 0 30px;
+
+      & span {
+        font-weight: bold;
+      }
+    }
+  }
+
   &__code {
     overflow-x: hidden;
     font-size: 12px;
