@@ -2,33 +2,32 @@
 {% load model_manipulation %}
 <li>
     {% if user.is_teacher %}
-        <a class="uk-accordion-title uk-text-lead" href="#testing{{ testing.pk }}">
-            Тест {{ completed_testing.testing }}
+        <a class="uk-accordion-title uk-text-lead" href="#testing{{ completed_testing.pk }}">
+            Тест {{ completed_testing.title }}
         </a>
     {% else %}
-        {% with completed_testing.testing as testing %}
-            <a class="completed-testing_link" href="#testing{{ testing.pk }}" uk-toggle>
-                <div class="uk-grid-small uk-child-width-expand@s uk-text-center" uk-grid>
-                    <div>
-                        <div class="uk-card uk-card-default uk-card-body">
-                            {{ completed_testing.title }}
-                            <img class="icon" src="{% static 'img/eye.svg' %}" alt="dots icon">
-                        </div>
+        <a class="completed-testing_link" href="#testing{{ completed_testing.pk }}" uk-toggle>
+            <div class="uk-grid-small uk-child-width-expand@s uk-text-center" uk-grid>
+                <div>
+                    <div class="uk-card uk-card-default uk-card-body">
+                        {{ completed_testing.title }}
+                        <img class="icon" src="{% static 'img/eye.svg' %}" alt="dots icon">
                     </div>
-                    <div>
-                        <div class="uk-card uk-card-default uk-card-body">
-                            {{ completed_testing.start_passage }}
-                        </div>
+                </div>
+                <div>
+                    <div class="uk-card uk-card-default uk-card-body">
+                        {{ completed_testing.start_passage }}
                     </div>
-                    <div>
-                        <div class="uk-card uk-card-default uk-card-body">
-                            {{ completed_testing.end_passage }}
-                        </div>
+                </div>
+                <div>
+                    <div class="uk-card uk-card-default uk-card-body">
+                        {{ completed_testing.end_passage }}
                     </div>
-                    <div>
-                        <div class="uk-card uk-card-default uk-card-body">
-                            {% with completed_testing.assessment as assessment %}
-                                <span class="assessment
+                </div>
+                <div>
+                    <div class="uk-card uk-card-default uk-card-body">
+                        {% with completed_testing.assessment as assessment %}
+                            <span class="assessment
                                 {% if assessment <= 2 %}
                                     two
                                 {% elif assessment == 3 %}
@@ -40,24 +39,24 @@
                                 {% endif %}">
                                     {{ assessment }}
                             </span>
-                            {% endwith %}
-                        </div>
+                        {% endwith %}
                     </div>
                 </div>
-            </a>
-            <div id="testing{{ testing.pk }}" class="uk-flex-top" uk-modal>
-                <div class="uk-modal-dialog uk-width-auto uk-margin-auto-vertical">
-                    <button class="uk-modal-close-outside" type="button" uk-close></button>
-                    <section class="content__testing testing" id="testing">
-                        <div>
-                            <div class="uk-card uk-card-default uk-card-body">
-                                <div class="testing__title uk-card-header" id="testing-title">
-                                    <div class="uk-grid-small uk-flex-middle" uk-grid>
-                                        <div class="uk-width-expand">
-                                            <h2>{{ completed_testing.title }}</h2>
-                                            <h3>
-                                                {% with completed_testing.assessment as assessment %}
-                                                    <span class="assessment
+            </div>
+        </a>
+        <div id="testing{{ completed_testing.pk }}" class="uk-flex-top" uk-modal>
+            <div class="uk-modal-dialog uk-width-auto uk-margin-auto-vertical">
+                <button class="uk-modal-close-outside" type="button" uk-close></button>
+                <section class="content__testing testing" id="testing">
+                    <div>
+                        <div class="uk-card uk-card-default uk-card-body">
+                            <div class="testing__title uk-card-header" id="testing-title">
+                                <div class="uk-grid-small uk-flex-middle" uk-grid>
+                                    <div class="uk-width-expand">
+                                        <h2>{{ completed_testing.title }}</h2>
+                                        <h3>
+                                            {% with completed_testing.assessment as assessment %}
+                                                <span class="assessment
                                                         {% if assessment <= 2 %}
                                                             two
                                                         {% elif assessment == 3 %}
@@ -70,11 +69,11 @@
                                                             {% get_verbose_name_for_field completed_testing 'assessment' %}:
                                                             {{ assessment }}
                                                     </span>
-                                                {% endwith %}
-                                            </h3>
-                                            <h3>
-                                                {% with completed_testing.assessment as assessment %}
-                                                    <span class="assessment
+                                            {% endwith %}
+                                        </h3>
+                                        <h3>
+                                            {% with completed_testing.assessment as assessment %}
+                                                <span class="assessment
                                         {% if assessment <= 2 %}
                                             two
                                         {% elif assessment == 3 %}
@@ -87,30 +86,29 @@
                                             {% get_verbose_name_for_field completed_testing 'assessment' %} в %:
                                             {{ completed_testing.get_assessment_in_percentage }}%
                                     </span>
-                                                {% endwith %}
-                                            </h3>
-                                            <h3>
-                                                {% get_verbose_name_for_field completed_testing 'total_weight' %}: {{ completed_testing.total_weight }}
-                                            </h3>
-                                            <h3>
-                                                {% get_verbose_name_for_field completed_testing 'weight_of_student_tasks' %}
-                                                : {{ completed_testing.weight_of_student_tasks }}
-                                            </h3>
-                                        </div>
+                                            {% endwith %}
+                                        </h3>
+                                        <h3>
+                                            {% get_verbose_name_for_field completed_testing 'total_weight' %}: {{ completed_testing.total_weight }}
+                                        </h3>
+                                        <h3>
+                                            {% get_verbose_name_for_field completed_testing 'weight_of_student_tasks' %}
+                                            : {{ completed_testing.weight_of_student_tasks }}
+                                        </h3>
                                     </div>
                                 </div>
-                                <section
-                                        class="content__task-student-list task-student-list uk-flex uk-flex-column uk-text-center uk-card-body"
-                                        id="task-student-list">
-                                    <ul class="uk-child-width-1-2@m" uk-grid>
-                                        {% include 'user/inc/testing/_task_completed_list.html' %}
-                                    </ul>
-                                </section>
                             </div>
+                            <section
+                                    class="content__task-student-list task-student-list uk-flex uk-flex-column uk-text-center uk-card-body"
+                                    id="task-student-list">
+                                <ul class="uk-child-width-1-2@m" uk-grid>
+                                    {% include 'user/inc/testing/_task_completed_list.html' %}
+                                </ul>
+                            </section>
                         </div>
-                    </section>
-                </div>
+                    </div>
+                </section>
             </div>
-        {% endwith %}
+        </div>
     {% endif %}
 </li>

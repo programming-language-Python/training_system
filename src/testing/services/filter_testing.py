@@ -1,6 +1,6 @@
 from django.db.models import QuerySet
 
-from testing.models import Testing, CompletedTesting
+from testing.models import Testing, CompletedTesting, Task
 from user.models import User
 
 
@@ -18,17 +18,25 @@ class FilterTesting:
         return Testing.objects.filter(**testing_info)
 
     def _get_for_student(self) -> QuerySet:
+        student_testing = self._get_non_empty_testings()
+        completed_testing = CompletedTesting.objects.filter(
+            testing__in=student_testing,
+            student=self.user
+        )
+        if completed_testing.exists():
+            titles_of_completed_tests = completed_testing.values_list('title', flat=True)
+            student_testing = student_testing.exclude(title__in=titles_of_completed_tests)
+        return student_testing
+
+    def _get_non_empty_testings(self) -> QuerySet:
         testing_info = {
             'is_published': True,
             'student_groups': self.user.student_group
         }
         student_testing = Testing.objects.filter(**testing_info)
-        student_testing_values = student_testing.values()
-        for testing in student_testing_values:
-            is_was_testing = CompletedTesting.objects.filter(
-                testing=testing['id'],
-                student=self.user
-            ).exists()
-            if is_was_testing:
-                student_testing = student_testing.exclude(id=testing['id'])
-        return student_testing
+        student_testing_ids = student_testing.values_list('id', flat=True)
+        ids_of_non_empty_testings = Task.objects.filter(
+            testing__in=student_testing_ids,
+            testing__isnull=False
+        ).values_list('testing', flat=True)
+        return Testing.objects.filter(id__in=ids_of_non_empty_testings)

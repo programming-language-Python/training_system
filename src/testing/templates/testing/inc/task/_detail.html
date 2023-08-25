@@ -13,7 +13,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="uk-card-body task__body body">
+                <div class="task__body body uk-card-body">
                     <h4>Структура программы:</h4>
                     <div class="uk-text-justify">
                         <div>
@@ -38,11 +38,13 @@
                                     {% get_verbose_name_for_field setting 'cycle' %}:
                                 </span>
                                 <div>
-                                    {% if setting.cycle.all %}
-                                        {{ setting.cycle.all|join:', ' }}
-                                    {% else %}
-                                        Не выбрано
-                                    {% endif %}
+                                    {% with setting.cycle.all as cycles %}
+                                        {% if cycles %}
+                                            {{ cycles|join:', ' }}
+                                        {% else %}
+                                            Не выбрано
+                                        {% endif %}
+                                    {% endwith %}
                                 </div>
                             </div>
                             <div class="uk-margin">
@@ -58,11 +60,13 @@
                                     {% get_verbose_name_for_field setting 'operator_nesting' %}:
                                 </span>
                                 <div>
-                                    {% if setting.operator_nesting.all %}
-                                        {{ setting.operator_nesting.all|join:', ' }}
-                                    {% else %}
-                                        Не выбрано
-                                    {% endif %}
+                                    {% with setting.operator_nesting.all as operators_nesting %}
+                                        {% if operators_nesting %}
+                                            {{ operators_nesting|join:', ' }}
+                                        {% else %}
+                                            Не выбрано
+                                        {% endif %}
+                                    {% endwith %}
                                 </div>
                             </div>
                         </div>

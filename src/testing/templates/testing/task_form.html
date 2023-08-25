@@ -2,7 +2,7 @@
     <form id="task-form" method="POST">
         {% csrf_token %}
         <div>
-            <div class="uk-card uk-card-default uk-card-body">
+            <div class="task__card uk-card uk-card-default uk-card-body">
                 <div class="uk-card-header">
                     {% if change_error %}
                         <span id="error" class="error">Ошибка: {{ change_error }}</span>
@@ -16,7 +16,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="uk-card-body task__body body">
+                <div class=" task__body body uk-card-body">
                     <h4>Структура программы:</h4>
                     <div>
                         {% for field in setting_form %}
