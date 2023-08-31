@@ -1,9 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
 
-{#{% block link %}#}
-{#    <link rel="stylesheet" href="{% static 'css/testing/app.css' %}">#}
-{#{% endblock %}#}
 {% block head_script %}
     <script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/testing/testing.js' %}"></script>
@@ -17,8 +14,8 @@
     </h2>
     {{ form }}
     {% if user.is_teacher %}
-        {% include 'testing/inc/task/_list.html' %}
+        {% include 'testing/inc/task/_teacher_task_list.html' %}
     {% else %}
-        {% include 'testing/inc/task/_student-list.html' %}
+        {% include 'testing/inc/task/_student_task_list.html' %}
     {% endif %}
 {% endblock %}

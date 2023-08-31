@@ -3,7 +3,7 @@
         id="task-list" uk-grid>
     {% for task in testing.task_set.all %}
         {% for i in 'n'|rjust:task.count %}
-            {% include "testing/inc/task/_detail.html" %}
+            {% include "testing/inc/task/_tecaher_task_detail.html" %}
         {% endfor %}
     {% endfor %}
 </section>

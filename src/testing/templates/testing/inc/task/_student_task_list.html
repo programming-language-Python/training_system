@@ -10,7 +10,7 @@
         <button class="uk-margin uk-button uk-button-primary" type="submit">Завершить тест</button>
         <div class="uk-grid-match uk-child-width-1-3@m" uk-grid>
             {% for key, values in task_data.items %}
-                {% include "testing/inc/task/_student-detail.html" %}
+                {% include "testing/inc/task/_student_task_detail.html" %}
             {% endfor %}
         </div>
     </form>
