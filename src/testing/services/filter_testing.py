@@ -8,16 +8,16 @@ class FilterTesting:
     def __init__(self, user: User) -> None:
         self.user = user
 
-    def execute(self) -> QuerySet:
+    def execute(self) -> QuerySet[Testing]:
         if self.user.is_teacher:
             return self._get_for_teacher()
         return self._get_for_student()
 
-    def _get_for_teacher(self) -> QuerySet:
+    def _get_for_teacher(self) -> QuerySet[Testing]:
         testing_info = {'user': self.user}
         return Testing.objects.filter(**testing_info)
 
-    def _get_for_student(self) -> QuerySet:
+    def _get_for_student(self) -> QuerySet[Testing]:
         student_testing = self._get_non_empty_testings()
         completed_testing = CompletedTesting.objects.filter(
             testing__in=student_testing,
@@ -28,7 +28,7 @@ class FilterTesting:
             student_testing = student_testing.exclude(title__in=titles_of_completed_tests)
         return student_testing
 
-    def _get_non_empty_testings(self) -> QuerySet:
+    def _get_non_empty_testings(self) -> QuerySet[Testing]:
         testing_info = {
             'is_published': True,
             'student_groups': self.user.student_group

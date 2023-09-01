@@ -1,14 +1,14 @@
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import QuerySet
-from django.http import HttpResponseNotAllowed, HttpResponse
+from django.http import HttpResponseNotAllowed, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DetailView, \
     UpdateView, DeleteView
 
 from testing.forms import TestingForm, SettingForm, TaskForm
-from testing.models import Testing, Task
+from testing.models import Testing, Task, CompletedTesting
 
 from testing.services.create_completed_testing import CreateCompletedTesting
 from testing.services.create_context_for_student import CreateContextForStudent
@@ -22,16 +22,28 @@ class TestingCreateView(LoginRequiredMixin, CreateView):
     form_class = TestingForm
     template_name = 'testing/testing_create.html'
 
-    def form_valid(self, form):
+    def form_valid(self, form) -> HttpResponse | HttpResponseRedirect:
+        is_name_in_completed_testings = CompletedTesting.objects.filter(
+            title=form.instance.title
+        ).exists()
+        if is_name_in_completed_testings:
+            return self._add_error_title_exists(form)
         form.instance.user = self.request.user
         return super(TestingCreateView, self).form_valid(form)
+
+    def _add_error_title_exists(self, form) -> HttpResponse:
+        form.add_error('title', 'Тестирование с таким Наименование уже существует.')
+        context = {
+            'form': form
+        }
+        return render(self.request, 'testing/testing_create.html', context)
 
 
 class TestingListView(LoginRequiredMixin, ListView):
     login_url = 'user:login'
     model = Testing
 
-    def get_queryset(self) -> QuerySet:
+    def get_queryset(self) -> QuerySet[Testing]:
         query = self.request.GET.get('search')
         if query:
             return find_testings(
@@ -40,7 +52,7 @@ class TestingListView(LoginRequiredMixin, ListView):
             )
         return self._get_filtered_testing()
 
-    def _get_filtered_testing(self) -> QuerySet:
+    def _get_filtered_testing(self) -> QuerySet[Testing]:
         user = self.request.user
         filter_testing = FilterTesting(user)
         return filter_testing.execute()
@@ -102,7 +114,7 @@ class TestingDeleteView(DeleteView):
 
 class TaskDetailView(DetailView):
     model = Task
-    template_name = 'testing/inc/task/_detail.html'
+    template_name = 'testing/inc/task/_teacher_task_detail.html'
 
 
 @login_required

@@ -15,6 +15,28 @@
             </button>
         </form>
         <ul uk-accordion="multiple: true">
+            <div class="uk-grid-small uk-child-width-expand@s uk-text-center" uk-grid>
+                <div>
+                    <div class="uk-card uk-card-default uk-card-body">
+                        Наименование тестирования
+                    </div>
+                </div>
+                <div>
+                    <div class="uk-card uk-card-default uk-card-body">
+                        Время начало
+                    </div>
+                </div>
+                <div>
+                    <div class="uk-card uk-card-default uk-card-body">
+                        Время окончания
+                    </div>
+                </div>
+                <div>
+                    <div class="uk-card uk-card-default uk-card-body">
+                        Оценка
+                    </div>
+                </div>
+            </div>
             {% for completed_testing in completed_testings %}
                 {% include 'user/testing_completed_detail.html' %}
             {% endfor %}

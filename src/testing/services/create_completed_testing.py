@@ -46,8 +46,6 @@ class CreateCompletedTesting:
             is_review_of_result_by_student=is_review_of_result_by_student,
             student=self.request.user
         )
-
-        # TODO Расскоментить?
         self._delete_session()
 
     def _add_tasks(self):
