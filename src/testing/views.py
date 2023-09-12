@@ -11,7 +11,7 @@ from testing.forms import TestingForm, SettingForm, TaskForm
 from testing.models import Testing, Task, CompletedTesting
 
 from testing.services.create_completed_testing import CreateCompletedTesting
-from testing.services.create_context_for_student import CreateContextForStudent
+from testing.services.create_context_unfinished_testing import CreateContextUnfinishedTesting
 from testing.services.decorators import is_teacher
 from testing.services.filter_testing import FilterTesting
 from testing.services.find_testing import find_testings
@@ -75,12 +75,16 @@ class TestingDetailView(LoginRequiredMixin, DetailView):
         if is_teacher_:
             context = super().get_context_data(**kwargs)
         else:
-            context = self._get_context_for_student(kwargs)
+            testing = kwargs['object']
+            context = self._get_context_unfinished_testing(testing)
         return context
 
-    def _get_context_for_student(self, kwargs) -> dict[str, str]:
-        create_context_for_student = CreateContextForStudent(self.request)
-        return create_context_for_student.execute(kwargs)
+    def _get_context_unfinished_testing(self, testing: Testing) -> dict[str, str]:
+        create_context_unfinished_testing = CreateContextUnfinishedTesting(
+            user=self.request.user,
+            testing=testing
+        )
+        return create_context_unfinished_testing.execute()
 
     @staticmethod
     def post(request, *args, **kwargs) -> None:

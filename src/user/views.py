@@ -1,9 +1,10 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView, LogoutView
 from django.db.models import Q, Value
 from django.db.models.functions import Concat
 from django.views.generic import ListView, DetailView
 
+from config import settings
 from testing.models import CompletedTesting
 from testing.services.find_testing import find_completed_testings
 from .forms import UserLoginForm
@@ -68,3 +69,7 @@ class TestingCompletedListView(LoginRequiredMixin, DetailView):
         else:
             context['completed_testings'] = CompletedTesting.objects.filter(student_id=self.kwargs['pk'])
         return context
+
+
+class CustomLogoutView(LogoutView):
+    next_page = settings.LOGOUT_REDIRECT_URL

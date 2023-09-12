@@ -1,7 +1,11 @@
 from dataclasses import dataclass
 from enum import Enum
+from typing import Sequence, Mapping, TypedDict
+from xmlrpc.client import DateTime
 
 from django.db.models import QuerySet
+
+from testing.models import Testing, Task
 
 Weight = int
 
@@ -29,13 +33,13 @@ class Cycle(QuerySet):
 
 @dataclass
 class Setting:
-    is_OOP: bool
-    is_strings: bool
     is_if_operator: OperatorPresenceType
     condition_of_if_operator: ConditionType
     cycle: Cycle
     cycle_condition: ConditionType
     operator_nesting: NestingType
+    is_OOP: bool
+    is_strings: bool
 
 
 class DataType(str, Enum):
@@ -65,3 +69,21 @@ class Variable:
     def get_expression_in_if(self) -> str:
         return f'{self.name} {self.arithmetic_operation_in_condition}= ' \
                f'{self.value_in_condition}'
+
+
+TaskId = int
+
+
+@dataclass
+class TaskData:
+    number: int
+    count: int
+    weight: int
+    code: str
+
+
+class ContextUnfinishedTesting(TypedDict):
+    testing: Testing
+    start_passage: str
+    task_data: Mapping[TaskId, TaskData]
+    tasks: Sequence[Task]

@@ -6,6 +6,7 @@ from testing import models
 from testing.services.run_code.run_java.run_java import RunJava
 from testing.types import Weight
 from testing.utils.utils import round_up
+from user.models import UnfinishedTesting
 
 
 class CreateCompletedTesting:
@@ -46,7 +47,7 @@ class CreateCompletedTesting:
             is_review_of_result_by_student=is_review_of_result_by_student,
             student=self.request.user
         )
-        self._delete_session()
+        self._delete_unfinished_testing(title)
 
     def _add_tasks(self):
         for self.task_weight, self.user_answer, self.code in zip(self.task_weights, self.user_answers, self.codes):
@@ -75,6 +76,9 @@ class CreateCompletedTesting:
     def _get_testing(self):
         return models.Testing.objects.get(pk=self.request.GET.get('testing_pk'))
 
-    def _delete_session(self):
-        session_name = 'testing_' + str(self.request.GET.get('testing_pk'))
-        del self.request.session[session_name]
+    def _delete_unfinished_testing(self, title: str):
+        unfinished_testing = UnfinishedTesting.objects.get(
+            title=title,
+            student=self.request.user
+        )
+        unfinished_testing.delete()
