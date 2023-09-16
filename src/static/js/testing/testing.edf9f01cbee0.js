@@ -4,9 +4,9 @@ $(document).ready(function () {
 
     putDownNumbering();
 
-    // testing
+    // testing_by_code
     $("#btn-add-task").on("click", blockTasks);
-    $("#btn-update-testing").on("click", blockTasks);
+    $("#btn-update-testing_by_code").on("click", blockTasks);
 
     // task
     $taskList.on("click", "[name = 'btn-update']", () => {
@@ -32,7 +32,7 @@ $(document).ready(function () {
             let $error = document.getElementById('error');
             if (!$error) {
                 const CLASS_DISABLED = 'disabled';
-                $("[name='btns-testing']").removeClass(CLASS_DISABLED);
+                $("[name='btns-testing_by_code']").removeClass(CLASS_DISABLED);
                 $('.task').removeClass(CLASS_DISABLED);
                 $(":input, a").attr("tabindex", "0");
                 document.removeEventListener('keydown', _blockEnter);
@@ -42,7 +42,7 @@ $(document).ready(function () {
 
     function blockTasks() {
         let classDisabled = 'disabled';
-        $("[name='btns-testing']").addClass(classDisabled);
+        $("[name='btns-testing_by_code']").addClass(classDisabled);
         $('.task').addClass(classDisabled);
         $(":input, a").attr("tabindex", "-1");
         document.addEventListener('keydown', _blockEnter);

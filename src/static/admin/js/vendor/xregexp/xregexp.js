@@ -2794,7 +2794,7 @@ function hasNativeFlag(flag) {
     // throws an error)
     var isSupported = true;
     try {
-        // Can't use regex literals for testing even in a `try` because regex literals with
+        // Can't use regex literals for testing_by_code even in a `try` because regex literals with
         // unsupported flags cause a compilation error in IE
         new RegExp('', flag);
     } catch (exception) {

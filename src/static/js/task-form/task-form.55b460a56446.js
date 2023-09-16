@@ -3,7 +3,7 @@ $(document).ready(function () {
     $("#task-list").on("click", ".btn-update", () => {
         setTimeout(blockOrUnblockFields, TIMEOUT);
     });
-    $("#testing").on("click", "#btn-add-task", () => {
+    $("#testing_by_code").on("click", "#btn-add-task", () => {
         setTimeout(blockOrUnblockFields, TIMEOUT);
     });
 

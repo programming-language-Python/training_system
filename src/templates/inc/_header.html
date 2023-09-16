@@ -8,7 +8,7 @@
             </li>
             {% if request.user.is_authenticated %}
                 <li class="header__link">
-                    <a href="{% url 'testing:testing_list' %}">
+                    <a href="{% url 'testing_by_code:testing_list' %}">
                         <span class="uk-margin-small-right" uk-icon="icon: table"></span> Тестирования
                     </a>
                 </li>

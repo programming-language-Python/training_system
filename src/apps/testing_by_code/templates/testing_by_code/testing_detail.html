@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head_script %}
+    <script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/testing_by_code/testing_by_code.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/task-form/task-form.js' %}"></script>
+{% endblock %}
+{% block content %}
+    {% include 'testing_by_code/inc/testing/_settings.html' %}
+    <section class="content__task-form task-form uk-margin" id="task-form"></section>
+    <h2 class="task-form__count-tasks">
+        Количество задач: <span id="count-tasks"></span>
+    </h2>
+    {{ form }}
+    {% if user.is_teacher %}
+        {% include 'testing_by_code/inc/task/_teacher_task_list.html' %}
+    {% else %}
+        {% include 'testing_by_code/inc/task/_student_task_list.html' %}
+    {% endif %}
+{% endblock %}

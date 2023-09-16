@@ -42,9 +42,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'jquery',
-    'testing',
-    'user',
+    'apps.testing',
+    'apps.testing_by_code',
+    'apps.user',
     'debug_toolbar',
     'pwa',
 ]
@@ -148,8 +150,9 @@ STATIC_ROOT = BASE_DIR / 'static'
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'config/static',
-    BASE_DIR / 'testing/static',
-    BASE_DIR / 'user/static'
+    BASE_DIR / 'apps/testing/static',
+    BASE_DIR / 'apps/testing_by_code/static',
+    BASE_DIR / 'apps/user/static'
 ]
 # Following settings only make sense on production and may break development environments.
 if not DEBUG:

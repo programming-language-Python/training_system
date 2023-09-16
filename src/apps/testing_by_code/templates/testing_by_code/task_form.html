@@ -1,0 +1,65 @@
+<div hx-target="this" hx-swap="outerHTML">
+    <form id="task-form" method="POST">
+        {% csrf_token %}
+        <div>
+            <div class="task__card uk-card uk-card-default uk-card-body">
+                <div class="uk-card-header">
+                    {% if change_error %}
+                        <span id="error" class="error">Ошибка: {{ change_error }}</span>
+                    {% endif %}
+                    <div class="uk-grid-small uk-flex-middle" uk-grid>
+                        <div class="uk-width-expand">
+                            <h3 class="uk-card-title uk-margin-remove-bottom">
+                                {{ task_form.weight.label }} {{ task_form.weight }}
+                                {{ task_form.weight.errors }}
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="task__body body uk-card-body">
+                    <h4>Структура программы:</h4>
+                    <div>
+                        {% for field in setting_form %}
+                            <div class="uk-margin">
+                                <span>
+                                    {{ field.label }}:
+                                </span>
+                                <div>
+                                    {{ field }}
+                                    {{ field.errors }}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="uk-card-footer">
+                    {% if task %}
+                        <button name="btn-update"
+                                type="submit"
+                                hx-post="{% url 'testing_by_code:update_task' task.pk %}"
+                                uk-icon="refresh"
+                                uk-tooltip="Обновить">
+                        </button>
+                        <button onclick="location.reload()"
+                                type="button"
+                                uk-icon="close"
+                                uk-tooltip="Отмена">
+                        </button>
+                    {% else %}
+                        <button id="btn-add" type="submit"
+                                hx-post="."
+                                hx-swap="outerHTML"
+                                uk-icon="plus"
+                                uk-tooltip="Добавить">
+                        </button>
+                        <button onclick="location.reload()"
+                                type="button"
+                                uk-icon="close"
+                                uk-tooltip="Отмена">
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

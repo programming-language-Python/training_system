@@ -4,12 +4,12 @@ $(document).ready(function () {
 
     putDownNumbering();
 
-    // testing
-    const $testingSetings = $("#testing-settings");
+    // testing_by_code
+    const $testingSetings = $("#testing_by_code-settings");
     $testingSetings.on("click", "#btn-add-task", () => {
         setTimeout(blockTasks, TIMEOUT);
     });
-    $testingSetings.on("click", "btn-update-testing", blockTasks);
+    $testingSetings.on("click", "btn-update-testing_by_code", blockTasks);
 
     // task
     $taskList.on("click", "[name = 'btn-update']", () => {
@@ -35,7 +35,7 @@ $(document).ready(function () {
             let $error = document.getElementById('error');
             if (!$error) {
                 const CLASS_DISABLED = 'disabled';
-                $("[name='btns-testing']").removeClass(CLASS_DISABLED);
+                $("[name='btns-testing_by_code']").removeClass(CLASS_DISABLED);
                 $('.task').removeClass(CLASS_DISABLED);
                 $(":input, a").attr("tabindex", "0");
                 document.removeEventListener('keydown', _blockEnter);
@@ -45,7 +45,7 @@ $(document).ready(function () {
 
     function blockTasks() {
         let classDisabled = 'disabled';
-        $("[name='btns-testing']").addClass(classDisabled);
+        $("[name='btns-testing_by_code']").addClass(classDisabled);
         $('.task').addClass(classDisabled);
         $(":input, a").attr("tabindex", "-1");
         document.addEventListener('keydown', _blockEnter);
