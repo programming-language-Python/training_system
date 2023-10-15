@@ -1,6 +1,10 @@
 from django import forms
 
-from apps.testing_by_code.models import Setting, Cycle, OperatorNesting, Testing, Task
+from apps.testing_by_code.models.setting import Setting
+from apps.testing_by_code.models.cycle import Cycle
+from apps.testing_by_code.models.operator_nesting import OperatorNesting
+from apps.testing_by_code.models.testing import Testing
+from apps.testing_by_code.models.task import Task
 from apps.testing_by_code.types import OperatorPresenceType, ConditionType
 from apps.user.models import StudentGroup
 

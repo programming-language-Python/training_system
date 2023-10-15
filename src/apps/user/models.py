@@ -2,7 +2,21 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.urls import reverse
 
-MAX_LENGTH = 50
+from abstractions.abstract_fields import AbstractFieldTitle
+from apps.user.constants import APP_NAME
+
+
+class UnfinishedTesting(AbstractFieldTitle):
+    tasks = models.JSONField(verbose_name='Задачи')
+    student = models.ForeignKey(
+        'User',
+        on_delete=models.CASCADE,
+        verbose_name='Студент'
+    )
+
+    class Meta:
+        verbose_name = 'Незавершённое тестирование'
+        verbose_name_plural = 'Незавершённые тестирования'
 
 
 class User(AbstractUser):
@@ -24,7 +38,7 @@ class User(AbstractUser):
     )
 
     def get_absolute_url(self):
-        return reverse('user:testing_completed_list', kwargs={"pk": self.pk})
+        return reverse(APP_NAME + ':testing_completed_list', kwargs={"pk": self.pk})
 
     class Meta:
         verbose_name = 'Пользователь'
@@ -43,21 +57,3 @@ class StudentGroup(models.Model):
     class Meta:
         verbose_name = 'Группа студента'
         verbose_name_plural = 'Группы студентов'
-
-
-class UnfinishedTesting(models.Model):
-    title = models.CharField(
-        max_length=MAX_LENGTH,
-        verbose_name='Наименование',
-        unique=True
-    )
-    tasks = models.JSONField(verbose_name='Задачи')
-    student = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        verbose_name='Студент'
-    )
-
-    class Meta:
-        verbose_name = 'Незавершённое тестирование'
-        verbose_name_plural = 'Незавершённые тестирования'
