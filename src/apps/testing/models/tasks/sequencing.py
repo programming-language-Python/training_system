@@ -1,14 +1,20 @@
 from django.db import models
 
 from abstractions.abstract_fields import AbstractFieldWeight
-from apps.testing.abstractions import AbstractFieldText
+from apps.testing.abstractions.abstract_field_description import AbstractFieldDescription
+from apps.testing.models import Testing
 
 
-class Sequencing(AbstractFieldText, AbstractFieldWeight):
-    pass
+class Sequencing(AbstractFieldDescription, AbstractFieldWeight):
+    testing = models.ForeignKey(
+        Testing,
+        on_delete=models.CASCADE,
+        related_name='%(app_label)s_%(class)s_related',
+        verbose_name='Тестирование'
+    )
 
 
-class CorrectAnswer(AbstractFieldText):
+class CorrectAnswer(AbstractFieldDescription):
     order = models.IntegerField(verbose_name='Порядок')
     sequencing = models.ForeignKey(
         Sequencing,
@@ -17,7 +23,7 @@ class CorrectAnswer(AbstractFieldText):
     )
 
 
-class IncorrectAnswer(AbstractFieldText):
+class IncorrectAnswer(AbstractFieldDescription):
     sequencing = models.ForeignKey(
         Sequencing,
         on_delete=models.CASCADE,

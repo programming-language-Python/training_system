@@ -1,1 +1,1 @@
-from .abstract_field_text import AbstractFieldText
+from .abstract_field_description import AbstractFieldDescription

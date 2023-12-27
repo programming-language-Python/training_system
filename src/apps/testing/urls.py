@@ -4,5 +4,6 @@ from .views import *
 
 app_name = 'testing'
 urlpatterns = [
-    # path('create/', TestingCreateView.as_view(), name='testing_create'),
+    path('testing_list/', TestingListView.as_view(), name='testing_list'),
+#     path('create/', TestingCreateView.as_view(), name='testing_create'),
 ]

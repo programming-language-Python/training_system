@@ -28,7 +28,6 @@ class TaskService:
         self.weight = self.task_form.cleaned_data['weight']
 
     def add(self) -> Manager[Task]:
-        """Добавляет задачу"""
         self.setting_service.set()
         task_filter = self._filter()
         if task_filter.exists():

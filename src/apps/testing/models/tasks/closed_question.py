@@ -1,11 +1,12 @@
 from django.db import models
 
 from abstractions.abstract_fields import AbstractFieldWeight
-from apps.testing.abstractions import AbstractFieldText
+from apps.testing.abstractions.abstract_field_description import AbstractFieldDescription
 from apps.testing.constants import APP_NAME
+from apps.testing.models import Testing
 
 
-class ClosedQuestion(AbstractFieldText, AbstractFieldWeight):
+class ClosedQuestion(AbstractFieldDescription, AbstractFieldWeight):
     is_several_correct_answers = models.BooleanField(
         default=False,
         verbose_name='Несколько правильных ответов'
@@ -18,12 +19,18 @@ class ClosedQuestion(AbstractFieldText, AbstractFieldWeight):
         default=False,
         verbose_name='Учесть частично правильные выполнения задачи'
     )
+    testing = models.ForeignKey(
+        Testing,
+        on_delete=models.CASCADE,
+        related_name='%(app_label)s_%(class)s_related',
+        verbose_name='Тестирование'
+    )
 
-    class Meta(AbstractFieldText.Meta, AbstractFieldWeight.Meta):
+    class Meta(AbstractFieldDescription.Meta, AbstractFieldWeight.Meta):
         pass
 
 
-class AnswerOption(AbstractFieldText):
+class AnswerOption(AbstractFieldDescription):
     is_correct = models.BooleanField(verbose_name='Правильный')
     closed_question = models.ForeignKey(
         ClosedQuestion,

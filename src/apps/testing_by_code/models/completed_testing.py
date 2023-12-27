@@ -1,7 +1,6 @@
 from django.db import models
 
 from abstractions import AbstractCompletedTesting
-from apps.testing_by_code.utils.utils import round_up
 
 
 class CompletedTesting(AbstractCompletedTesting):
@@ -11,6 +10,7 @@ class CompletedTesting(AbstractCompletedTesting):
         null=True,
         verbose_name='Тестирование'
     )
-
-    def get_assessment_in_percentage(self):
-        return round_up(self.weight_of_student_tasks / self.total_weight * 100)
+    # TODO удалить tasks. Переделать в models/testing_by_code работу с полем
+    #  tasks, чтоб работало как отдельная таблица,
+    #  а в самой таблице с помощью Forignkey
+    tasks = models.JSONField(verbose_name='Задачи')

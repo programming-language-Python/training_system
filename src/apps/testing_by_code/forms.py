@@ -1,57 +1,19 @@
 from django import forms
 
+from abstractions.abstract_forms.AbstractTestingForm import AbstractTestingForm
 from apps.testing_by_code.models.setting import Setting
 from apps.testing_by_code.models.cycle import Cycle
 from apps.testing_by_code.models.operator_nesting import OperatorNesting
 from apps.testing_by_code.models.testing import Testing
 from apps.testing_by_code.models.task import Task
 from apps.testing_by_code.types import OperatorPresenceType, ConditionType
-from apps.user.models import StudentGroup
 
 CLASS_UK_SELECT = 'uk-select'
 CLASS_UK_FORM_WIDTH_SMALL = 'uk-form-width-small'
 SELECT_TAG_CLASSES = f'{CLASS_UK_SELECT} {CLASS_UK_FORM_WIDTH_SMALL}'
 
 
-class TestingForm(forms.ModelForm):
-    title = forms.CharField(
-        label='Наименование',
-        widget=forms.TextInput(
-            attrs={
-                'class': 'uk-margin uk-input uk-form-width-medium',
-                'name': 'title',
-            }
-        )
-    )
-    student_groups = forms.ModelMultipleChoiceField(
-        label='Группы студентов',
-        required=False,
-        widget=forms.CheckboxSelectMultiple(
-            attrs={
-                'name': 'student_group',
-            }
-        ),
-        queryset=StudentGroup.objects.all()
-    )
-    is_published = forms.BooleanField(
-        label='Опубликовано',
-        required=False,
-        widget=forms.CheckboxInput(
-            attrs={
-                'class': 'uk-checkbox'
-            }
-        )
-    )
-    is_review_of_result_by_student = forms.BooleanField(
-        label='Просмотр результата студентом',
-        required=False,
-        widget=forms.CheckboxInput(
-            attrs={
-                'class': 'uk-checkbox'
-            }
-        )
-    )
-
+class TestingForm(AbstractTestingForm):
     class Meta:
         model = Testing
         fields = (
