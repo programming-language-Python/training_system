@@ -1,6 +1,6 @@
 from django.db import models
 
-from abstractions import AbstractCompletedTesting
+from abstractions.abstract_models.abstract_completed_testing import AbstractCompletedTesting
 
 
 class CompletedTesting(AbstractCompletedTesting):

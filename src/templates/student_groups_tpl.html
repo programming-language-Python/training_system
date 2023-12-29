@@ -1,0 +1,7 @@
+<div class="uk-card-body">
+    {% if student_groups %}
+        <p>Группы: {{ student_groups|join:', ' }}</p>
+    {% else %}
+        <p>Группы: не выбраны</p>
+    {% endif %}
+</div>

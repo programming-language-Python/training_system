@@ -1,5 +1,6 @@
-from abstractions import AbstractCompletedTesting
+from abstractions.abstract_models.abstract_completed_testing import AbstractCompletedTesting
 
 
 class CompletedTesting(AbstractCompletedTesting):
-    pass
+    class Meta:
+        db_table = 'testing_сompletedTesting'

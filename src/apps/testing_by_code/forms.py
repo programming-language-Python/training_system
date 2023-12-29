@@ -1,6 +1,6 @@
 from django import forms
 
-from abstractions.abstract_forms.AbstractTestingForm import AbstractTestingForm
+from abstractions.abstract_forms import AbstractTestingForm
 from apps.testing_by_code.models.setting import Setting
 from apps.testing_by_code.models.cycle import Cycle
 from apps.testing_by_code.models.operator_nesting import OperatorNesting

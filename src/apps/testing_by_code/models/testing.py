@@ -1,6 +1,6 @@
 from django.urls import reverse
 
-from abstractions import AbstractTesting
+from abstractions.abstract_models.abstract_testing import AbstractTesting
 from apps.testing_by_code.constants import APP_NAME
 
 

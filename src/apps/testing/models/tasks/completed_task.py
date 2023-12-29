@@ -1,6 +1,6 @@
 from django.db import models
 
-from apps.testing.abstractions.abstract_field_description import AbstractFieldDescription
+from apps.testing.abstractions import AbstractFieldDescription
 from apps.testing.models.completed_testing import CompletedTesting
 
 

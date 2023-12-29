@@ -4,9 +4,10 @@ from django.db.models import QuerySet
 from django.http import HttpResponseNotAllowed, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, DetailView, \
+from django.views.generic import ListView, DetailView, \
     UpdateView, DeleteView
 
+from abstractions.abstract_views.abstarct_testing_create_view import AbstractTestingCreateView
 from apps.testing_by_code.forms import TestingForm, SettingForm, TaskForm
 from apps.testing_by_code.models import Testing, Task, CompletedTesting
 
@@ -18,30 +19,23 @@ from apps.testing_by_code.services.find_testing import find_testings
 from apps.testing_by_code.services.task_service import TaskService, delete, increase_count
 
 
-class TestingCreateView(LoginRequiredMixin, CreateView):
+class TestingCreateView(AbstractTestingCreateView):
     form_class = TestingForm
-    template_name = 'testing_by_code/testing_create.html'
 
     def form_valid(self, form) -> HttpResponse | HttpResponseRedirect:
-        is_name_in_completed_testings = CompletedTesting.objects.filter(
+        is_title_in_completed_testings = CompletedTesting.objects.filter(
             title=form.instance.title
         ).exists()
-        if is_name_in_completed_testings:
+        if is_title_in_completed_testings:
             return self._add_error_title_exists(form)
         form.instance.user = self.request.user
         return super(TestingCreateView, self).form_valid(form)
-
-    def _add_error_title_exists(self, form) -> HttpResponse:
-        form.add_error('title', 'Тестирование с таким Наименование уже существует.')
-        context = {
-            'form': form
-        }
-        return render(self.request, 'testing_by_code/testing_create.html', context)
 
 
 class TestingListView(LoginRequiredMixin, ListView):
     login_url = 'user:login'
     model = Testing
+    template_name = 'testing_list.html'
 
     def get_queryset(self) -> QuerySet[Testing]:
         query = self.request.GET.get('search')
@@ -56,15 +50,6 @@ class TestingListView(LoginRequiredMixin, ListView):
         user = self.request.user
         filter_testing = FilterTesting(user)
         return filter_testing.execute()
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        is_teacher_ = self.request.user.is_teacher
-        if is_teacher_:
-            context['card_footer_text'] = 'Настроить тестирование'
-        else:
-            context['card_footer_text'] = 'Пройти тест'
-        return context
 
 
 class TestingDetailView(LoginRequiredMixin, DetailView):

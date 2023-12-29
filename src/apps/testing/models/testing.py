@@ -1,8 +1,9 @@
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.urls import reverse
 
-from abstractions import AbstractTesting
-from apps.testing.types import TaskOrder
+from abstractions.abstract_models.abstract_testing import AbstractTesting
+from apps.testing.constants import MAX_ASSESSMENT_THRESHOLD, MIN_ASSESSMENT_THRESHOLD, APP_NAME
 
 
 class Testing(AbstractTesting):
@@ -15,14 +16,14 @@ class Testing(AbstractTesting):
     assessment_threshold = models.IntegerField(
         default=1,
         validators=[
-            MaxValueValidator(100),
-            MinValueValidator(1)
+            MaxValueValidator(MAX_ASSESSMENT_THRESHOLD),
+            MinValueValidator(MIN_ASSESSMENT_THRESHOLD)
         ],
         verbose_name='Пороговое значение оценки'
     )
-    task_order = models.CharField(
-        choices=TaskOrder.choices,
-        verbose_name='Порядок задач'
+    is_established_order_tasks = models.BooleanField(
+        verbose_name='Установленный порядок задач',
+        default=False
     )
     lead_time = models.TimeField(
         blank=True,
@@ -36,6 +37,9 @@ class Testing(AbstractTesting):
         default=None,
         verbose_name='Время выполнения задачи'
     )
+
+    def get_absolute_url(self):
+        return reverse(APP_NAME + ':testing_detail', kwargs={'pk': self.pk})
 
 
 class MaxScore(models.Model):

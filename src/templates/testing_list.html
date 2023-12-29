@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% load testing_list %}
+
+{% block content %}
+    <section class="content__testing-list testing-list">
+        {% with user.is_teacher as is_teacher %}
+            {% show_testing_list_buttons app_name=request.resolver_match.app_name is_teacher=is_teacher %}
+            {% show_testing_list is_teacher testing_list %}
+        {% endwith %}
+    </section>
+{% endblock %}
