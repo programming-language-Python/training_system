@@ -6,6 +6,6 @@
         <p>Вы уверены, что хотите удалить "{{ object }}"?</p>
         {{ form }}
         <button class="uk-button uk-button-primary" type="submit" value="Да">Да</button>
-        <a class="uk-button uk-button-default" href="{% url 'testing_by_code:testing_detail' testing.pk %}">Отмена</a>
+        <a class="uk-button uk-button-default" href="{{ request.META.HTTP_REFERER }}">Отмена</a>
     </form>
 {% endblock %}

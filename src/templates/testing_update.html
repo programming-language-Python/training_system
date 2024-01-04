@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+    <div class="uk-margin">
+        <form class="form__testing testing" method="POST">
+            {% csrf_token %}
+            {% for fields in form %}
+                {% if fields.label == 'Наименование' %}
+                    <h2 class="testing__title">
+                        Создать настройки задач для тестирования {{ fields }}
+                    </h2>
+                    {{ fields.errors }}
+                {% else %}
+                    <div>
+                        {{ fields.label }}
+                        {{ fields }}
+                        {{ fields.errors }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+            <button type="submit" uk-icon="refresh" uk-tooltip="Обновить"></button>
+            <a href="{{ request.META.HTTP_REFERER }}"
+               uk-icon="close"
+               uk-tooltip="Отмена">
+            </a>
+        </form>
+    </div>
+{% endblock %}

@@ -8,6 +8,7 @@ from django.views.generic import ListView, DetailView, \
     UpdateView, DeleteView
 
 from abstractions.abstract_views.abstarct_testing_create_view import AbstractTestingCreateView
+from apps.testing_by_code.constants import APP_NAME
 from apps.testing_by_code.forms import TestingForm, SettingForm, TaskForm
 from apps.testing_by_code.models import Testing, Task, CompletedTesting
 
@@ -17,6 +18,7 @@ from apps.testing_by_code.services.decorators import is_teacher
 from apps.testing_by_code.services.filter_testing import FilterTesting
 from apps.testing_by_code.services.find_testing import find_testings
 from apps.testing_by_code.services.task_service import TaskService, delete, increase_count
+from mixins import URLMixin, ContextMixin
 
 
 class TestingCreateView(AbstractTestingCreateView):
@@ -32,10 +34,16 @@ class TestingCreateView(AbstractTestingCreateView):
         return super(TestingCreateView, self).form_valid(form)
 
 
-class TestingListView(LoginRequiredMixin, ListView):
+class TestingListView(ContextMixin, LoginRequiredMixin, ListView):
     login_url = 'user:login'
     model = Testing
     template_name = 'testing_list.html'
+    APP_NAME = APP_NAME
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context |= self.get_testing_list_data(is_teacher=self.request.user.is_teacher)
+        return context
 
     def get_queryset(self) -> QuerySet[Testing]:
         query = self.request.GET.get('search')
@@ -52,13 +60,15 @@ class TestingListView(LoginRequiredMixin, ListView):
         return filter_testing.execute()
 
 
-class TestingDetailView(LoginRequiredMixin, DetailView):
+class TestingDetailView(URLMixin, LoginRequiredMixin, DetailView):
     model = Testing
+    APP_NAME = APP_NAME
 
     def get_context_data(self, *, object_list=None, **kwargs) -> dict[str, str]:
         is_teacher_ = self.request.user.is_teacher
         if is_teacher_:
             context = super().get_context_data(**kwargs)
+            context |= self.get_testing_detail_url_button_data()
         else:
             testing = kwargs['object']
             context = self._get_context_unfinished_testing(testing)
@@ -93,12 +103,13 @@ class TestingDetailView(LoginRequiredMixin, DetailView):
 class TestingUpdateView(LoginRequiredMixin, UpdateView):
     model = Testing
     form_class = TestingForm
-    template_name_suffix = '_update'
+    template_name = 'testing_update.html'
 
 
 class TestingDeleteView(DeleteView):
     model = Testing
-    success_url = reverse_lazy('testing_by_code:testing_list')
+    success_url = reverse_lazy(APP_NAME + ':testing_list')
+    template_name = 'testing_confirm_delete.html'
 
 
 class TaskDetailView(DetailView):

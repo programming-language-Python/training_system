@@ -1,5 +1,3 @@
-{% load testing_list %}
-
 {% if testing_list %}
     <div class="uk-margin-top uk-grid-match uk-grid-column-small uk-grid-row-large uk-child-width-1-3@s uk-text-center"
          uk-grid>
@@ -15,10 +13,14 @@
                             </div>
                         </div>
                     </div>
-                    {% if is_teacher %}
-                        {% show_student_groups testing.student_groups.all %}
+                    {% if user.is_teacher %}
+                        {% include "inc/_student_groups.html" with student_groups=testing.student_groups.all %}
                     {% endif %}
-                    {% show_testing_button absolute_url=testing.get_absolute_url is_teacher=is_teacher %}
+                    <div class="uk-card-footer">
+                        <a href="{{ testing.get_absolute_url }}" class="uk-button uk-button-text">
+                            {{ text }}
+                        </a>
+                    </div>
                 </div>
             </div>
         {% endfor %}

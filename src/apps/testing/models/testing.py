@@ -25,12 +25,6 @@ class Testing(AbstractTesting):
         verbose_name='Установленный порядок задач',
         default=False
     )
-    lead_time = models.TimeField(
-        blank=True,
-        null=True,
-        default=None,
-        verbose_name='Время выполнения'
-    )
     task_lead_time = models.TimeField(
         blank=True,
         null=True,

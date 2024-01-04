@@ -9,7 +9,7 @@
         Показать все тесты
     </button>
 </form>
-{% if testing_create_url %}
+{% if user.is_teacher %}
     <a class="uk-button uk-button-primary" href="{% url testing_create_url %}">
         Добавить тестирование
     </a>

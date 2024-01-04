@@ -16,11 +16,14 @@ class TestingForm(AbstractTestingForm):
             }
         )
     )
-    likelihood_guessing_answers = forms.IntegerField(
+    likelihood_guessing_answers = forms.FloatField(
         label=testing_meta.get_field('likelihood_guessing_answers').verbose_name,
         widget=forms.NumberInput(
             attrs={
                 'class': CLASS,
+                'max': MIN_ASSESSMENT_THRESHOLD,
+                'min': 0,
+                'step': '0.01'
             }
         )
     )
@@ -43,15 +46,6 @@ class TestingForm(AbstractTestingForm):
             }
         )
     )
-    lead_time = forms.TimeField(
-        label=testing_meta.get_field('lead_time').verbose_name,
-        widget=forms.TimeInput(
-            attrs={
-                'class': CLASS,
-                'type': 'time'
-            }
-        )
-    )
     task_lead_time = forms.TimeField(
         label=testing_meta.get_field('task_lead_time').verbose_name,
         widget=forms.TimeInput(
@@ -65,6 +59,8 @@ class TestingForm(AbstractTestingForm):
     def __init__(self, *args, **kwargs):
         super(TestingForm, self).__init__(*args, **kwargs)
         del self.fields['user']
+        student_groups_value = self.fields.pop('student_groups')
+        self.fields['student_groups'] = student_groups_value
 
     class Meta:
         model = Testing
