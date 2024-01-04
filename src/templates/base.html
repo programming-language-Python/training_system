@@ -11,13 +11,11 @@
     <title>{% block title %}Тренажёрно-обучающая система{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/app.css' %}"/>
     <link rel="shortcut icon" href="{% static 'img/logo.png' %}" type="images/png">
-    {#    {% block link %}{% endblock %}#}
     <script src="{% static 'js/uikit/uikit.min.js' %}"></script>
     <script src="{% static 'js/uikit/uikit-icons.min.js' %}"></script>
     <script src="https://unpkg.com/htmx.org@1.5.0"
             integrity="sha384-oGA+prIp5Vchu6we2YkI51UtVzN9Jpx2Z7PnR1I78PnZlN8LkrCT4lqqqmDkyrvI"
             crossorigin="anonymous"></script>
-    {#    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.js"/>#}
     {% progressive_web_app_meta %}
     {% block head_script %}{% endblock %}
 </head>
