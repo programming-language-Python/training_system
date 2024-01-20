@@ -20,6 +20,7 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('ckeditor/', include('ckeditor_uploader.urls')),
     path('', include('apps.user.urls', namespace='user')),
     path('testing/', include('apps.testing.urls', namespace='testing')),
     path('testing_by_code/', include('apps.testing_by_code.urls', namespace='testing_by_code')),

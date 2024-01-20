@@ -23,8 +23,14 @@ class URLMixin(object):
             'add_task_form_url': self.get_add_task_form_url()
         }
 
+    def get_testing_update_url_data(self) -> dict[str, str]:
+        return {'testing_update_url': self.get_testing_update_url()}
+
     def get_testing_update_url(self) -> str:
         return self.APP_NAME + ':testing_update'
+
+    def get_testing_delete_url_data(self) -> dict[str, str]:
+        return {'testing_delete_url': self.get_testing_delete_url()}
 
     def get_testing_delete_url(self) -> str:
         return self.APP_NAME + ':testing_delete'

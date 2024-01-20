@@ -32,6 +32,9 @@ class Testing(AbstractTesting):
         verbose_name='Время выполнения задачи'
     )
 
+    def __str__(self):
+        return self.title
+
     def get_absolute_url(self):
         return reverse(APP_NAME + ':testing_detail', kwargs={'pk': self.pk})
 

@@ -1,0 +1,9 @@
+<button id="btn-add-task"
+        name="btn-add-task"
+        class="uk-width-1-5 uk-button uk-button-secondary"
+        type="button"
+        hx-get="{% url add_task_form_url %}"
+        hx-target="#task-list"
+        hx-swap="afterbegin">
+    Добавить задачу
+</button>

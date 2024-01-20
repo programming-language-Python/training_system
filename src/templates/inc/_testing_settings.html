@@ -1,35 +1,6 @@
 <section class="content__testing-settings" id="testing-settings">
     {% if user.is_teacher %}
-        {% for field, value in testing.get_fields_data.items %}
-            {% if field == 'Наименование' %}
-                <h2>
-                    Создать настройки задач для тестирования {{ value }}
-                </h2>
-            {% elif field == 'Группы студентов' %}
-                <div class="header__student-groups uk-text-center">
-                    <ul class="uk-margin-small" uk-accordion>
-                        <li>
-                            {% if value %}
-                                <a class="uk-accordion-title" href="#">Группы студентов</a>
-                                <div class="uk-accordion-content">
-                                    {% for student_group in value %}
-                                        <div>
-                                            {{ student_group.title }}
-                                        </div>
-                                    {% endfor %}
-                                </div>
-                            {% else %}
-                                Группы студентов не выбраны
-                            {% endif %}
-                        </li>
-                    </ul>
-                </div>
-            {% else %}
-                <div>
-                    {{ field }}: {{ value }}
-                </div>
-            {% endif %}
-        {% endfor %}
+        {% include 'inc/_testing_fields.html' %}
         {% include 'inc/_testing_detail_buttons.html' %}
     {% else %}
         <h2>

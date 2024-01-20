@@ -43,12 +43,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # Мои приложения
     'jquery',
     'apps.testing',
     'apps.testing_by_code',
     'apps.user',
     'debug_toolbar',
     'pwa',
+    'ckeditor',
+    'ckeditor_uploader',
 ]
 
 MIDDLEWARE = [
@@ -226,3 +229,10 @@ PWA_APP_SCREENSHOTS = [
 DEBUG_PROPAGATE_EXCEPTIONS = True
 
 MAX_LENGTH = 50
+
+# CKEditor
+CKEDITOR_UPLOAD_PATH = "uploads/"
+
+# pillow
+MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = '/media/'

@@ -1,6 +1,6 @@
 from django import forms
 
-from abstractions.abstract_forms import AbstractTestingForm
+from abstractions.abstract_forms import AbstractTestingForm, AbstractTaskForm
 from apps.testing_by_code.models.setting import Setting
 from apps.testing_by_code.models.cycle import Cycle
 from apps.testing_by_code.models.operator_nesting import OperatorNesting
@@ -24,17 +24,7 @@ class TestingForm(AbstractTestingForm):
         )
 
 
-class TaskForm(forms.ModelForm):
-    weight = forms.IntegerField(
-        label='Вес',
-        widget=forms.NumberInput(
-            attrs={
-                'class': 'uk-input uk-form-width-small uk-form-small',
-                'value': 1
-            }
-        )
-    )
-
+class TaskForm(AbstractTaskForm):
     class Meta:
         model = Task
         fields = ('weight',)

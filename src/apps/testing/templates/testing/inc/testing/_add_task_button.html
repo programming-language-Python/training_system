@@ -1,0 +1,4 @@
+<h2>Добавить задачи</h2>
+{% for name, url in task_data.items %}
+    |<a href="{% url url testing.pk %}">{{ name }}</a>|
+{% endfor %}
