@@ -7,4 +7,10 @@
 {% endblock %}
 {% block content %}
     {% include 'inc/_testing_settings.html' %}
+    {% if user.is_teacher %}
+        {% include 'testing/inc/task/_teacher_task_list.html' %}
+    {% else %}
+        Поставить include
+        {#        {% include 'testing/inc/task/_student_task_list.html' %}#}
+    {% endif %}
 {% endblock %}

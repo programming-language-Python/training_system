@@ -1,0 +1,33 @@
+<section class="content__testing-task-list testing-task-list uk-grid-small uk-child-width-1-4" uk-grid>
+    <div>№</div>
+    <div>Тип задачи</div>
+    <div>Описание</div>
+    <div>Удалить</div>
+    {% for task in testing.testing_related.all %}
+        <a href="{{ task.get_absolute_url }}">
+            <div>
+                {{ task.serial_number }}
+            </div>
+        </a>
+        <a href="{{ task.get_absolute_url }}">
+            <div>
+                {{ task.type }}
+            </div>
+        </a>
+        <a href="{{ task.get_absolute_url }}">
+            <div>
+                {{ task.description|safe }}
+            </div>
+        </a>
+        <div>
+            <form method="POST" action="{{ task.get_deletion_url }}?testing_pk={{ testing.pk }}">
+                {% csrf_token %}
+                <button type="submit"
+                        name="btn-delete"
+                        uk-icon="trash"
+                        uk-tooltip="Удалить">
+                </button>
+            </form>
+        </div>
+    {% endfor %}
+</section>

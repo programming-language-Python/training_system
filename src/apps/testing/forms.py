@@ -1,11 +1,11 @@
 from django import forms
-from django.forms import formset_factory
+from django.forms import inlineformset_factory
 
 from abstractions.abstract_form_fields.abstract_form_field_description import AbstractFormFieldDescription
 from abstractions.abstract_forms import AbstractTestingForm, AbstractTaskForm
 from apps.testing.constants import MIN_ASSESSMENT_THRESHOLD, MAX_ASSESSMENT_THRESHOLD
 from apps.testing.models import Testing
-from apps.testing.models.tasks.closed_question import AnswerOption, ClosedQuestion
+from apps.testing.models.tasks.closed_question import ClosedQuestionAnswerOption, ClosedQuestion
 
 
 class TestingForm(AbstractTestingForm):
@@ -102,17 +102,21 @@ class ClosedQuestionForm(AbstractTaskForm, AbstractFormFieldDescription):
 
     class Meta:
         model = ClosedQuestion
-        fields = '__all__'
-        exclude = ['testing', ]
+        widgets = {
+            'serial_number': forms.HiddenInput(),
+            'testing': forms.HiddenInput()
+        }
+        exclude = ['type', ]
 
 
-class AnswerOptionForm(forms.ModelForm):
-    answer_option_meta = AnswerOption._meta
+class ClosedQuestionAnswerOptionForm(forms.ModelForm):
+    answer_option_meta = ClosedQuestionAnswerOption._meta
     serial_number = forms.IntegerField(
         label=answer_option_meta.get_field('serial_number').verbose_name,
         widget=forms.NumberInput(
             attrs={
                 'class': 'serial-number',
+                'data-name': 'serial-number',
                 'min': 1
             }
         )
@@ -122,7 +126,8 @@ class AnswerOptionForm(forms.ModelForm):
         widget=forms.Textarea(
             attrs={
                 'class': 'uk-textarea',
-                'rows': '5'
+                'rows': '5',
+                'data-name': 'description'
             }
         )
     )
@@ -131,7 +136,7 @@ class AnswerOptionForm(forms.ModelForm):
         required=False,
         widget=forms.FileInput(
             attrs={
-                'class': 'photo',
+                'data-name': 'photo',
             }
         )
     )
@@ -140,15 +145,28 @@ class AnswerOptionForm(forms.ModelForm):
         required=False,
         widget=forms.CheckboxInput(
             attrs={
-                'class': 'is-correct uk-checkbox',
+                'class': 'uk-checkbox',
+                'data-name': 'is-correct',
             }
         )
     )
 
     class Meta:
-        model = AnswerOption
-        fields = ('serial_number', 'description', 'photo', 'is_correct',)
-        exclude = ['closed_question', ]
+        model = ClosedQuestionAnswerOption
+        widgets = {
+            'id': forms.HiddenInput(
+                attrs={
+                    'data-name': 'id'
+                }
+            ),
+        }
+        fields = ('serial_number', 'description', 'photo', 'is_correct', 'closed_question',)
 
 
-AnswerOptionFormSet = formset_factory(AnswerOptionForm, extra=2)
+ClosedQuestionAnswerOptionFormSet = inlineformset_factory(
+    ClosedQuestion,
+    ClosedQuestionAnswerOption,
+    form=ClosedQuestionAnswerOptionForm,
+    exclude=['id', 'closed_question', ],
+    extra=2
+)
