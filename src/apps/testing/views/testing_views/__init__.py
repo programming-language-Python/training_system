@@ -1,0 +1,5 @@
+from .testing_create_view import TestingCreateView
+from .testing_detail_view import TestingDetailView
+from .testing_update_view import TestingUpdateView
+from .testing_delete_view import TestingDeleteView
+from .testing_list_view import TestingListView

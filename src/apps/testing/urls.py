@@ -1,6 +1,13 @@
 from django.urls import path
 
-from .views import *
+from .constants import APP_NAME
+from .views.task_views.closed_question_views import ClosedQuestionCreateView, ClosedQuestionUpdateView, \
+    ClosedQuestionDeleteView
+from .views.task_views.establishing_accordance_views import EstablishingAccordanceCreateView
+from .views.task_views.open_question_views import OpenQuestionCreateView
+from .views.task_views.sequencing_views import SequencingCreateView
+from .views.testing_views import TestingCreateView, TestingListView, TestingDetailView, TestingUpdateView, \
+    TestingDeleteView
 
 app_name = APP_NAME
 urlpatterns = [
