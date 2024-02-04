@@ -1,3 +1,4 @@
+from ckeditor_uploader.widgets import CKEditorUploadingWidget
 from django import forms
 
 from apps.testing.models.tasks.closed_question import ClosedQuestionAnswerOption
@@ -17,20 +18,11 @@ class ClosedQuestionAnswerOptionForm(forms.ModelForm):
     )
     description = forms.CharField(
         label=answer_option_meta.get_field('description').verbose_name,
-        widget=forms.Textarea(
+        widget=CKEditorUploadingWidget(
             attrs={
                 'class': 'uk-textarea',
                 'rows': '5',
                 'data-name': 'description'
-            }
-        )
-    )
-    photo = forms.ImageField(
-        label=answer_option_meta.get_field('photo').verbose_name,
-        required=False,
-        widget=forms.FileInput(
-            attrs={
-                'data-name': 'photo',
             }
         )
     )
@@ -54,4 +46,4 @@ class ClosedQuestionAnswerOptionForm(forms.ModelForm):
                 }
             ),
         }
-        fields = ('serial_number', 'description', 'photo', 'is_correct', 'closed_question',)
+        fields = ('serial_number', 'description', 'is_correct', 'closed_question',)

@@ -10,5 +10,6 @@ ClosedQuestionAnswerOptionFormSet = inlineformset_factory(
     ClosedQuestionAnswerOption,
     form=ClosedQuestionAnswerOptionForm,
     exclude=['id', 'closed_question', ],
-    extra=2
+    extra=2,
+    max_num=10
 )

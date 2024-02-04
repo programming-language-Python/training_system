@@ -45,11 +45,6 @@ class ClosedQuestion(AbstractFieldDescription, AbstractFieldWeight):
 class ClosedQuestionAnswerOption(AbstractFieldDescription):
     serial_number = models.IntegerField(verbose_name='Порядковый номер')
     is_correct = models.BooleanField(verbose_name='Правильный')
-    photo = models.ImageField(
-        upload_to='Testing/Task/Closed question/Answer options',
-        verbose_name='Фото',
-        blank=True
-    )
     closed_question = models.ForeignKey(
         ClosedQuestion,
         on_delete=models.CASCADE,

@@ -1,9 +1,12 @@
+from typing import Mapping
+
 from django.shortcuts import redirect
 from django.views.generic import CreateView
 
 from apps.testing.constants import APP_NAME
 from apps.testing.forms.task_forms.сlosed_question_form import ClosedQuestionForm, ClosedQuestionAnswerOptionFormSet
-from apps.testing.models import ClosedQuestion, Testing
+from apps.testing.models import ClosedQuestion
+from apps.testing.services import ClosedQuestionService, ClosedQuestionAnswerOptionService
 
 
 class ClosedQuestionCreateView(CreateView):
@@ -12,21 +15,26 @@ class ClosedQuestionCreateView(CreateView):
     template_name = 'testing/task/closed_question_create_or_update.html'
     pk_url_kwarg = 'testing_pk'
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs) -> Mapping:
         context = super().get_context_data(**kwargs)
-        testing_pk = self.kwargs['testing_pk']
-        quantity_tasks = Testing.objects.get(pk=testing_pk).testing_related.count()
-        context_form_fields = context['form'].fields
-        context_form_fields['serial_number'].initial = quantity_tasks + 1
-        context_form_fields['testing'].initial = testing_pk
-        context['answer_option_form_set'] = ClosedQuestionAnswerOptionFormSet()
-        for form in context['answer_option_form_set'].forms:
-            form.fields['closed_question'].widget.attrs = {'data-name': 'closed-question'}
-            form.fields['DELETE'].widget.attrs = {'data-name': 'delete'}
+        closed_question_service = ClosedQuestionService(testing_pk=self.kwargs['testing_pk'])
+        closed_question_answer_option_service = ClosedQuestionAnswerOptionService(
+            form_set=ClosedQuestionAnswerOptionFormSet()
+        )
+        context['form'].fields = closed_question_service.set_initial_values_form_fields(fields=context['form'].fields)
+        quantity_answer_options_add = self.request.GET.get('quantity-answer-options-add')
+        if quantity_answer_options_add:
+            closed_question_answer_option_service.set_form_set(
+                quantity=closed_question_answer_option_service.get_form_set().extra + abs(
+                    int(quantity_answer_options_add)
+                )
+            )
+        closed_question_answer_option_service.set_attributes_for_form_set()
+        context['answer_option_form_set'] = closed_question_answer_option_service.get_form_set()
         context['btn_text'] = 'Создать задачу'
         return context
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs) -> redirect:
         closed_question_form = self.form_class(request.POST)
         answer_option_form_set = ClosedQuestionAnswerOptionFormSet(request.POST, request.FILES)
         if closed_question_form.is_valid() and answer_option_form_set.is_valid():
@@ -38,7 +46,7 @@ class ClosedQuestionCreateView(CreateView):
             self,
             closed_question_form: ClosedQuestionForm,
             answer_option_form_set: ClosedQuestionAnswerOptionFormSet
-    ):
+    ) -> redirect:
         closed_question = closed_question_form.save()
         answer_option_form_set.instance = closed_question
         answer_option_form_set.save()
@@ -48,7 +56,7 @@ class ClosedQuestionCreateView(CreateView):
             self,
             closed_question_form: ClosedQuestionForm,
             answer_option_form_set: ClosedQuestionAnswerOptionFormSet
-    ):
+    ) -> redirect:
         self.object = None
         return self.render_to_response(
             self.get_context_data(

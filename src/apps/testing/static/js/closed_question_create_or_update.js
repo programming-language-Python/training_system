@@ -4,7 +4,7 @@ $(document).ready(function () {
     answerOption.setSerialNumbers();
     answerOption.changeCheckboxBehaviorToRadio();
     $('#add-answer').click(() => answerOption.add());
-    $answerOptions.on('click', '[name="btn-delete"]', (event) => answerOption.delete(event));
+    $answerOptions.on('click', '[data-name="delete"]', (event) => answerOption.delete(event));
     $answerOptions.on('DOMSubtreeModified', () => {
         answerOption.setSerialNumbers();
         let $answerOptions = $('[name="answer-option"]');
@@ -12,7 +12,10 @@ $(document).ready(function () {
             answerOption.setAttributes($($answerOptions[i]), i);
         }
     });
-    $answerOptions.change('[data-name="photo"]', (event) => answerOption.showImage(event));
+    answerOption.setQuantityAnswerOptionsAfterAdding();
+    $('#quantity-add-answer-options').change(() => {
+        answerOption.setQuantityAnswerOptionsAfterAdding();
+    });
 });
 
 class AnswerOption {
@@ -35,9 +38,6 @@ class AnswerOption {
         $answerOption.find('[data-name="description"]')
             .attr('name', firstSubstringName + index + '-description')
             .attr('id', firstSubstringId + index + '-description');
-        $answerOption.find('input[type="file"]')
-            .attr('name', firstSubstringName + index + '-photo')
-            .attr('id', firstSubstringId + index + '-photo');
         $answerOption.find('[data-name="is-correct"]')
             .attr('name', firstSubstringName + index + '-is_correct')
             .attr('id', firstSubstringId + index + '-is_correct');
@@ -55,39 +55,10 @@ class AnswerOption {
 
     delete(event) {
         let quantityAnswerOptions = $('[name="answer-option"]').length;
-        if (quantityAnswerOptions > 2) {
-            let $answerOption = event.target.closest('[name="answer-option"]');
-            $answerOption.remove();
-            quantityAnswerOptions--;
-            for (let index = 0; index < quantityAnswerOptions; index++) {
-                let $answerOption = $($('[name="answer-option"]')[index]);
-                this.setAttributes($answerOption, index);
-            }
-        } else {
-            alert('Вы не можете удалить ответ. Минимальное количество ответов 2.');
-        }
-    }
-
-    showImage(event) {
-        let $inputFile = event.target;
-        if ($inputFile.files && $inputFile.files[0]) {
-            let reader = new FileReader();
-            reader.onload = function (e) {
-                let $newImg = $('<img>', {
-                    'src': e.target.result,
-                    'uk-img': true
-                });
-                let $parent = $($inputFile).parent();
-                let $img = $parent.find('img');
-                let $imgInput = $parent.find('> [name="img-input"]');
-                if ($img.length) {
-                    $imgInput.val($inputFile.files[0].name);
-                    $img.replaceWith($newImg);
-                } else {
-                    $imgInput.after($newImg);
-                }
-            }
-            reader.readAsDataURL($inputFile.files[0]);
+        let quantitySelectedDeletions = $('[data-name="delete"]:checked').length;
+        if (quantityAnswerOptions - quantitySelectedDeletions < 2) {
+            alert('Вы не можете удалить данный ответ. Минимальное допустимое количество ответов 2.');
+            $(event.target).prop('checked', false);
         }
     }
 
@@ -102,17 +73,38 @@ class AnswerOption {
     _resizeSerialNumberInput() {
         let $serialNumbers = document.querySelectorAll('[data-name="serial-number"]');
         $serialNumbers.forEach((elem) => {
-            elem.style.width = ((elem.value.length + 1) * 4) + 'px';
+            elem.style.width = ((elem.value.length + 1) * 5) + 'px';
         });
     }
 
     changeCheckboxBehaviorToRadio() {
-        $('[data-name="is-correct"]').first().prop('checked', true);
+        $('#id_is_several_correct_answers').on('click', (event) => {
+            let $isCorrectsChecked = $('[data-name="is-correct"]:checked');
+            if (event.target.checked && $isCorrectsChecked.length === 1) {
+                $('[data-name="is-correct"]:not(:checked)').first().prop('checked', true);
+            } else {
+                $('[data-name="is-correct"]').prop('checked', false);
+                $isCorrectsChecked.first().prop('checked', true);
+            }
+        });
         $('#answer-options').on('click', '[data-name="is-correct"]', (event) => {
-            if (!$('#id_is_several_correct_answers').is(':checked')) {
+            if ($('#id_is_several_correct_answers').is(':checked')) {
+                let $isCorrectsChecked = $('[data-name="is-correct"]:checked');
+                if (!event.target.checked && $isCorrectsChecked.length < 2) {
+                    event.target.checked = true;
+                    alert('Вы выбрали "Допустимо несколько правильных ответов".\nС данной настройкой должны быть выбраны минимум 2 правильных вариантов ответа.');
+                }
+            } else {
                 $('[data-name="is-correct"]').prop('checked', false);
                 event.target.checked = true;
             }
         });
+    }
+
+    setQuantityAnswerOptionsAfterAdding() {
+        let quantityAnswerOptions = $('[name="answer-option"]').length;
+        let quantityAddAnswerOptions = Number($('#quantity-add-answer-options').val());
+        let quantityAnswerOptionsAfterAdding = quantityAnswerOptions + quantityAddAnswerOptions;
+        $('#quantity-answer-options-after-adding').val(quantityAnswerOptionsAfterAdding);
     }
 }
