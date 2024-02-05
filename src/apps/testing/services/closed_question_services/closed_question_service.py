@@ -15,4 +15,4 @@ class ClosedQuestionService:
         return fields
 
     def get_quantity(self) -> int:
-        return Testing.objects.get(pk=self.testing_pk).testing_related.count()
+        return Testing.objects.get(pk=self.testing_pk).closed_question_set.count()

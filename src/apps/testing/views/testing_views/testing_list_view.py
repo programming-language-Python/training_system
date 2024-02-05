@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import QuerySet
 from django.views.generic import ListView
 
 from apps.testing.models import Testing
@@ -17,3 +18,10 @@ class TestingListView(ContextMixin, LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context |= self.get_testing_list_data(is_teacher=self.request.user.is_teacher)
         return context
+
+    def get_queryset(self) -> QuerySet[Testing]:
+        user = self.request.user
+        if user.is_teacher:
+            return Testing.objects.filter(user=user)
+        else:
+            return Testing.objects.filter(student_groups=user.student_group)

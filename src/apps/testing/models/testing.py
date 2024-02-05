@@ -32,9 +32,6 @@ class Testing(AbstractTesting):
         verbose_name='Время выполнения задачи'
     )
 
-    def __str__(self):
-        return self.title
-
     def get_absolute_url(self):
         return reverse(APP_NAME + ':testing_detail', kwargs={'pk': self.pk})
 
@@ -75,7 +72,7 @@ class MaxScore(models.Model):
     testing = models.OneToOneField(
         Testing,
         on_delete=models.CASCADE,
-        related_name='%(app_label)s_%(class)s_related',
+        related_name='max_score_set',
         verbose_name='Тестирование'
     )
 

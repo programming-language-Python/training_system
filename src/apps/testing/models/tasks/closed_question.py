@@ -1,17 +1,12 @@
 from django.db import models
 from django.urls import reverse
 
-from abstractions.abstract_fields import AbstractFieldWeight
-from apps.testing.abstractions import AbstractFieldDescription
+from apps.testing.abstractions import AbstractTask
 from apps.testing.constants import APP_NAME
 from apps.testing.models import Testing
 
 
-class ClosedQuestion(AbstractFieldDescription, AbstractFieldWeight):
-    serial_number = models.IntegerField(
-        blank=True,
-        verbose_name='Порядковый номер'
-    )
+class ClosedQuestion(AbstractTask):
     type = models.CharField(default='Закрытый вопрос')
     is_several_correct_answers = models.BooleanField(
         default=False,
@@ -28,7 +23,7 @@ class ClosedQuestion(AbstractFieldDescription, AbstractFieldWeight):
     testing = models.ForeignKey(
         Testing,
         on_delete=models.CASCADE,
-        related_name='testing_related',
+        related_name='closed_question_set',
         verbose_name='Тестирование'
     )
 
@@ -38,17 +33,16 @@ class ClosedQuestion(AbstractFieldDescription, AbstractFieldWeight):
     def get_deletion_url(self):
         return reverse(APP_NAME + ':task_closed_question_delete', kwargs={'pk': self.pk})
 
-    class Meta(AbstractFieldDescription.Meta, AbstractFieldWeight.Meta):
+    class Meta:
         ordering = ['serial_number', ]
 
 
-class ClosedQuestionAnswerOption(AbstractFieldDescription):
-    serial_number = models.IntegerField(verbose_name='Порядковый номер')
+class ClosedQuestionAnswerOption(AbstractTask):
     is_correct = models.BooleanField(verbose_name='Правильный')
     closed_question = models.ForeignKey(
         ClosedQuestion,
         on_delete=models.CASCADE,
-        related_name='closed_question_related',
+        related_name='closed_question_answer_option_set',
         verbose_name='Закрытый вопрос'
     )
 

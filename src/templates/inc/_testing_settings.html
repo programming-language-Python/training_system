@@ -9,6 +9,11 @@
     {% endif %}
 </section>
 <section class="content__task-form task-form uk-margin" id="task-form"></section>
-<h2 class="task-form__count-tasks">
-    Количество задач: <span id="count-tasks"></span>
-</h2>
+<h3 class="task-form__count-tasks">
+    Количество задач:
+    {% if user.is_teacher %}
+        <span id="count-tasks"></span>
+    {% else %}
+        {{ paginator.count }}
+    {% endif %}
+</h3>
