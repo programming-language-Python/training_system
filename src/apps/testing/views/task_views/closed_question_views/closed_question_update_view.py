@@ -5,7 +5,7 @@ from django.views.generic import UpdateView
 from apps.testing.constants import APP_NAME
 from apps.testing.forms.task_forms.сlosed_question_form import ClosedQuestionForm, ClosedQuestionAnswerOptionFormSet
 from apps.testing.models import ClosedQuestion
-from apps.testing.services import ClosedQuestionAnswerOptionService
+from apps.testing.services.answer_option_service import AnswerOptionService
 
 
 class ClosedQuestionUpdateView(LoginRequiredMixin, UpdateView):
@@ -17,12 +17,9 @@ class ClosedQuestionUpdateView(LoginRequiredMixin, UpdateView):
         context = super().get_context_data(**kwargs)
         form_set = ClosedQuestionAnswerOptionFormSet(instance=self.get_object())
         form_set.extra = 0
-        closed_question_answer_option_service = ClosedQuestionAnswerOptionService(form_set)
+        answer_option_service = AnswerOptionService(form_set)
         quantity_answer_options_add = self.request.GET.get('quantity-answer-options-add')
-        if quantity_answer_options_add:
-            closed_question_answer_option_service.set_form_set(quantity=abs(int(quantity_answer_options_add)))
-        closed_question_answer_option_service.set_attributes_for_form_set()
-        context['answer_option_form_set'] = closed_question_answer_option_service.get_form_set()
+        context |= answer_option_service.get_context(quantity_answer_options_add)
         context['btn_text'] = 'Обновить задачу'
         return context
 

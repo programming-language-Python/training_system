@@ -1,4 +1,4 @@
-from typing import Mapping
+from collections.abc import MutableMapping
 
 from django.shortcuts import redirect
 from django.views.generic import CreateView
@@ -6,7 +6,8 @@ from django.views.generic import CreateView
 from apps.testing.constants import APP_NAME
 from apps.testing.forms.task_forms.сlosed_question_form import ClosedQuestionForm, ClosedQuestionAnswerOptionFormSet
 from apps.testing.models import ClosedQuestion
-from apps.testing.services import ClosedQuestionService, ClosedQuestionAnswerOptionService
+from apps.testing.services import TaskService
+from apps.testing.services.answer_option_service import AnswerOptionService
 
 
 class ClosedQuestionCreateView(CreateView):
@@ -15,22 +16,13 @@ class ClosedQuestionCreateView(CreateView):
     template_name = 'testing/task/closed_question_create_or_update.html'
     pk_url_kwarg = 'testing_pk'
 
-    def get_context_data(self, **kwargs) -> Mapping:
+    def get_context_data(self, **kwargs) -> MutableMapping:
+        task_service = TaskService(testing_pk=self.kwargs['testing_pk'])
+        answer_option_service = AnswerOptionService(form_set=ClosedQuestionAnswerOptionFormSet())
         context = super().get_context_data(**kwargs)
-        closed_question_service = ClosedQuestionService(testing_pk=self.kwargs['testing_pk'])
-        closed_question_answer_option_service = ClosedQuestionAnswerOptionService(
-            form_set=ClosedQuestionAnswerOptionFormSet()
-        )
-        context['form'].fields = closed_question_service.set_initial_values_form_fields(fields=context['form'].fields)
+        context['form'].fields = task_service.set_initial_values_form_fields(fields=context['form'].fields)
         quantity_answer_options_add = self.request.GET.get('quantity-answer-options-add')
-        if quantity_answer_options_add:
-            closed_question_answer_option_service.set_form_set(
-                quantity=closed_question_answer_option_service.get_form_set().extra + abs(
-                    int(quantity_answer_options_add)
-                )
-            )
-        closed_question_answer_option_service.set_attributes_for_form_set()
-        context['answer_option_form_set'] = closed_question_answer_option_service.get_form_set()
+        context |= answer_option_service.get_context(quantity_answer_options_add)
         context['btn_text'] = 'Создать задачу'
         return context
 

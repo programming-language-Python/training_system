@@ -47,5 +47,5 @@ class ClosedQuestionAnswerOption(AbstractTask):
     )
 
     class Meta:
-        ordering = ['serial_number']
+        ordering = ['serial_number', ]
         db_table = f'{APP_NAME}_closedQuestion_answerOption'

@@ -1,11 +1,10 @@
 from django import forms
 
 from abstractions.abstract_form_fields import AbstractFormFieldDescription
-from abstractions.abstract_forms import AbstractTaskForm
 from apps.testing.models import ClosedQuestion
 
 
-class ClosedQuestionForm(AbstractTaskForm, AbstractFormFieldDescription):
+class ClosedQuestionForm(AbstractFormFieldDescription):
     closed_question_meta = ClosedQuestion._meta
     is_several_correct_answers = forms.BooleanField(
         label=closed_question_meta.get_field('is_several_correct_answers').verbose_name,

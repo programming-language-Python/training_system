@@ -3,7 +3,7 @@
     <div>Тип задачи</div>
     <div>Описание</div>
     <div>Удалить</div>
-    {% for task in testing.testing_related.all %}
+    {% for task in tasks %}
         <a href="{{ task.get_absolute_url }}">
             <div>
                 {{ task.serial_number }}

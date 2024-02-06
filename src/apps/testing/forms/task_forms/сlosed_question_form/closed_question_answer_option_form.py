@@ -39,11 +39,4 @@ class ClosedQuestionAnswerOptionForm(forms.ModelForm):
 
     class Meta:
         model = ClosedQuestionAnswerOption
-        widgets = {
-            'id': forms.HiddenInput(
-                attrs={
-                    'data-name': 'id'
-                }
-            ),
-        }
         fields = ('serial_number', 'description', 'is_correct', 'closed_question',)

@@ -30,7 +30,7 @@ class AnswerOption {
     }
 
     setAttributes($answerOption, index) {
-        let firstSubstringName = 'closed_question_related-';
+        let firstSubstringName = 'closed_question_answer_option_set-';
         let firstSubstringId = "id_" + firstSubstringName;
         $answerOption.find('[data-name="serial-number"]')
             .attr('name', firstSubstringName + index + '-serial_number')
@@ -44,9 +44,6 @@ class AnswerOption {
         $answerOption.find('[data-name="delete"]')
             .attr('name', firstSubstringName + index + '-DELETE')
             .attr('id', firstSubstringId + index + '-DELETE');
-        $answerOption.find('[data-name="id"]')
-            .attr('name', firstSubstringName + index + '-id')
-            .attr('id', firstSubstringId + index + '-id');
         $answerOption.find('[data-name="closed-question"]')
             .attr('name', firstSubstringName + index + '-closed_question')
             .attr('id', firstSubstringId + index + '-closed_question');
