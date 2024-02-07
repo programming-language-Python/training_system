@@ -1,11 +1,10 @@
 from django.db import models
 
-from abstractions.abstract_fields import AbstractFieldWeight
-from apps.testing.abstractions import AbstractFieldDescription
+from apps.testing.abstractions.abstract_fields import AbstractFieldDescription
 from apps.testing.models import Testing
 
 
-class EstablishingAccordance(AbstractFieldDescription, AbstractFieldWeight):
+class EstablishingAccordance(AbstractFieldDescription):
     testing = models.ForeignKey(
         Testing,
         on_delete=models.CASCADE,

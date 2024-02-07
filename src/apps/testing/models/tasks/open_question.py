@@ -1,6 +1,6 @@
 from django.db import models
 
-from apps.testing.abstractions import AbstractTask
+from apps.testing.abstractions.abstract_models import AbstractTask
 from apps.testing.constants import APP_NAME
 from apps.testing.models import Testing
 

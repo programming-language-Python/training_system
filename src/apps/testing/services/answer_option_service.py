@@ -10,7 +10,7 @@ class AnswerOptionService:
     def __init__(self, form_set: inlineformset_factory) -> None:
         self.form_set = form_set
 
-    def get_context(self, quantity_answer_options_add: str | NoneType) -> Mapping:
+    def get_context_data(self, quantity_answer_options_add: str | NoneType) -> Mapping:
         if quantity_answer_options_add:
             self.set_form_set(
                 quantity=self.get_form_set().extra + abs(

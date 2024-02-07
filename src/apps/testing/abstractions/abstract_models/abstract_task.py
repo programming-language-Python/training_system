@@ -1,4 +1,4 @@
-from apps.testing.abstractions import AbstractFieldDescription, AbstractFieldSerialNumber
+from apps.testing.abstractions.abstract_fields import AbstractFieldSerialNumber, AbstractFieldDescription
 
 
 class AbstractTask(AbstractFieldSerialNumber, AbstractFieldDescription):
