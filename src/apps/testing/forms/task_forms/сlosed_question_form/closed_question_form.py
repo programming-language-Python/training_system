@@ -1,10 +1,10 @@
 from django import forms
 
-from abstractions.abstract_form_fields import AbstractFormFieldDescription
+from apps.testing.abstractions.abstract_forms.abstract_task_form import AbstractTaskForm
 from apps.testing.models import ClosedQuestion
 
 
-class ClosedQuestionForm(AbstractFormFieldDescription):
+class ClosedQuestionForm(AbstractTaskForm):
     closed_question_meta = ClosedQuestion._meta
     is_several_correct_answers = forms.BooleanField(
         label=closed_question_meta.get_field('is_several_correct_answers').verbose_name,
@@ -34,10 +34,5 @@ class ClosedQuestionForm(AbstractFormFieldDescription):
         )
     )
 
-    class Meta:
+    class Meta(AbstractTaskForm.Meta):
         model = ClosedQuestion
-        widgets = {
-            'serial_number': forms.HiddenInput(),
-            'testing': forms.HiddenInput()
-        }
-        exclude = ['type', ]

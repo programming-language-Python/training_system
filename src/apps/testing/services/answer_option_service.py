@@ -30,9 +30,10 @@ class AnswerOptionService:
         self.form_set.extra = quantity
 
     def set_attributes_for_form_set(self) -> None:
+        task_name = self.form_set.fk.attname.replace('_id', '')
         for form in self.form_set.forms:
-            form.fields['closed_question'].widget.attrs = {
-                'data-name': 'closed-question'
+            form.fields[task_name].widget.attrs = {
+                'data-name': task_name.replace('_', '-')
             }
             form.fields['DELETE'].widget.attrs = {
                 'class': 'uk-checkbox',

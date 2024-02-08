@@ -1,7 +1,6 @@
 from django.db import models
-from django.urls import reverse
 
-from apps.testing.abstractions.abstract_models import AbstractTask
+from apps.testing.abstractions.abstract_models import AbstractTask, AbstractAnswerOption
 from apps.testing.constants import APP_NAME
 from apps.testing.models import Testing
 
@@ -27,17 +26,8 @@ class ClosedQuestion(AbstractTask):
         verbose_name='Тестирование'
     )
 
-    def get_absolute_url(self):
-        return reverse(APP_NAME + ':task_closed_question_update', kwargs={'pk': self.pk})
 
-    def get_deletion_url(self):
-        return reverse(APP_NAME + ':task_closed_question_delete', kwargs={'pk': self.pk})
-
-    class Meta:
-        ordering = ['serial_number', ]
-
-
-class ClosedQuestionAnswerOption(AbstractTask):
+class ClosedQuestionAnswerOption(AbstractAnswerOption):
     is_correct = models.BooleanField(verbose_name='Правильный')
     closed_question = models.ForeignKey(
         ClosedQuestion,
@@ -46,6 +36,5 @@ class ClosedQuestionAnswerOption(AbstractTask):
         verbose_name='Закрытый вопрос'
     )
 
-    class Meta:
-        ordering = ['serial_number', ]
+    class Meta(AbstractAnswerOption.Meta):
         db_table = f'{APP_NAME}_closedQuestion_answerOption'
