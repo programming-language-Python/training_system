@@ -1,10 +1,22 @@
 from itertools import chain
-from typing import Mapping, Sequence, MutableMapping
+from typing import Mapping, Sequence
 
+from django.apps import apps
 from django.core.paginator import Paginator
 from django.db.models import QuerySet
+from django.http import QueryDict
 
 from apps.testing.models import ClosedQuestion, OpenQuestion
+
+
+def update_tasks_serial_number(tasks_data: QueryDict) -> None:
+    class_names = tasks_data.getlist('class-name')
+    task_pks = tasks_data.getlist('pk')
+    serial_numbers = tasks_data.getlist('serial-number')
+    tasks = zip(class_names, task_pks, serial_numbers)
+    for class_name, pk, serial_number in tasks:
+        model = apps.get_model(app_label='testing', model_name=class_name)
+        model.objects.filter(pk=pk).update(serial_number=serial_number)
 
 
 class TaskService:

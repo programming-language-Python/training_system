@@ -1,33 +1,50 @@
-<section class="content__testing-task-list testing-task-list uk-grid-small uk-child-width-1-4" uk-grid>
-    <div>№</div>
-    <div>Тип задачи</div>
-    <div>Описание</div>
-    <div>Удалить</div>
-    {% for task in tasks %}
-        <a href="{{ task.get_absolute_url }}">
-            <div>
-                {{ task.serial_number }}
-            </div>
-        </a>
-        <a href="{{ task.get_absolute_url }}">
-            <div>
-                {{ task.type }}
-            </div>
-        </a>
-        <a href="{{ task.get_absolute_url }}">
-            <div>
-                {{ task.description|safe }}
-            </div>
-        </a>
-        <div>
-            <form method="POST" action="{{ task.get_deletion_url }}?testing_pk={{ testing.pk }}">
-                {% csrf_token %}
-                <button type="submit"
-                        name="btn-delete"
-                        uk-icon="trash"
-                        uk-tooltip="Удалить">
-                </button>
-            </form>
-        </div>
-    {% endfor %}
+<section class="content__testing-task-list testing-task-list">
+    <form method="post">
+        {% csrf_token %}
+        <button class="uk-button uk-button-primary" type="submit">Обновить нумерацию задач</button>
+        <ul>
+            <li class="uk-grid-small uk-child-width-1-5" uk-grid>
+                <div>Изменить порядок</div>
+                <div>№</div>
+                <div>Тип задачи</div>
+                <div>Описание</div>
+                <div>Удалить</div>
+            </li>
+        </ul>
+        <ul id="tasks" uk-sortable="handle: .uk-sortable-handle">
+            {% for task in tasks %}
+                <li class="uk-grid-small uk-child-width-1-5" uk-grid>
+                    <span name="sort-sign" class="uk-sortable-handle" uk-icon="icon: table"></span>
+                    <input name="class-name" type="hidden" value="{{ task.get_class_name }}">
+                    <input name="pk" type="hidden" value="{{ task.pk }}">
+                    <a href="{{ task.get_absolute_url }}">
+                        <label>
+                            <input class="serial-number" name="serial-number" data-name="serial-number" type="text"
+                                   value="{{ task.serial_number }}">
+                        </label>
+                    </a>
+                    <a href="{{ task.get_absolute_url }}">
+                        <div>
+                            {{ task.type }}
+                        </div>
+                    </a>
+                    <a href="{{ task.get_absolute_url }}">
+                        <div>
+                            {{ task.description|safe }}
+                        </div>
+                    </a>
+                    <div>
+                        <form method="POST" action="{{ task.get_deletion_url }}?testing_pk={{ testing.pk }}">
+                            {% csrf_token %}
+                            <button type="submit"
+                                    name="btn-delete"
+                                    uk-icon="trash"
+                                    uk-tooltip="Удалить">
+                            </button>
+                        </form>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </form>
 </section>

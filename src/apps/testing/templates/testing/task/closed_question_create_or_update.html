@@ -25,7 +25,7 @@
             {{ form.as_p }}
         </div>
         <h2>Варианты ответов</h2>
-        <ul class="uk-margin uk-nav uk-nav-default">
+        <ul>
             <li class="uk-grid-small uk-child-width-1-5" uk-grid>
                 <div>Изменить порядок</div>
                 <div>Порядковый номер</div>
@@ -34,20 +34,21 @@
                 <div>Удалить</div>
             </li>
         </ul>
-        <ul id="answer-options" name="answer-options" class="uk-margin uk-nav uk-nav-default"
+        <ul id="answer-options" name="answer-options"
             uk-sortable="handle: .uk-sortable-handle">
             {{ answer_option_form_set.management_form }}
             {% for answer_option_form in answer_option_form_set %}
                 <li name="answer-option" class="uk-grid-small uk-child-width-1-5" uk-grid>
-                <span name="sort-sign" class="uk-sortable-handle" uk-icon="icon: table"></span>
-                {% for field in answer_option_form.visible_fields %}
-                    <div>
-                        {{ field }}
-                    </div>
-                {% endfor %}
-                {% for hidden_field in answer_option_form.hidden_fields %}
-                    {{ hidden_field }}
-                {% endfor %}
+                    <span name="sort-sign" class="uk-sortable-handle" uk-icon="icon: table"></span>
+                    {% for field in answer_option_form.visible_fields %}
+                        <div>
+                            {{ field }}
+                        </div>
+                    {% endfor %}
+                    {% for hidden_field in answer_option_form.hidden_fields %}
+                        {{ hidden_field }}
+                    {% endfor %}
+                </li>
             {% endfor %}
         </ul>
         <div class="uk-margin">

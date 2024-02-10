@@ -1,13 +1,16 @@
 from typing import Mapping, Sequence
 
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.handlers.wsgi import WSGIRequest
 from django.core.paginator import Paginator
 from django.db.models import QuerySet
+from django.shortcuts import redirect
 from django.views.generic import DetailView
 
 from apps.testing.models import Testing
 from apps.testing.constants import APP_NAME
 from apps.testing.services import TaskService
+from apps.testing.services.task_service import update_tasks_serial_number
 from apps.testing.types import TaskType
 from mixins import URLMixin
 
@@ -15,6 +18,11 @@ from mixins import URLMixin
 class TestingDetailView(URLMixin, LoginRequiredMixin, DetailView):
     model = Testing
     APP_NAME = APP_NAME
+
+    @staticmethod
+    def post(request: WSGIRequest, *args, **kwargs) -> redirect:
+        update_tasks_serial_number(tasks_data=request.POST)
+        return redirect('testing:testing_detail', pk=kwargs['pk'])
 
     def get_context_data(self, **kwargs) -> Mapping:
         context = super().get_context_data(**kwargs)
