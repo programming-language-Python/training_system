@@ -52,6 +52,8 @@ INSTALLED_APPS = [
     'pwa',
     'ckeditor',
     'ckeditor_uploader',
+    'crispy_forms',
+    'formtools'
 ]
 
 MIDDLEWARE = [

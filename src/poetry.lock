@@ -69,6 +69,21 @@ Django = ">=3.2"
 django-js-asset = ">=2.0"
 
 [[package]]
+name = "django-crispy-forms"
+version = "2.1"
+description = "Best way to have Django DRY forms"
+category = "main"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "django-crispy-forms-2.1.tar.gz", hash = "sha256:4d7ec431933ad4d4b5c5a6de4a584d24613c347db9ac168723c9aaf63af4bb96"},
+    {file = "django_crispy_forms-2.1-py3-none-any.whl", hash = "sha256:d592044771412ae1bd539cc377203aa61d4eebe77fcbc07fbc8f12d3746d4f6b"},
+]
+
+[package.dependencies]
+django = ">=4.2"
+
+[[package]]
 name = "django-debug-toolbar"
 version = "4.2.0"
 description = "A configurable set of panels that display various debug information about the current request/response."
@@ -83,6 +98,21 @@ files = [
 [package.dependencies]
 django = ">=3.2.4"
 sqlparse = ">=0.2"
+
+[[package]]
+name = "django-formtools"
+version = "2.5.1"
+description = "A set of high-level abstractions for Django forms"
+category = "main"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "django-formtools-2.5.1.tar.gz", hash = "sha256:47cb34552c6efca088863d693284d04fc36eaaf350eb21e1a1d935e0df523c93"},
+    {file = "django_formtools-2.5.1-py3-none-any.whl", hash = "sha256:bce9b64eda52cc1eef6961cc649cf75aacd1a707c2fff08d6c3efcbc8e7e761a"},
+]
+
+[package.dependencies]
+Django = ">=3.2"
 
 [[package]]
 name = "django-jquery"
@@ -392,4 +422,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "7f22cfaa1b386f591626ae139962951618eddbab46bb389f46c3c0571cb0c2b7"
+content-hash = "ca1f953b15110c745aaa767f2fc8ba48e0ddee3b490c2674cdb621c7403b3fac"

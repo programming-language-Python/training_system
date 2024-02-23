@@ -10,10 +10,15 @@
 </section>
 <section class="content__task-form task-form uk-margin" id="task-form"></section>
 <h3 class="task-form__count-tasks">
-    Количество задач:
-    {% if user.is_teacher %}
-        <span id="count-tasks"></span>
-    {% else %}
-        {{ paginator.count }}
-    {% endif %}
+    {% with 'Количество задач: ' as text %}
+        {% if user.is_teacher %}
+            {{ text }}<span id="count-tasks"></span>
+        {% else %}
+            <form id="answer-form" method="post">
+                {% csrf_token %}
+                <button class="uk-button uk-button-primary" type="submit">Завершить тестирование</button>
+            </form>
+            {{ text }}{{ paginator.count }}
+        {% endif %}
+    {% endwith %}
 </h3>

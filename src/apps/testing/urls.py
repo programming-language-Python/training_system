@@ -6,14 +6,16 @@ from .views.task_views.closed_question_views import ClosedQuestionCreateView, Cl
 from .views.task_views.establishing_accordance_views import EstablishingAccordanceCreateView
 from .views.task_views.open_question_views import OpenQuestionCreateView, OpenQuestionUpdateView, OpenQuestionDeleteView
 from .views.task_views.sequencing_views import SequencingCreateView
-from .views.testing_views import TestingCreateView, TestingListView, TestingDetailView, TestingUpdateView, \
+from .views.testing_views import TestingCreateView, TestingListView, TestingUpdateView, \
     TestingDeleteView
+from .views.testing_views.testing_detail_view import show_testing_detail_view
 
 app_name = APP_NAME
 urlpatterns = [
     path('create/', TestingCreateView.as_view(), name='testing_create'),
     path('testing_list/', TestingListView.as_view(), name='testing_list'),
-    path('detail/<pk>', TestingDetailView.as_view(), name='testing_detail'),
+
+    path('detail/<pk>', show_testing_detail_view, name='testing_detail'),
     path('update/<pk>', TestingUpdateView.as_view(), name='testing_update'),
     path('delete/<pk>', TestingDeleteView.as_view(), name='testing_delete'),
 

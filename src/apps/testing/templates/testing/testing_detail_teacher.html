@@ -6,10 +6,5 @@
 {% endblock %}
 {% block content %}
     {% include 'inc/_testing_settings.html' %}
-    {% if user.is_teacher %}
-        {% include 'testing/inc/task/_teacher_task_list.html' %}
-    {% else %}
-        {% include 'testing/inc/_pagination.html' %}
-        {% include 'testing/inc/task/_student_task_list.html' %}
-    {% endif %}
+    {% include 'testing/inc/task/_teacher_task_list.html' %}
 {% endblock %}

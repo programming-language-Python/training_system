@@ -9,11 +9,11 @@ class AbstractTask(AbstractFieldSerialNumber, AbstractFieldDescription):
     def get_class_name(self) -> str:
         return self.__class__.__name__
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> reverse:
         class_name = convert_from_PascalCase_to_snake_case(text=self.get_class_name())
         return reverse(f'{APP_NAME}:task_{class_name}_update', kwargs={'pk': self.pk})
 
-    def get_deletion_url(self):
+    def get_deletion_url(self) -> reverse:
         class_name = convert_from_PascalCase_to_snake_case(text=self.get_class_name())
         return reverse(f'{APP_NAME}:task_{class_name}_delete', kwargs={'pk': self.pk})
 

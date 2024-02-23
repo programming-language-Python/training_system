@@ -18,6 +18,8 @@ django-pwa = "^1.1.0"
 dj-database-url = "^2.0.0"
 django-ckeditor = "^6.7.0"
 pillow = "^10.2.0"
+django-formtools = "^2.5.1"
+django-crispy-forms = "^2.1"
 
 
 [tool.poetry.group.dev.dependencies]
