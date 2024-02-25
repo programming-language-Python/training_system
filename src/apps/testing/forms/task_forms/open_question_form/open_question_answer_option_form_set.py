@@ -1,7 +1,7 @@
 from django.forms import inlineformset_factory
 
 from apps.testing.forms.task_forms.open_question_form import OpenQuestionAnswerOptionForm
-from apps.testing.models import OpenQuestion
+from apps.testing.models.tasks import OpenQuestion
 from apps.testing.models.tasks.open_question import OpenQuestionAnswerOption
 
 OpenQuestionAnswerOptionFormSet = inlineformset_factory(

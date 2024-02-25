@@ -1,10 +1,9 @@
 from formtools.wizard.views import SessionWizardView
 
-from apps.testing.forms.task_forms.open_question_form import OpenQuestionCheckAnswerForm
+from apps.testing.forms.task_forms.open_question_form import OpenQuestionAnswerForm
 
 
 class TestingDetailStudentView(SessionWizardView):
-    form_list = [OpenQuestionCheckAnswerForm, OpenQuestionCheckAnswerForm, OpenQuestionCheckAnswerForm]
     template_name = 'testing/testing_detail_student.html'
 
     def done(self, form_list, **kwargs):

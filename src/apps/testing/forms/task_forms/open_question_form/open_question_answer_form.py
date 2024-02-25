@@ -1,10 +1,14 @@
 from django import forms
 
+from apps.testing.models import CompletedOpenQuestion
 from apps.testing.models.tasks.open_question import OpenQuestionAnswerOption
 
 
-class OpenQuestionCheckAnswerForm(forms.Form):
-    your_answer = forms.CharField()
+class OpenQuestionAnswerForm(forms.ModelForm):
+    class Meta:
+        model = CompletedOpenQuestion
+        fields = '__all__'
+        exclude = ['type', 'competed_testing', ]
 
     # def clean(self):
     #     cleaned_data = super(OpenQuestionCheckAnswerForm, self).clean()

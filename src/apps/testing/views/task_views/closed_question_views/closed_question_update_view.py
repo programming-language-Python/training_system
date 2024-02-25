@@ -1,6 +1,6 @@
 from apps.testing.abstractions.abstract_views import AbstractTaskUpdateView
 from apps.testing.forms.task_forms.сlosed_question_form import ClosedQuestionForm, ClosedQuestionAnswerOptionFormSet
-from apps.testing.models import ClosedQuestion
+from apps.testing.models.tasks import ClosedQuestion
 
 
 class ClosedQuestionUpdateView(AbstractTaskUpdateView):

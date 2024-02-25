@@ -1,12 +1,12 @@
 from django.db import models
 
-from apps.testing.abstractions.abstract_models import AbstractTask
+from apps.testing.abstractions.abstract_models.abstract_answer_options import AbstractOpenQuestionAnswerOption
+from apps.testing.abstractions.abstract_models.abstract_tasks import AbstractOpenQuestion
 from apps.testing.constants import APP_NAME
 from apps.testing.models import Testing
 
 
-class OpenQuestion(AbstractTask):
-    type = models.CharField(default='Открытый вопрос')
+class OpenQuestion(AbstractOpenQuestion):
     testing = models.ForeignKey(
         Testing,
         on_delete=models.CASCADE,
@@ -15,8 +15,7 @@ class OpenQuestion(AbstractTask):
     )
 
 
-class OpenQuestionAnswerOption(models.Model):
-    correct_answer = models.CharField(verbose_name='Правильный ответ')
+class OpenQuestionAnswerOption(AbstractOpenQuestionAnswerOption):
     open_question = models.ForeignKey(
         OpenQuestion,
         on_delete=models.CASCADE,

@@ -1,7 +1,7 @@
 from django import forms
 
 from apps.testing.abstractions.abstract_forms.abstract_task_form import AbstractTaskForm
-from apps.testing.models import ClosedQuestion
+from apps.testing.models.tasks import ClosedQuestion
 
 
 class ClosedQuestionForm(AbstractTaskForm):

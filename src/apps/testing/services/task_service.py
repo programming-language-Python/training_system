@@ -6,7 +6,7 @@ from django.core.paginator import Paginator
 from django.db.models import QuerySet
 from django.http import QueryDict
 
-from apps.testing.models import ClosedQuestion, OpenQuestion
+from apps.testing.models.tasks import ClosedQuestion, OpenQuestion
 
 
 def update_tasks_serial_number(tasks_data: QueryDict) -> None:

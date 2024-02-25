@@ -1,6 +1,6 @@
 from apps.testing.abstractions.abstract_views import AbstractTaskCreateView
 from apps.testing.forms.task_forms.open_question_form import OpenQuestionForm, OpenQuestionAnswerOptionFormSet
-from apps.testing.models import OpenQuestion
+from apps.testing.models.tasks import OpenQuestion
 
 
 class OpenQuestionCreateView(AbstractTaskCreateView):

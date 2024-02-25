@@ -19,15 +19,15 @@
                 {{ wizard.form }}
             {% endif %}
         </table>
+        {{ wizard.steps.step1.description }}
         {% if wizard.steps.prev %}
             <button name="wizard_goto_step" type="submit"
                     value="{{ wizard.steps.first }}">{% translate "first step" %}</button>
-
         {% endif %}
         <button name="wizard_goto_step" type="submit"
-                value="{% translate "submit" %}">{% translate ">" %}</button>
-        <button name="wizard_goto_step" type="submit"
                 value="{{ wizard.steps.prev }}">{% translate "<" %}</button>
+        <button name="wizard_goto_step" type="submit"
+                value="{% translate "submit" %}">{% translate ">" %}</button>
         {#        <input name="wizard_goto_step" type="submit" value="{% translate "submit" %}"/>#}
     </form>
 {% endblock %}

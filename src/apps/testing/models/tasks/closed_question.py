@@ -1,24 +1,12 @@
 from django.db import models
 
-from apps.testing.abstractions.abstract_models import AbstractTask, AbstractAnswerOption
+from apps.testing.abstractions.abstract_models.abstract_answer_options import AbstractClosedQuestionAnswerOption
+from apps.testing.abstractions.abstract_models.abstract_tasks import AbstractClosedQuestion
 from apps.testing.constants import APP_NAME
 from apps.testing.models import Testing
 
 
-class ClosedQuestion(AbstractTask):
-    type = models.CharField(default='Закрытый вопрос')
-    is_several_correct_answers = models.BooleanField(
-        default=False,
-        verbose_name='Допустимо несколько правильных ответов'
-    )
-    is_random_order_answer_options = models.BooleanField(
-        default=False,
-        verbose_name='Случайный порядок вариантов ответа'
-    )
-    is_partially_correct_execution = models.BooleanField(
-        default=False,
-        verbose_name='При оценке учесть частично правильное выполнение задания'
-    )
+class ClosedQuestion(AbstractClosedQuestion):
     testing = models.ForeignKey(
         Testing,
         on_delete=models.CASCADE,
@@ -27,8 +15,7 @@ class ClosedQuestion(AbstractTask):
     )
 
 
-class ClosedQuestionAnswerOption(AbstractAnswerOption):
-    is_correct = models.BooleanField(verbose_name='Правильный')
+class ClosedQuestionAnswerOption(AbstractClosedQuestionAnswerOption):
     closed_question = models.ForeignKey(
         ClosedQuestion,
         on_delete=models.CASCADE,
@@ -36,5 +23,5 @@ class ClosedQuestionAnswerOption(AbstractAnswerOption):
         verbose_name='Закрытый вопрос'
     )
 
-    class Meta(AbstractAnswerOption.Meta):
+    class Meta(AbstractClosedQuestionAnswerOption.Meta):
         db_table = f'{APP_NAME}_closedQuestion_answerOption'
