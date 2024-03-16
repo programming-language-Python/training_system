@@ -1,13 +1,48 @@
+from django.shortcuts import get_object_or_404
 from formtools.wizard.views import SessionWizardView
 
 from apps.testing.forms.task_forms.open_question_form import OpenQuestionAnswerForm
+from apps.testing.models import ClosedQuestion, OpenQuestion, CompletedOpenQuestion, CompletedTesting, Testing, \
+    OpenQuestionAnswerOptionCorrect
 
 
 class TestingDetailStudentView(SessionWizardView):
     template_name = 'testing/testing_detail_student.html'
 
-    def done(self, form_list, **kwargs):
-        print(form_list)
+    def get_form_initial(self, step):
+        initial = self.initial_dict.get(int(step))
+        return initial
+
+    def done(self, task_forms, **kwargs):
+        testing = Testing.objects.get(pk=kwargs['pk'])
+        completed_testing = CompletedTesting.objects.create(
+            title=testing.title,
+            is_review_of_result_by_student=testing.is_review_of_result_by_student,
+            student=self.request.user
+        )
+
+        for task_form in task_forms:
+            if isinstance(task_form, OpenQuestionAnswerForm):
+                self._create_completed_open_question(task_form, completed_testing)
+
+    @staticmethod
+    def _create_completed_open_question(task_form: OpenQuestionAnswerForm, completed_testing: CompletedTesting):
+        open_question = get_object_or_404(OpenQuestion, pk=task_form.initial['task_pk'])
+        student_answer = task_form.cleaned_data['student_answer']
+        is_correct = open_question.open_question_answer_option_set.filter(
+            correct_answer=student_answer
+        ).exists()
+
+        completed_open_question = task_form.save(commit=False)
+        completed_open_question.completed_testing = completed_testing
+        completed_open_question.save()
+
+        open_question_data = open_question.open_question_answer_option_set.values()
+        for open_question in open_question_data:
+            OpenQuestionAnswerOptionCorrect.objects.create(
+                correct_answer=open_question['correct_answer'],
+                completed_open_question=completed_open_question
+            )
 
     def post(self, *args, **kwargs):
         go_to_step = self.request.POST.get('wizard_goto_step', None)  # get the step name
