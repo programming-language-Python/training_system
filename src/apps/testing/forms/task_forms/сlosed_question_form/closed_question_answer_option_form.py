@@ -1,5 +1,5 @@
-from ckeditor_uploader.widgets import CKEditorUploadingWidget
 from django import forms
+from django_ckeditor_5.widgets import CKEditor5Widget
 
 from apps.testing.models.tasks.closed_question import ClosedQuestionAnswerOption
 
@@ -18,10 +18,9 @@ class ClosedQuestionAnswerOptionForm(forms.ModelForm):
     )
     description = forms.CharField(
         label=answer_option_meta.get_field('description').verbose_name,
-        widget=CKEditorUploadingWidget(
+        widget=CKEditor5Widget(
             attrs={
-                'class': 'uk-textarea',
-                'rows': '5',
+                'class': 'django_ckeditor_5',
                 'data-name': 'description'
             }
         )

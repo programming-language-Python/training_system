@@ -1,10 +1,7 @@
-alert('Hi');
 $(document).ready(function () {
-
-    let $answerOptions = $('#answer-options');
-    $answerOptions.on('DOMSubtreeModified', () => {
-        setSerialNumbers();
-    });
+    let $tasks = $('#tasks');
+    resizeSerialNumberInput();
+    $tasks.on('DOMSubtreeModified', setSerialNumbers);
 });
 
 function setSerialNumbers() {
@@ -12,5 +9,12 @@ function setSerialNumbers() {
     for (let i = 0; i < $serialNumbers.length; i++) {
         $serialNumbers[i].value = i + 1;
     }
-    this._resizeSerialNumberInput();
+    resizeSerialNumberInput();
+}
+
+function resizeSerialNumberInput() {
+    let $serialNumbers = document.querySelectorAll('[data-name="serial-number"]');
+    $serialNumbers.forEach((elem) => {
+        elem.style.width = ((elem.value.length + 1) * 5) + 'px';
+    });
 }

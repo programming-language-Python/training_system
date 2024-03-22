@@ -1,9 +1,9 @@
-from ckeditor_uploader.widgets import CKEditorUploadingWidget
 from django import forms
+from django_ckeditor_5.widgets import CKEditor5Widget
 
 
 class AbstractFormFieldDescription(forms.ModelForm):
     description = forms.CharField(
         label='Описание',
-        widget=CKEditorUploadingWidget()
+        widget=CKEditor5Widget()
     )
