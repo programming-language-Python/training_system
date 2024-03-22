@@ -1,18 +1,12 @@
 from django.db import models
 
+from abstractions.abstract_fields import AbstractFieldTitle
 from config import settings
-from config.settings import MAX_LENGTH
 
 
-class AbstractCompletedTesting(models.Model):
-    title = models.CharField(
-        null=True,
-        max_length=MAX_LENGTH,
-        verbose_name='Наименование',
-        unique=True
-    )
+class AbstractCompletedTesting(AbstractFieldTitle):
     assessment = models.IntegerField(null=True, verbose_name='Оценка')
-    start_passage = models.DateTimeField(null=True, verbose_name='Начало прохождения')
+    start_passage = models.DateTimeField(verbose_name='Начало прохождения')
     end_passage = models.DateTimeField(
         auto_now_add=True,
         verbose_name='Окончание прохождения'
