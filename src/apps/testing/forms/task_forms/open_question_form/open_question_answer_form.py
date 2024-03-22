@@ -4,6 +4,9 @@ from apps.testing.models import CompletedOpenQuestion
 
 
 class OpenQuestionAnswerForm(forms.ModelForm):
+    def clean(self):
+        pass
+
     class Meta:
         model = CompletedOpenQuestion
         widgets = {
