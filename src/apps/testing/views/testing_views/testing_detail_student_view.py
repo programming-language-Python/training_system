@@ -1,8 +1,10 @@
+import datetime
+
 from django.shortcuts import get_object_or_404
 from formtools.wizard.views import SessionWizardView
 
 from apps.testing.forms.task_forms.open_question_form import OpenQuestionAnswerForm
-from apps.testing.models import ClosedQuestion, OpenQuestion, CompletedOpenQuestion, CompletedTesting, Testing, \
+from apps.testing.models import OpenQuestion, CompletedTesting, Testing, \
     OpenQuestionAnswerOptionCorrect
 
 
@@ -14,12 +16,8 @@ class TestingDetailStudentView(SessionWizardView):
         return initial
 
     def done(self, task_forms, **kwargs):
-        testing = Testing.objects.get(pk=kwargs['pk'])
-        completed_testing = CompletedTesting.objects.create(
-            title=testing.title,
-            is_review_of_result_by_student=testing.is_review_of_result_by_student,
-            student=self.request.user
-        )
+        completed_testing = CompletedTesting.objects.filter(pk=kwargs['completed_testing_pk'])
+        completed_testing.update(end_passage=datetime.datetime.now())
 
         for task_form in task_forms:
             if isinstance(task_form, OpenQuestionAnswerForm):
@@ -45,7 +43,7 @@ class TestingDetailStudentView(SessionWizardView):
             )
 
     def post(self, *args, **kwargs):
-        go_to_step = self.request.POST.get('wizard_goto_step', None)  # get the step name
+        go_to_step = self.request.POST.get('wizard_goto_step', None)
         form = self.get_form(data=self.request.POST)
 
         current_index = self.get_step_index(self.steps.current)
