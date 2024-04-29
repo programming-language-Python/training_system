@@ -40,11 +40,12 @@ class TestingDetailTeacherView(URLMixin, LoginRequiredMixin, DetailView):
         tasks = [
             TaskType(name='Закрытый вопрос', url='task_closed_question_create'),
             TaskType(name='Открытый вопрос', url='task_open_question_create'),
-            TaskType(name='Установление последовательности', url='task_sequencing_create'),
-            TaskType(name='Установление соответствия', url='task_establishing_accordance_create'),
+            # TaskType(name='Установление последовательности', url='task_sequencing_create'),
+            # TaskType(name='Установление соответствия', url='task_establishing_accordance_create'),
         ]
         context['task_data'] = {}
         for task in tasks:
             context['task_data'][task.name] = f'{APP_NAME}:{task.url}'
         context['tasks'] = sorted_tasks
+        context['quantity_task'] = len(sorted_tasks)
         return context
