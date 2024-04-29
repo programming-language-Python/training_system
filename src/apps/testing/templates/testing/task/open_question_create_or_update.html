@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block head_link %}
+{% block start_head_link %}
     {{ form.media }}
 {% endblock %}
 {% block content %}
@@ -17,6 +17,11 @@
     </form>
     <form class="form" enctype="multipart/form-data" method="post">
         {% csrf_token %}
+        <div class="uk-margin">
+            <button name="btn-submit" class="uk-button uk-button-primary" type="submit" id="btn-submit">
+                {{ btn_text }}
+            </button>
+        </div>
         <div>
             {{ form.as_p }}
         </div>
@@ -42,10 +47,5 @@
                 {% endfor %}
             {% endfor %}
         </ul>
-        <div class="uk-margin">
-            <button name="btn-submit" class="uk-button uk-button-primary" type="submit" id="btn-submit">
-                {{ btn_text }}
-            </button>
-        </div>
     </form>
 {% endblock %}

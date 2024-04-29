@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block head_link %}
+{% block start_head_link %}
     {{ form.media }}
 {% endblock %}
 {% block head_script %}
@@ -15,46 +15,45 @@
     {% endif %}
     <form class="form" method="get">
         <label for="quantity-answer-options-add">Добавить пустые варианты ответа</label>
-        <input class="uk-input uk-width-1-4" id="quantity-answer-options-add" name="quantity-answer-options-add"
+        <input class="uk-input uk-width-auto" id="quantity-answer-options-add" name="quantity-answer-options-add"
                type="number" value="1" min="1" max="8">
         <button class="uk-button uk-button-primary" type="submit">Добавить вариант ответа</button>
     </form>
     <form class="form" enctype="multipart/form-data" method="post">
         {% csrf_token %}
+        <div class="uk-margin">
+            <button name="btn-submit" class="uk-button uk-button-primary" type="submit" id="btn-submit">
+                {{ btn_text }}
+            </button>
+        </div>
         <div>
             {{ form.as_p }}
         </div>
         <h2>Варианты ответов</h2>
-        <ul>
-            <li class="uk-grid-small uk-child-width-1-5" uk-grid>
-                <div>Изменить порядок</div>
-                <div>Порядковый номер</div>
-                <div>Описание</div>
-                <div>Правильный вариант</div>
-                <div>Удалить</div>
+        <ul class="uk-background-default" uk-sticky>
+            <li class="uk-grid-small" uk-grid>
+                <div class="uk-width-small">Изменить порядок</div>
+                <div class="uk-width-small">Порядковый номер</div>
+                <div class="uk-width-expand">Описание</div>
+                <div class="uk-width-small">Правильный вариант</div>
+                <div class="uk-width-small">Удалить</div>
             </li>
         </ul>
         <ul id="answer-options" name="answer-options"
             uk-sortable="handle: .uk-sortable-handle">
             {{ answer_option_form_set.management_form }}
             {% for answer_option_form in answer_option_form_set %}
-                <li name="answer-option" class="uk-grid-small uk-child-width-1-5" uk-grid>
-                    <span name="sort-sign" class="uk-sortable-handle" uk-icon="icon: table"></span>
-                    {% for field in answer_option_form.visible_fields %}
-                        <div>
-                            {{ field }}
-                        </div>
-                    {% endfor %}
+                <li name="answer-option" class="uk-grid-small" uk-grid>
+                    <span name="sort-sign" class="uk-width-small uk-sortable-handle" uk-icon="icon: table"></span>
+                    <div class="uk-width-small">{{ answer_option_form.serial_number }}</div>
+                    <div class="uk-width-expand">{{ answer_option_form.description }}</div>
+                    <div class="uk-width-small">{{ answer_option_form.is_correct }}</div>
+                    <div class="uk-width-small">{{ answer_option_form.DELETE }}</div>
                     {% for hidden_field in answer_option_form.hidden_fields %}
                         {{ hidden_field }}
                     {% endfor %}
                 </li>
             {% endfor %}
         </ul>
-        <div class="uk-margin">
-            <button name="btn-submit" class="uk-button uk-button-primary" type="submit" id="btn-submit">
-                {{ btn_text }}
-            </button>
-        </div>
     </form>
 {% endblock %}
