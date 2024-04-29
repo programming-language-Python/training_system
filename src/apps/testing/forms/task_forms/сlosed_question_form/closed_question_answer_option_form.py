@@ -1,10 +1,10 @@
 from django import forms
-from django_ckeditor_5.widgets import CKEditor5Widget
 
+from abstractions.abstract_form_fields import AbstractFormFieldDescription
 from apps.testing.models.tasks.closed_question import ClosedQuestionAnswerOption
 
 
-class ClosedQuestionAnswerOptionForm(forms.ModelForm):
+class ClosedQuestionAnswerOptionForm(AbstractFormFieldDescription):
     answer_option_meta = ClosedQuestionAnswerOption._meta
     serial_number = forms.IntegerField(
         label=answer_option_meta.get_field('serial_number').verbose_name,
@@ -12,16 +12,8 @@ class ClosedQuestionAnswerOptionForm(forms.ModelForm):
             attrs={
                 'class': 'serial-number',
                 'data-name': 'serial-number',
+                'data-is-fit-block-to-content-size': 'True',
                 'min': 1
-            }
-        )
-    )
-    description = forms.CharField(
-        label=answer_option_meta.get_field('description').verbose_name,
-        widget=CKEditor5Widget(
-            attrs={
-                'class': 'django_ckeditor_5',
-                'data-name': 'description'
             }
         )
     )

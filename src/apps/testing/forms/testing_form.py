@@ -6,7 +6,7 @@ from apps.testing.models import Testing
 
 
 class TestingForm(AbstractTestingForm):
-    CLASS = 'uk-margin uk-input uk-form-width-medium'
+    CLASS = 'uk-margin uk-input uk-form-width-medium uk-width-small'
     testing_meta = Testing._meta
     number = forms.IntegerField(
         label=testing_meta.get_field('number').verbose_name,

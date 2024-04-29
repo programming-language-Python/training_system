@@ -1,6 +1,6 @@
 from django import forms
 
-from apps.testing.models import CompletedOpenQuestion
+from apps.testing.models import SolvingOpenQuestion
 
 
 class OpenQuestionAnswerForm(forms.ModelForm):
@@ -8,7 +8,7 @@ class OpenQuestionAnswerForm(forms.ModelForm):
         pass
 
     class Meta:
-        model = CompletedOpenQuestion
+        model = SolvingOpenQuestion
         widgets = {
             'serial_number': forms.TextInput(
                 attrs={
