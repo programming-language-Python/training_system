@@ -5,5 +5,10 @@ from django_ckeditor_5.widgets import CKEditor5Widget
 class AbstractFormFieldDescription(forms.ModelForm):
     description = forms.CharField(
         label='Описание',
-        widget=CKEditor5Widget()
+        initial='Описание',
+        widget=CKEditor5Widget(
+            attrs={
+                'data-name': 'description'
+            }
+        )
     )
