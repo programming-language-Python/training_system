@@ -12,7 +12,8 @@
 <h3 class="task-form__count-tasks">
     {% with 'Количество задач: ' as text %}
         {% if user.is_teacher %}
-            {{ text }}<span id="count-tasks"></span>
+            {#            {{ text }}<span id="count-tasks"></span>#}
+            {{ text }}{{ quantity_task }}
         {% else %}
             <form id="answer-form" method="post">
                 {% csrf_token %}
