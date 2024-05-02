@@ -1,6 +1,6 @@
 from django import forms
 
-from apps.testing.models import SolvingOpenQuestion
+from apps.testing.models.solving_tasks.solving_open_question import SolvingOpenQuestion
 
 
 class OpenQuestionAnswerForm(forms.ModelForm):
@@ -21,4 +21,4 @@ class OpenQuestionAnswerForm(forms.ModelForm):
                 }
             ),
         }
-        exclude = ['type', 'completed_testing', ]
+        exclude = ['type', 'solving_testing', ]

@@ -1,6 +1,6 @@
 from django import forms
 
-from apps.testing.models.tasks.open_question import OpenQuestionAnswerOption
+from apps.testing.models.task_answer_options import OpenQuestionAnswerOption
 
 
 class OpenQuestionAnswerOptionForm(forms.ModelForm):

@@ -1,7 +1,7 @@
 from django import forms
 
 from abstractions.abstract_form_fields import AbstractFormFieldDescription
-from apps.testing.models.tasks.closed_question import ClosedQuestionAnswerOption
+from apps.testing.models.task_answer_options import ClosedQuestionAnswerOption
 
 
 class ClosedQuestionAnswerOptionForm(AbstractFormFieldDescription):

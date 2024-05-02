@@ -5,7 +5,7 @@ from django.core.handlers.wsgi import WSGIRequest
 from django.utils.safestring import mark_safe
 
 from apps.testing.forms.task_forms.open_question_form import OpenQuestionAnswerForm
-from apps.testing.models import Testing, CompletedTesting
+from apps.testing.models import Testing, SolvingTesting
 from apps.testing.models.tasks import OpenQuestion
 from apps.testing.services import TaskService
 from apps.testing.views.testing_views import TestingDetailTeacherView, TestingDetailStudentView
@@ -29,9 +29,9 @@ def show_testing_detail_view(request: WSGIRequest, pk: int):
 
         testing = Testing.objects.get(pk=pk)
         try:
-            completed_testing = CompletedTesting.objects.get(title=testing.title, student=request.user)
+            solving_testing = SolvingTesting.objects.get(title=testing.title, student=request.user)
         except ObjectDoesNotExist:
-            completed_testing = CompletedTesting.objects.create(
+            solving_testing = SolvingTesting.objects.create(
                 title=testing.title,
                 start_passage=str(datetime.datetime.now()),
                 is_review_of_result_by_student=testing.is_review_of_result_by_student,
@@ -39,5 +39,5 @@ def show_testing_detail_view(request: WSGIRequest, pk: int):
             )
         return TestingDetailStudentView.as_view(task_forms, initial_dict=form_data)(
             request,
-            completed_testing_pk=completed_testing.pk
+            completed_testing_pk=solving_testing.pk
         )

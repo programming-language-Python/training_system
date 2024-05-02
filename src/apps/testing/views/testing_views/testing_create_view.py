@@ -2,14 +2,14 @@ from django.http import HttpResponse, HttpResponseRedirect
 
 from abstractions.abstract_views import AbstractTestingCreateView
 from apps.testing.forms import TestingForm
-from apps.testing.models.completed_testing import CompletedTesting
+from apps.testing.models.solving_testing import SolvingTesting
 
 
 class TestingCreateView(AbstractTestingCreateView):
     form_class = TestingForm
 
     def form_valid(self, form) -> HttpResponse | HttpResponseRedirect:
-        is_title_in_completed_testings = CompletedTesting.objects.filter(
+        is_title_in_completed_testings = SolvingTesting.objects.filter(
             title=form.instance.title
         ).exists()
         if is_title_in_completed_testings:
