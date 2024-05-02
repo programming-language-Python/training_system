@@ -94,11 +94,11 @@ if DEBUG:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': config('POSTGRES_NAME'),
-            'USER': config('POSTGRES_USER'),
-            'PASSWORD': config('POSTGRES_PASSWORD'),
-            'HOST': config('POSTGRES_HOST'),
-            'PORT': config('POSTGRES_PORT'),
+            'NAME': config('DB_NAME'),
+            'USER': config('DB_USER'),
+            'PASSWORD': config('DB_PASSWORD'),
+            'HOST': config('DB_HOST'),
+            'PORT': config('DB_PORT'),
         }
     }
 else:
@@ -232,15 +232,6 @@ DEBUG_PROPAGATE_EXCEPTIONS = True
 MAX_LENGTH = 50
 
 # CKEditor
-# CKEDITOR_UPLOAD_PATH = "uploads/"
-# CKEDITOR_CONFIGS = {
-#     'default': {
-#         'height': 10,
-#         'width': '100%',
-#         'toolbarCanCollapse': False,
-#         'forcePasteAsPlainText': True
-#     }
-# }
 customColorPalette = [
     {
         'color': 'hsl(4, 90%, 58%)',
@@ -272,7 +263,7 @@ CKEDITOR_5_CONFIGS = {
     'default': {
         'toolbar': ['heading', '|', 'bold', 'italic', 'link',
                     'bulletedList', 'numberedList', 'blockQuote', 'imageUpload', ],
-        'language': 'ru'
+        'language': 'ru',
     },
     'extends': {
         'blockToolbar': [
