@@ -4,13 +4,16 @@ from django.db import models
 from django.db.models import OneToOneRel, ManyToManyRel, ManyToOneRel
 
 from abstractions.abstract_fields import AbstractFieldTitle
-from apps.user.models import StudentGroup, User
+from apps.user.models import StudentGroup
+from config.settings import AUTH_USER_MODEL
 
 
 class AbstractTesting(AbstractFieldTitle):
+    RELATED_NAME = '%(app_label)s_%(class)s_set'
+
     is_published = models.BooleanField(
         blank=True,
-        default=True,
+        default=False,
         verbose_name='Опубликовано'
     )
     is_review_of_result_by_student = models.BooleanField(
@@ -18,16 +21,32 @@ class AbstractTesting(AbstractFieldTitle):
         default=True,
         verbose_name='Просмотр результата студентом'
     )
+    date_of_creation = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Дата создания'
+    )
+    date_of_deletion = models.DateTimeField(
+        blank=True,
+        null=True,
+        default=None,
+        verbose_name='Дата удаления'
+    )
+    task_lead_time = models.TimeField(
+        blank=True,
+        null=True,
+        default=None,
+        verbose_name='Время выполнения задачи'
+    )
     student_groups = models.ManyToManyField(
         StudentGroup,
         blank=True,
-        related_name='%(app_label)s_%(class)s_related',
+        related_name=RELATED_NAME,
         verbose_name='Группы студентов'
     )
     user = models.ForeignKey(
-        User,
+        AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name='%(app_label)s_%(class)s_related',
+        related_name=RELATED_NAME,
         verbose_name='Пользователь'
     )
 

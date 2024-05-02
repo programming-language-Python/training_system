@@ -1,3 +1,4 @@
+from django.db import models
 from django.urls import reverse
 
 from apps.testing.abstractions.abstract_fields import AbstractFieldSerialNumber, AbstractFieldDescription
@@ -6,6 +7,13 @@ from apps.testing.utils.text import convert_from_PascalCase_to_snake_case
 
 
 class AbstractTask(AbstractFieldSerialNumber, AbstractFieldDescription):
+    lead_time = models.TimeField(
+        null=True,
+        blank=True,
+        default=None,
+        verbose_name='Время выполнения'
+    )
+
     def get_class_name(self) -> str:
         return self.__class__.__name__
 
