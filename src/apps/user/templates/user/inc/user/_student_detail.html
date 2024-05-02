@@ -30,8 +30,8 @@
             <div class="uk-card uk-card-default uk-card-body">Оценка</div>
         </div>
     </div>
-    {% for completed_testing in home_list %}
-        {% if completed_testing.is_review_of_result_by_student %}
+    {% for solving_testing in home_list %}
+        {% if solving_testing.is_review_of_result_by_student %}
             <ul class="user__completed-testing completed-testing" uk-accordion="multiple: true">
                 {% include 'user/testing_completed_detail.html' %}
             </ul>
@@ -39,22 +39,22 @@
             <div class="uk-grid-small uk-child-width-expand@s uk-text-center" uk-grid>
                 <div>
                     <div class="uk-card uk-card-default uk-card-body">
-                        {{ completed_testing.title }}
+                        {{ solving_testing.title }}
                     </div>
                 </div>
                 <div>
                     <div class="uk-card uk-card-default uk-card-body">
-                        {{ completed_testing.start_passage }}
+                        {{ solving_testing.start_passage }}
                     </div>
                 </div>
                 <div>
                     <div class="uk-card uk-card-default uk-card-body">
-                        {{ completed_testing.end_passage }}
+                        {{ solving_testing.end_passage }}
                     </div>
                 </div>
                 <div>
                     <div class="uk-card uk-card-default uk-card-body">
-                        {% with completed_testing.assessment as assessment %}
+                        {% with solving_testing.assessment as assessment %}
                             <span class="assessment
                                 {% if assessment <= 2 %}
                                     two

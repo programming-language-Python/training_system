@@ -5,10 +5,9 @@ from django.db.models.functions import Concat
 from django.views.generic import ListView, DetailView
 
 from config import settings
-from apps.testing_by_code.models import CompletedTesting
+from apps.testing_by_code.models import SolvingTesting
 from apps.testing_by_code.services.find_testing import find_completed_testings
 from .forms import UserLoginForm
-from .models import User
 
 
 class LoginUser(LoginView):
@@ -23,20 +22,20 @@ class HomeListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         if self.request.user.is_teacher:
-            return User.objects.filter(is_teacher=False)
+            return settings.AUTH_USER_MODEL.objects.filter(is_teacher=False)
         query = self.request.GET.get('search')
         if query:
             return find_completed_testings(
                 user=self.request.user,
                 query=query
             )
-        return CompletedTesting.objects.filter(student=self.request.user)
+        return SolvingTesting.objects.filter(student=self.request.user)
 
 
 class SearchStudentView(HomeListView):
     def get_queryset(self):
         query = self.request.GET.get('search')
-        users = User.objects.annotate(
+        users = settings.AUTH_USER_MODEL.objects.annotate(
             full_name=Concat(
                 'last_name',
                 Value(' '),
@@ -56,18 +55,18 @@ class SearchStudentView(HomeListView):
 
 
 class TestingCompletedListView(LoginRequiredMixin, DetailView):
-    model = User
+    model = settings.AUTH_USER_MODEL
     template_name = 'user/testing_completed_list.html'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         query = self.request.GET.get('search')
         if query:
-            context['completed_testings'] = CompletedTesting.objects.filter(
+            context['solving_testings'] = SolvingTesting.objects.filter(
                 Q(student__in=self.kwargs['pk']) & Q(title=query)
             )
         else:
-            context['completed_testings'] = CompletedTesting.objects.filter(student_id=self.kwargs['pk'])
+            context['solving_testings'] = SolvingTesting.objects.filter(student_id=self.kwargs['pk'])
         return context
 
 

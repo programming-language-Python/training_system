@@ -2,7 +2,7 @@
 
 {% block content %}
     <h1>{{ user.last_name }} {{ user.first_name }} {{ user.patronymic }}</h1>
-    {% if completed_testings %}
+    {% if solving_testings %}
         <form class="uk-margin" action="{% url 'user:testing_completed_list' user.pk %}">
             <label>
                 <input class="uk-input uk-width-1-4" name="search" type="text" placeholder="Поиск" required>
@@ -37,7 +37,7 @@
                     </div>
                 </div>
             </div>
-            {% for completed_testing in completed_testings %}
+            {% for solving_testing in solving_testings %}
                 {% include 'user/testing_completed_detail.html' %}
             {% endfor %}
         </ul>

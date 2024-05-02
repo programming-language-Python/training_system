@@ -8,22 +8,14 @@ from . import models
 
 @admin.register(models.User)
 class UserAdmin(OrigUserAdmin):
-    def student_group(self, user) -> str:
-        groups_students = []
-        for setting in user.user.groups.all():
-            groups_students.append(setting.name)
-        return ' '.join(groups_students)
-
-    student_group.short_description = 'groups_students'
-    list_display = ('id', 'last_name', 'first_name', 'patronymic', 'username', 'email', 'student_group', 'is_teacher')
+    list_display = ('id', 'last_name', 'first_name', 'patronymic', 'username', 'email')
     list_display_links = ('id', 'last_name')
     search_fields = ('last_name', 'first_name', 'patronymic', 'username', 'email')
-    list_editable = ('student_group',)
-    list_filter = ('id', 'last_name', 'first_name', 'patronymic', 'username', 'email', 'student_group')
+    list_filter = ('id', 'last_name', 'first_name', 'patronymic', 'username', 'email')
     fieldsets = (
         (None, {"fields": ("username", "password")}),
         (_("Personal info"), {
-            "fields": ("last_name", "first_name", "patronymic", "email", "is_teacher", "student_group")
+            "fields": ("last_name", "first_name", "patronymic", "email")
         }),
         (
             _("Permissions"),
@@ -44,11 +36,11 @@ class UserAdmin(OrigUserAdmin):
 
 @admin.register(models.StudentGroup)
 class StudentGroupAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title')
+    list_display = ('id', 'name')
     list_display_links = ('id',)
-    search_fields = ('id', 'title')
-    list_editable = ('title',)
-    list_filter = ('id', 'title')
+    search_fields = ('id', 'name')
+    list_editable = ('name',)
+    list_filter = ('id', 'name')
     save_on_top = True
 
 
