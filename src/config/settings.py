@@ -140,18 +140,14 @@ LANGUAGE_CODE = 'ru'
 
 TIME_ZONE = 'Europe/Moscow'
 
-USE_I18N = True
-
-USE_TZ = True
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 
 # Tell Django to copy statics to the `staticfiles` directory
 # in your application directory on Render.
+STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'static'
-STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'config/static',
     BASE_DIR / 'apps/testing/static',
@@ -322,4 +318,4 @@ CKEDITOR_5_CONFIGS = {
 
 # pillow
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = BASE_DIR / 'media'
