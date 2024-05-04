@@ -64,11 +64,11 @@ class AnswerOption {
         for (let i = 0; i < $serialNumbers.length; i++) {
             $serialNumbers[i].value = i + 1;
         }
-        this._resizeSerialNumberInput();
+        this._fitBlockToContentSize();
     }
 
-    _resizeSerialNumberInput() {
-        let $serialNumbers = document.querySelectorAll('[data-name="serial-number"]');
+    _fitBlockToContentSize() {
+        let $serialNumbers = document.querySelectorAll('[data-is-fit-block-to-content-size="True"]');
         $serialNumbers.forEach((elem) => {
             elem.style.width = ((elem.value.length + 1) * 5) + 'px';
         });
