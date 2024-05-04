@@ -9,7 +9,7 @@ from apps.testing.models.tasks import TaskType
 class OpenQuestion(AbstractTask):
     RELATED_NAME = 'open_question_set'
 
-    task_type = models.OneToOneField(
+    task_type = models.ForeignKey(
         TaskType,
         on_delete=models.CASCADE,
         related_name=RELATED_NAME,
@@ -22,5 +22,5 @@ class OpenQuestion(AbstractTask):
         verbose_name='Тестирование'
     )
 
-    class Meta:
+    class Meta(AbstractTask.Meta):
         db_table = f'{APP_NAME}_open-question'

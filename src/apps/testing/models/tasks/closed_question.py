@@ -21,17 +21,18 @@ class ClosedQuestion(AbstractTask):
         default=False,
         verbose_name='При оценке учесть частично правильное выполнение задания'
     )
-    task_type = models.OneToOneField(
+    task_type = models.ForeignKey(
         TaskType,
         on_delete=models.CASCADE,
         related_name=RELATED_NAME,
         verbose_name='Тип задачи'
     )
-    testing = models.ManyToManyField(
+    testing = models.ForeignKey(
         Testing,
+        on_delete=models.CASCADE,
         related_name=RELATED_NAME,
         verbose_name='Тестирование'
     )
 
-    class Meta:
+    class Meta(AbstractTask.Meta):
         db_table = f'{APP_NAME}_closed-question'

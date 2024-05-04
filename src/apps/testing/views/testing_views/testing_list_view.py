@@ -16,7 +16,7 @@ class TestingListView(ContextMixin, LoginRequiredMixin, ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context |= self.get_testing_list_data(is_teacher=self.request.user.is_teacher)
+        context |= self.get_testing_list_data(is_teacher=self.request.user.is_teacher())
         return context
 
     def get_queryset(self) -> QuerySet[Testing]:

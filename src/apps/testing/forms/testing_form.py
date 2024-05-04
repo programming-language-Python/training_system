@@ -6,8 +6,9 @@ from apps.testing.models import Testing
 
 
 class TestingForm(AbstractTestingForm):
-    CLASS = 'uk-margin uk-input uk-form-width-medium uk-width-small'
+    CLASS = 'uk-margin-small uk-input uk-width-small'
     testing_meta = Testing._meta
+
     number = forms.IntegerField(
         label=testing_meta.get_field('number').verbose_name,
         widget=forms.NumberInput(
@@ -48,6 +49,7 @@ class TestingForm(AbstractTestingForm):
     )
     task_lead_time = forms.TimeField(
         label=testing_meta.get_field('task_lead_time').verbose_name,
+        required=False,
         widget=forms.TimeInput(
             attrs={
                 'class': CLASS,
@@ -64,4 +66,4 @@ class TestingForm(AbstractTestingForm):
     class Meta:
         model = Testing
         fields = '__all__'
-        exclude = ['user', ]
+        exclude = ['user', 'date_of_deletion', ]

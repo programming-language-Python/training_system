@@ -6,6 +6,7 @@ from django.core.paginator import Paginator
 from django.db.models import QuerySet
 from django.http import QueryDict
 
+from apps.testing.constants import APP_NAME
 from apps.testing.models.tasks import ClosedQuestion, OpenQuestion
 
 
@@ -15,7 +16,7 @@ def update_tasks_serial_number(tasks_data: QueryDict) -> None:
     serial_numbers = tasks_data.getlist('serial-number')
     tasks = zip(class_names, task_pks, serial_numbers)
     for class_name, pk, serial_number in tasks:
-        model = apps.get_model(app_label='testing', model_name=class_name)
+        model = apps.get_model(app_label=APP_NAME, model_name=class_name)
         model.objects.filter(pk=pk).update(serial_number=serial_number)
 
 

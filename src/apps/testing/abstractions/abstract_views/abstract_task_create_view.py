@@ -6,13 +6,14 @@ from django.shortcuts import redirect
 from django.views.generic import CreateView
 
 from apps.testing.constants import APP_NAME
+from apps.testing.models.tasks import ClosedQuestion, TaskType, OpenQuestion
 from apps.testing.services import TaskService
 from apps.testing.services.answer_option_service import AnswerOptionService
 
 
 class AbstractTaskCreateView(LoginRequiredMixin, CreateView):
     answer_option_form_set = None
-    template_name = 'testing/task/closed_question_create_or_update.html'
+    template_name: str
     pk_url_kwarg = 'testing_pk'
 
     def get_context_data(self, **kwargs) -> MutableMapping:
@@ -41,10 +42,20 @@ class AbstractTaskCreateView(LoginRequiredMixin, CreateView):
             return self.form_invalid(task_form, answer_option_form_set)
 
     def form_valid(self, task_form, answer_option_form_set) -> redirect:
-        task = task_form.save()
+        task = task_form.save(commit=False)
+        task.task_type = self.get_task_type()
+        task.save()
         answer_option_form_set.instance = task
         answer_option_form_set.save()
         return redirect(f'{APP_NAME}:testing_detail', pk=self.kwargs['testing_pk'])
+
+    def get_task_type(self) -> TaskType:
+        if self.model == ClosedQuestion:
+            name = 'Закрытый вопрос'
+        if self.model == OpenQuestion:
+            name = 'Открытый вопрос'
+        task_type, is_created = TaskType.objects.get_or_create(name=name)
+        return task_type
 
     def form_invalid(self, task_form, answer_option_form_set) -> redirect:
         self.object = None
