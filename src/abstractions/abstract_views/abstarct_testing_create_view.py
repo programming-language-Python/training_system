@@ -8,7 +8,7 @@ class AbstractTestingCreateView(LoginRequiredMixin, CreateView):
     template_name = 'testing_create.html'
 
     def _add_error_title_exists(self, form) -> HttpResponse:
-        form.add_error('title', 'Тестирование с таким Наименование уже существует.')
+        form.add_error('title', 'Тестирование с таким наименованием уже существует.')
         context = {
             'form': form
         }

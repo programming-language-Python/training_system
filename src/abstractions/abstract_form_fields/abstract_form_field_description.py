@@ -8,6 +8,7 @@ class AbstractFormFieldDescription(forms.ModelForm):
         initial='Описание',
         widget=CKEditor5Widget(
             attrs={
+                'class': 'form-control django_ckeditor_5',
                 'data-name': 'description'
             }
         )

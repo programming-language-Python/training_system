@@ -22,7 +22,7 @@ class AbstractTestingListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        is_teacher_ = self.request.user.is_teacher
+        is_teacher_ = self.request.user.is_teacher()
         if is_teacher_:
             context['card_footer_text'] = 'Настроить тестирование'
         else:

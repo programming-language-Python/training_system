@@ -1,9 +1,7 @@
 from django.db import models
 
-from abstractions.abstract_fields import AbstractFieldTitle
 
-
-class AbstractSolvingTesting(AbstractFieldTitle):
+class AbstractSolvingTesting(models.Model):
     RELATED_NAME = '%(app_label)s_solving_testing_set'
 
     assessment = models.IntegerField(null=True, verbose_name='Оценка')

@@ -4,7 +4,7 @@ from django.db import models
 from django.db.models import OneToOneRel, ManyToManyRel, ManyToOneRel
 
 from abstractions.abstract_fields import AbstractFieldTitle
-from apps.user.models import StudentGroup
+from apps.user.models import StudentGroup, Teacher
 from config.settings import AUTH_USER_MODEL
 
 
@@ -43,26 +43,31 @@ class AbstractTesting(AbstractFieldTitle):
         related_name=RELATED_NAME,
         verbose_name='Группы студентов'
     )
-    user = models.ForeignKey(
-        AUTH_USER_MODEL,
+    teacher = models.ForeignKey(
+        Teacher,
         on_delete=models.CASCADE,
         related_name=RELATED_NAME,
-        verbose_name='Пользователь'
+        verbose_name='Преподаватель'
     )
 
     def __str__(self):
         return self.title
 
     def get_fields_data(self) -> Mapping[str, str]:
-        exclude = ['id', 'user']
+        exclude = ['id', 'user', 'date_of_deletion']
         exclude_types = (OneToOneRel, ManyToOneRel, ManyToManyRel)
         fields_data = {}
         for field in self._meta.get_fields():
-            if isinstance(field, models.BooleanField):
+            is_boolean_field = isinstance(field, models.BooleanField)
+            if is_boolean_field:
                 fields_data[field.verbose_name] = 'да' if field.value_to_string(self) == 'True' else 'нет'
                 continue
+            is_empty_task_lead_time = field.name == 'task_lead_time' and not field.value_to_string(self)
+            if is_empty_task_lead_time:
+                fields_data[field.verbose_name] = 'не задано'
+                continue
             if field.name == 'student_groups':
-                fields_data[field.verbose_name] = self.student_groups.values('title')
+                fields_data[field.verbose_name] = self.student_groups.values('name')
             elif field.name not in exclude and not isinstance(field, exclude_types):
                 fields_data[field.verbose_name] = field.value_to_string(self)
         return fields_data
