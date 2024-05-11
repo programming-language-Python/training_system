@@ -4,7 +4,7 @@
         {% include 'inc/_testing_detail_buttons.html' %}
     {% else %}
         <h2>
-            Тест {{ testing.title }}
+            Тест {{ testing_title }}
         </h2>
     {% endif %}
 </section>
@@ -18,7 +18,7 @@
                 {% csrf_token %}
                 <button class="uk-button uk-button-primary" type="submit">Завершить тестирование</button>
             </form>
-            {{ text }}{{ paginator.count }}
+            {{ text }}{{ wizard.steps.count }}
         {% endif %}
     {% endwith %}
 </h3>
