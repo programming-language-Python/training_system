@@ -3,5 +3,5 @@ from apps.testing.constants import APP_NAME
 
 
 class SolvingTesting(AbstractSolvingTesting):
-    class Meta:
+    class Meta(AbstractSolvingTesting.Meta):
         db_table = f'{APP_NAME}_solving-testing'

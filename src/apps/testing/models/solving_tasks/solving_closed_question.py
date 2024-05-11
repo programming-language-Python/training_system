@@ -9,7 +9,7 @@ from apps.testing.models.tasks import ClosedQuestion
 class SolvingClosedQuestion(AbstractSolvingTask):
     RELATED_NAME = 'solving_closed_question_set'
 
-    closed_question = models.ForeignKey(
+    task = models.ForeignKey(
         ClosedQuestion,
         on_delete=models.CASCADE,
         related_name=RELATED_NAME,

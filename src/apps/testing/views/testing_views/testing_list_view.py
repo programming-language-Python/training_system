@@ -21,7 +21,10 @@ class TestingListView(ContextMixin, LoginRequiredMixin, ListView):
 
     def get_queryset(self) -> QuerySet[Testing]:
         user = self.request.user
-        if user.is_teacher:
-            return Testing.objects.filter(user=user)
+        if user.is_teacher():
+            return Testing.objects.filter(teacher=user.teacher)
         else:
-            return Testing.objects.filter(student_groups=user.student_group)
+            return Testing.objects.filter(
+                is_published=True,
+                student_groups=user.student.student_group
+            )

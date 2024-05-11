@@ -8,10 +8,11 @@
 
 {% block content %}
     {% include 'inc/_testing_settings.html' %}
-    <p>Step {{ wizard.steps.step1 }} of {{ wizard.steps.count }}</p>
+    <p>Задача {{ wizard.steps.step1 }} из {{ wizard.steps.count }}</p>
     <form action="" method="post">
         {% csrf_token %}
         {{ wizard.management_form }}
+        {{ task_description }}
         {{ wizard.form.as_div }}
         {% if wizard.steps.prev %}
             <button name="wizard_goto_step" type="submit"
