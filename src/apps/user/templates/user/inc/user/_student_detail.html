@@ -2,7 +2,7 @@
 <h1 class="user__title">
     <p>Добро пожаловать студент</p>
     <p>{{ user.last_name }} {{ user.first_name }} {{ user.patronymic }}</p>
-    группы {{ user.student_group }}
+    группы {{ user.student.student_group }}
 </h1>
 <form class="uk-margin" action="{% url 'user:home' %}">
     <label>

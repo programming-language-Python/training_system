@@ -4,6 +4,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as OrigUserAdmin
 
 from . import models
+from .models import EducationalEstablishment, Teacher, Student
 
 
 @admin.register(models.User)
@@ -43,6 +44,10 @@ class StudentGroupAdmin(admin.ModelAdmin):
     list_filter = ('id', 'name')
     save_on_top = True
 
+
+admin.site.register(Teacher)
+admin.site.register(Student)
+admin.site.register(EducationalEstablishment)
 
 admin.site.site_title = 'Управление пользователями'
 admin.site.site_header = 'Управление пользователями'

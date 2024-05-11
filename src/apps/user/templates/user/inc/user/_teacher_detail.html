@@ -32,8 +32,8 @@
             </div>
             <div>
                 <div class="uk-card uk-card-default uk-card-body">
-                    <a href="{{ student.get_absolute_url }}">
-                        {{ student.last_name }} {{ student.first_name }} {{ student.patronymic }}
+                    <a href="{{ student.user.get_absolute_url }}">
+                        {{ student.user.last_name }} {{ student.user.first_name }} {{ student.user.patronymic }}
                     </a>
                 </div>
             </div>

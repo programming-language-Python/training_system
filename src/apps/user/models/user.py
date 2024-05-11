@@ -1,4 +1,5 @@
 from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.urls import reverse
 
@@ -14,6 +15,12 @@ class User(AbstractUser):
 
     def get_absolute_url(self):
         return reverse(APP_NAME + ':testing_completed_list', kwargs={"pk": self.pk})
+
+    def is_teacher(self) -> bool:
+        try:
+            return bool(self.teacher)
+        except ObjectDoesNotExist:
+            return False
 
     def get_full_name(self):
         """

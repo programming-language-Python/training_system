@@ -6,8 +6,9 @@ from django.views.generic import ListView, DetailView
 
 from config import settings
 from apps.testing_by_code.models import SolvingTesting
-from apps.testing_by_code.services.find_testing import find_completed_testings
+from apps.testing_by_code.services.find_testing import find_solved_testings
 from .forms import UserLoginForm
+from .models import Student, User
 
 
 class LoginUser(LoginView):
@@ -21,41 +22,37 @@ class HomeListView(LoginRequiredMixin, ListView):
     context_object_name = 'home_list'
 
     def get_queryset(self):
-        if self.request.user.is_teacher:
-            return settings.AUTH_USER_MODEL.objects.filter(is_teacher=False)
+        if self.request.user.is_teacher():
+            return Student.objects.all()
         query = self.request.GET.get('search')
         if query:
-            return find_completed_testings(
-                user=self.request.user,
+            return find_solved_testings(
+                student=self.request.user.student,
                 query=query
             )
-        return SolvingTesting.objects.filter(student=self.request.user)
+        return SolvingTesting.objects.filter(student=self.request.user.student)
 
 
 class SearchStudentView(HomeListView):
     def get_queryset(self):
         query = self.request.GET.get('search')
-        users = settings.AUTH_USER_MODEL.objects.annotate(
+        students = Student.objects.annotate(
             full_name=Concat(
-                'last_name',
+                'user__last_name',
                 Value(' '),
-                'first_name',
+                'user__first_name',
                 Value(' '),
-                'patronymic'
+                'user__patronymic'
             )
-        ). \
-            filter(
-            Q(is_teacher=False)
-            & (
-                    Q(full_name__icontains=query)
-                    | Q(student_group__title__icontains=query)
-            )
+        ).filter(
+            Q(full_name__icontains=query)
+            | Q(student_group__name__icontains=query)
         )
-        return users
+        return students
 
 
 class TestingCompletedListView(LoginRequiredMixin, DetailView):
-    model = settings.AUTH_USER_MODEL
+    model = User
     template_name = 'user/testing_completed_list.html'
 
     def get_context_data(self, *, object_list=None, **kwargs):
