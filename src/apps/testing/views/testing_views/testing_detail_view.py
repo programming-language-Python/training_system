@@ -9,10 +9,10 @@ def show_testing_detail_view(request: WSGIRequest, pk: int):
         return TestingDetailTeacherView.as_view()(request, pk=pk)
     else:
         testing_service = TestingService(testing_pk=pk)
-        task_forms, form_task_data = testing_service.start_testing(
+        solving_testing_data = testing_service.start_testing(
             student=request.user.student
         )
-        form_task_data['testing_service'] = testing_service
         return TestingDetailStudentView.as_view(
-            task_forms, initial_dict=form_task_data
+            form_list=solving_testing_data.task_forms,
+            initial_dict=solving_testing_data.task_form_data
         )(request)

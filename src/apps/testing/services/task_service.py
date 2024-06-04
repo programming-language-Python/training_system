@@ -7,11 +7,7 @@ from django.db.models import QuerySet
 from django.http import QueryDict
 
 from apps.testing.constants import APP_NAME
-from apps.testing.forms.task_forms.open_question_form import OpenQuestionAnswerForm
-from apps.testing.models import SolvingTesting
-from apps.testing.models.solving_tasks import SolvingOpenQuestion
 from apps.testing.models.tasks import ClosedQuestion, OpenQuestion
-from apps.user.models import Student
 
 
 def update_tasks_serial_number(tasks_data: QueryDict) -> None:

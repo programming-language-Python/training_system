@@ -1,13 +1,17 @@
 import datetime
+from typing import Type
 
 from django.db.models import QuerySet
+from django.forms import ModelForm
 from django.shortcuts import redirect
 
-from apps.testing.forms.task_forms.open_question_form import OpenQuestionAnswerForm
+from apps.testing.forms.task_forms.open_question_form import SolvingOpenQuestionForm
+from apps.testing.forms.task_forms.сlosed_question_form import SolvingClosedQuestionForm
 from apps.testing.models import SolvingTesting
-from apps.testing.models.solving_tasks import SolvingOpenQuestion
-from apps.testing.models.tasks import OpenQuestion
+from apps.testing.models.solving_tasks import SolvingOpenQuestion, SolvingClosedQuestion
+from apps.testing.models.tasks import OpenQuestion, ClosedQuestion
 from apps.testing.services import TaskService
+from apps.testing.types import SolvingTestingData, TaskFormData, PageData
 from apps.testing_by_code.utils.utils import round_up
 from apps.user.models import Student
 
@@ -16,41 +20,50 @@ class TestingService(TaskService):
     weight: int
     solving_testing: SolvingTesting
 
-    def __init__(self, testing_pk: int):
+    def __init__(self, testing_pk: int) -> None:
         super().__init__(testing_pk)
         self.weight = 0
 
-    def start_testing(self, student: Student):
+    def get_solving_testing(self) -> SolvingTesting:
+        return self.solving_testing
+
+    def start_testing(self, student: Student) -> SolvingTestingData:
         self.solving_testing, is_created = SolvingTesting.objects.get_or_create(
             testing_id=self.testing_pk,
             student=student
         )
         task_forms = []
-        form_task_data = {
+        pages = []
+        for task in self.sort_tasks_serial_number():
+            form, page = self.get_solving_task_form(task)
+            task_forms.append(form)
+            pages.append(page)
+        task_form_data = TaskFormData(self, pages)
+        solving_testing_data = SolvingTestingData(task_forms, task_form_data)
+        return solving_testing_data
+
+    def get_solving_task_form(self, task: QuerySet) -> tuple[Type[ModelForm], PageData]:
+        solving_task_data = {
+            'task': task,
             'solving_testing': self.solving_testing
         }
-        for page, task in enumerate(self.sort_tasks_serial_number()):
-            form, form_data = self.create_solving_task(task, page)
-            task_forms.append(form)
-            form_task_data |= form_data
-        return task_forms, form_task_data
-
-    def create_solving_task(self, task: QuerySet, page: int):
         if isinstance(task, OpenQuestion):
             solving_task, is_created = SolvingOpenQuestion.objects.get_or_create(
-                task=task,
-                solving_testing=self.solving_testing
+                **solving_task_data
             )
-            form = OpenQuestionAnswerForm
+            form = SolvingOpenQuestionForm
+        elif isinstance(task, ClosedQuestion):
+            solving_task, is_created = SolvingClosedQuestion.objects.get_or_create(
+                **solving_task_data
+            )
+            form = SolvingClosedQuestionForm
         else:
             raise NotImplementedError('Такого типа задачи не существует')
-        form_data = {
-            page: {
-                'solving_task': solving_task,
-                'answer': solving_task.answer
-            }
-        }
-        return form, form_data
+        page_data = PageData(
+            answer=solving_task.answer,
+            solving_task=solving_task
+        )
+        return form, page_data
 
     def end_testing(self, task_forms) -> redirect:
         self.solving_testing.end_passage = datetime.datetime.now()
