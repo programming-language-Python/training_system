@@ -1,5 +1,6 @@
 from dataclasses import asdict
 
+from django.forms import MultipleChoiceField
 from django.shortcuts import redirect
 from django.utils.safestring import mark_safe
 from formtools.wizard.views import SessionWizardView
@@ -23,6 +24,9 @@ class TestingDetailStudentView(SessionWizardView):
 
     def get_form_initial(self, step):
         page = int(step)
+        answer_field = self.form_list[step].base_fields['answer']
+        if isinstance(answer_field, MultipleChoiceField):
+            answer_field.choices = self.initial_dict.pages[page].solving_task.task.get_set_answer_options()
         return asdict(self.initial_dict.pages[page])
 
     def done(self, task_forms, **kwargs) -> redirect:

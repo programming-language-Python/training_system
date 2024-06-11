@@ -1,12 +1,17 @@
 from dataclasses import dataclass
-from typing import Sequence, TYPE_CHECKING, Type
+from typing import Sequence, TYPE_CHECKING, Type, TypeAlias
 
 from django.forms import ModelForm
 
-from apps.testing.models.solving_tasks import SolvingOpenQuestion, SolvingClosedQuestion
-
 if TYPE_CHECKING:
     from apps.testing.services import TestingService
+    from apps.testing.models.solving_tasks import SolvingOpenQuestion, SolvingClosedQuestion
+    from apps.testing.models.tasks import OpenQuestion, ClosedQuestion
+
+Id: TypeAlias = int
+Description: TypeAlias = str
+Task: TypeAlias = 'OpenQuestion' or 'ClosedQuestion'
+SolvingTask: TypeAlias = 'SolvingOpenQuestion' or 'SolvingClosedQuestion'
 
 
 @dataclass
@@ -30,4 +35,4 @@ class TaskFormData:
 @dataclass
 class PageData:
     answer: str
-    solving_task: SolvingOpenQuestion | SolvingClosedQuestion
+    solving_task: SolvingTask

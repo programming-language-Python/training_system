@@ -3,14 +3,13 @@ from django.db import models
 from abstractions.abstract_models import AbstractSolvingTask
 from apps.testing.constants import APP_NAME
 from apps.testing.models.solving_testing import SolvingTesting
-from apps.testing.models.tasks import OpenQuestion
 
 
 class SolvingOpenQuestion(AbstractSolvingTask):
     RELATED_NAME = 'solving_open_question_set'
 
     task = models.ForeignKey(
-        OpenQuestion,
+        'OpenQuestion',
         on_delete=models.CASCADE,
         related_name=RELATED_NAME,
         verbose_name='Открытый вопрос'

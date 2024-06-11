@@ -1,17 +1,12 @@
 import datetime
-from typing import Type
+from typing import Iterable
 
-from django.db.models import QuerySet
-from django.forms import ModelForm
 from django.shortcuts import redirect
 
-from apps.testing.forms.task_forms.open_question_form import SolvingOpenQuestionForm
-from apps.testing.forms.task_forms.сlosed_question_form import SolvingClosedQuestionForm
+from apps.testing.interfaces import ITask
 from apps.testing.models import SolvingTesting
-from apps.testing.models.solving_tasks import SolvingOpenQuestion, SolvingClosedQuestion
-from apps.testing.models.tasks import OpenQuestion, ClosedQuestion
 from apps.testing.services import TaskService
-from apps.testing.types import SolvingTestingData, TaskFormData, PageData
+from apps.testing.types import SolvingTestingData, TaskFormData, PageData, Task, Id
 from apps.testing_by_code.utils.utils import round_up
 from apps.user.models import Student
 
@@ -28,42 +23,31 @@ class TestingService(TaskService):
         return self.solving_testing
 
     def start_testing(self, student: Student) -> SolvingTestingData:
+        task: ITask
         self.solving_testing, is_created = SolvingTesting.objects.get_or_create(
             testing_id=self.testing_pk,
             student=student
         )
-        task_forms = []
         pages = []
+        task_forms = []
         for task in self.sort_tasks_serial_number():
-            form, page = self.get_solving_task_form(task)
-            task_forms.append(form)
-            pages.append(page)
+            pages.append(self.get_page_data(task))
+            task_forms.append(task.get_solving_task_form())
         task_form_data = TaskFormData(self, pages)
         solving_testing_data = SolvingTestingData(task_forms, task_form_data)
         return solving_testing_data
 
-    def get_solving_task_form(self, task: QuerySet) -> tuple[Type[ModelForm], PageData]:
+    def get_page_data(self, task: Task) -> PageData:
         solving_task_data = {
             'task': task,
             'solving_testing': self.solving_testing
         }
-        if isinstance(task, OpenQuestion):
-            solving_task, is_created = SolvingOpenQuestion.objects.get_or_create(
-                **solving_task_data
-            )
-            form = SolvingOpenQuestionForm
-        elif isinstance(task, ClosedQuestion):
-            solving_task, is_created = SolvingClosedQuestion.objects.get_or_create(
-                **solving_task_data
-            )
-            form = SolvingClosedQuestionForm
-        else:
-            raise NotImplementedError('Такого типа задачи не существует')
+        solving_task = task.get_or_create_solving_task(solving_task_data)
         page_data = PageData(
             answer=solving_task.answer,
             solving_task=solving_task
         )
-        return form, page_data
+        return page_data
 
     def end_testing(self, task_forms) -> redirect:
         self.solving_testing.end_passage = datetime.datetime.now()
@@ -72,19 +56,13 @@ class TestingService(TaskService):
         return redirect('user:home')
 
     def get_assessment(self, task_forms) -> float:
+        answer: str | Iterable[Id]
         for task_form in task_forms:
             task = task_form.initial['solving_task'].task
             answer = task_form.cleaned_data['answer']
-            self.set_weight(task, answer)
+            self.weight += task.get_weight(answer)
         assessment = round_up(self.weight / len(task_forms) * 5)
         return assessment
-
-    def set_weight(self, task, answer) -> None:
-        if task.task_type.name == 'Открытый вопрос':
-            is_correct_answer = task.open_question_answer_option_set.filter(
-                correct_answer=answer
-            ).exists()
-            self.weight += 1 if is_correct_answer else 0
 
     @staticmethod
     def update_solving_task(solving_task, cleaned_data) -> None:
