@@ -62,7 +62,10 @@ class ClosedQuestion(AbstractTask):
         return 1 if quantity_correct_answers == quantity_correct_user_answers else 0
 
     def get_set_answer_options(self) -> Iterable[Id | Description]:
-        all_answer_options = self.closed_question_answer_option_set.all()
+        if self.is_random_order_answer_options:
+            all_answer_options = self.closed_question_answer_option_set.order_by('?')
+        else:
+            all_answer_options = self.closed_question_answer_option_set.all()
         ids = all_answer_options.values_list('id', flat=True)
         descriptions = map(strip_tags, all_answer_options.values_list('description', flat=True))
         return set(zip(ids, descriptions))
