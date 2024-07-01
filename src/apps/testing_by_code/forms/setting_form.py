@@ -1,11 +1,6 @@
 from django import forms
 
-from abstractions.abstract_forms import AbstractTestingForm, AbstractTaskForm
-from apps.testing_by_code.models.setting import Setting
-from apps.testing_by_code.models.cycle import Cycle
-from apps.testing_by_code.models.operator_nesting import OperatorNesting
-from apps.testing_by_code.models.testing import Testing
-from apps.testing_by_code.models.task import Task
+from apps.testing_by_code.models import OperatorNesting, Cycle, Setting
 from apps.testing_by_code.types import OperatorPresenceType, ConditionType
 
 CLASS_UK_SELECT = 'uk-select'
@@ -13,40 +8,7 @@ CLASS_UK_FORM_WIDTH_SMALL = 'uk-form-width-small'
 SELECT_TAG_CLASSES = f'{CLASS_UK_SELECT} {CLASS_UK_FORM_WIDTH_SMALL}'
 
 
-class TestingForm(AbstractTestingForm):
-    class Meta:
-        model = Testing
-        fields = (
-            'title',
-            'student_groups',
-            'is_published',
-            'is_review_of_result_by_student'
-        )
-
-
-class TaskForm(AbstractTaskForm):
-    class Meta:
-        model = Task
-        fields = ('weight',)
-
-
 class SettingForm(forms.ModelForm):
-    BE_PRESENT = 'Присутствует'
-    ABSENT = 'Отсутствует'
-    choices_is_operator = (
-        (BE_PRESENT, BE_PRESENT),
-        (ABSENT, ABSENT)
-    )
-    is_if_operator = forms.ChoiceField(
-        label='Наличие оператора if',
-        widget=forms.Select(
-            attrs={
-                'class': SELECT_TAG_CLASSES
-            }
-        ),
-        choices=choices_is_operator
-    )
-
     SIMPLE = 'Простое'
     COMPOSITE = 'Составное'
     choices_condition_operator = (

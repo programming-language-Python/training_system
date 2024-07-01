@@ -5,6 +5,7 @@ from django.db.models import F, Manager, QuerySet
 from django.forms import Form
 
 from apps.testing_by_code.models import Task, Testing
+
 from apps.testing_by_code.services.setting_service import SettingService
 
 
@@ -18,7 +19,6 @@ class TaskService:
 
     def __init__(self, user: User, forms: Mapping, testing: Testing) -> None:
         self.setting_service = SettingService(
-            user=user,
             setting_form=forms['setting_form']
         )
         self.user = user
@@ -26,6 +26,8 @@ class TaskService:
         self.task = Task.objects
         self.task_form = forms['task_form']
         self.weight = self.task_form.cleaned_data['weight']
+
+        self.setting_form = forms['setting_form']
 
     def add(self) -> Manager[Task]:
         self.setting_service.set()
@@ -45,10 +47,10 @@ class TaskService:
 
     def _create(self) -> Manager[Task]:
         self.task = self.task.create(
+            serial_number=self.testing.task_set.count() + 1,
             weight=self.weight,
             testing=self.testing,
-            setting=self.setting_service.get(),
-            count=1
+            setting=self.setting_service.get()
         )
         return self.task
 

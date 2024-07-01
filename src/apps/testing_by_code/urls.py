@@ -1,6 +1,8 @@
 from django.urls import path
 
-from .views import *
+from .views.task_views import TaskDetailView, update_task, duplicate_task, delete_task, add_task_form
+from .views.testing_views import TestingCreateView, TestingListView, TestingDetailView, TestingUpdateView, \
+    TestingDeleteView, SolvingTestingView
 
 app_name = 'testing_by_code'
 urlpatterns = [
@@ -14,5 +16,5 @@ urlpatterns = [
     path('task/<pk>/duplicate/', duplicate_task, name='duplicate_task'),
     path('task/<pk>/delete/', delete_task, name='delete_task'),
     path('add_task_form/', add_task_form, name='add_task_form'),
-    path('completed_testing_create/', create_completed_testing, name='completed_testing_create'),
+    path('solving_testing/', SolvingTestingView.as_view(), name='solving_testing'),
 ]

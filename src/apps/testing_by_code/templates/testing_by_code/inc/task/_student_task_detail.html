@@ -5,8 +5,11 @@
                 <div class="uk-grid-small uk-flex-middle" uk-grid>
                     <div class="uk-width-expand">
                         <h3 class="uk-card-title uk-margin-remove-bottom">
-                            Задача №<span class="task-number">{{ task_number }}</span> (вес {{ values.weight }})
-                            <input name="weight" type="hidden" value="{{ values.weight|add:"0" }}">
+                            {% with solving_task.task as task %}
+                                Задача №<span class="task-number">{{ task.serial_number }}</span> (вес
+                                {{ task.weight }})
+                                <input name="weight" type="hidden" value="{{ task.weight|add:"0" }}">
+                            {% endwith %}
                         </h3>
                     </div>
                 </div>
@@ -16,8 +19,8 @@
                     Определить выводимое на экран значение переменной <br> по результатам выполнения программы на Java:
                 </h4>
                 <pre onmousedown="return false"
-                     class="task__code uk-text-justify"><code>{{ values.code }}</code></pre>
-                <input name="code" type="hidden" value="{{ values.code }}">
+                     class="task__code uk-text-justify"><code>{{ solving_task.code }}</code></pre>
+                <input name="code" type="hidden" value="{{ solving_task.code }}">
                 <p>
                     Ваш ответ: <input class="uk-input uk-form-width-medium uk-form-small" name="answer" type="text"
                                       required>

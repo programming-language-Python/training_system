@@ -32,7 +32,7 @@ class Cycle(QuerySet):
 
 @dataclass
 class Setting:
-    is_if_operator: OperatorPresenceType
+    is_if_operator: bool
     condition_of_if_operator: ConditionType
     cycle: Cycle
     cycle_condition: ConditionType
@@ -79,10 +79,3 @@ class TaskData:
     count: int
     weight: int
     code: str
-
-
-class ContextUnfinishedTesting(TypedDict):
-    testing: Testing
-    start_passage: str
-    task_data: Mapping[TaskId, TaskData]
-    tasks: Sequence[Task]

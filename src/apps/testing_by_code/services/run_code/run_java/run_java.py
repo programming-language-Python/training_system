@@ -1,3 +1,4 @@
+import re
 import subprocess
 import time
 import os
@@ -68,7 +69,7 @@ class RunJava:
             print('Ошибка выполнения:', execution_error.decode())
         else:
             self.remove_compiled_files()
-            return execution_output.decode()
+            return re.sub(r'[\s\r\n]', '', execution_output.decode())
 
     def remove_compiled_files(self):
         os.remove(self.file)

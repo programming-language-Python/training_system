@@ -1,8 +1,8 @@
 from django.db.models import QuerySet, Q
 
-from apps.user.models import User
+from apps.user.models import Student, User
 from .filter_testing import FilterTesting
-from ..models import CompletedTesting
+from ..models import SolvingTesting
 
 
 def find_testings(user: User, title: str) -> QuerySet:
@@ -12,10 +12,10 @@ def find_testings(user: User, title: str) -> QuerySet:
     return found_testing
 
 
-def find_completed_testings(user: User, query: str | int) -> QuerySet:
-    q_obj = Q(student=user)
+def find_solved_testings(student: Student, query: str | int) -> QuerySet:
+    q_obj = Q(student=student)
     if query.isdigit():
         q_obj &= Q(assessment=query)
     else:
         q_obj &= Q(title__contains=query)
-    return CompletedTesting.objects.filter(q_obj)
+    return SolvingTesting.objects.filter(q_obj)

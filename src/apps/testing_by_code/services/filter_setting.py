@@ -1,8 +1,9 @@
 from typing import Iterable
 
-from django.db.models import Q, Manager
-from django.forms import ModelMultipleChoiceField, Form, ChoiceField
+from django.db.models import Q, QuerySet
+from django.forms import ModelMultipleChoiceField, ChoiceField
 
+from apps.testing_by_code.forms import SettingForm
 from apps.testing_by_code.models import Setting
 from apps.testing_by_code.types import Cycle
 
@@ -13,16 +14,16 @@ PRIORITY_FIELDS = (
 
 
 class FilterSetting:
-    setting_filter: Manager[Setting]
-    setting_form: Form
+    setting_filter: QuerySet[Setting]
+    setting_form: SettingForm
     q_obj: Q
 
-    def __init__(self, setting_form: Form) -> None:
+    def __init__(self, setting_form: SettingForm) -> None:
         self.setting_filter = Setting.objects
         self.setting_form = setting_form
         self.q_obj = Q()
 
-    def execute(self) -> Manager[Setting]:
+    def execute(self) -> QuerySet[Setting]:
         for field_name, field in self.setting_form.fields.items():
             self._filter_field(field_name, field)
         return self.setting_filter.filter(self.q_obj)

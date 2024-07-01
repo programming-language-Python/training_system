@@ -1,28 +1,29 @@
 from django.db import models
-from django.urls import reverse
 
 from abstractions.abstract_fields import AbstractFieldWeight
-from apps.testing_by_code.constants import APP_NAME
+from abstractions.abstract_models import AbstractTask
+from apps.testing_by_code.models import Testing, Setting
 
 
-class Task(AbstractFieldWeight):
+class Task(AbstractFieldWeight, AbstractTask):
+    RELATED_NAME = 'task_set'
+
+    count = models.IntegerField(
+        default=1,
+        verbose_name='Количество'
+    )
     testing = models.ForeignKey(
-        'Testing',
+        Testing,
+        related_name=RELATED_NAME,
         on_delete=models.CASCADE,
         verbose_name='Тестирование'
     )
     setting = models.ForeignKey(
-        'Setting',
+        Setting,
+        related_name=RELATED_NAME,
         on_delete=models.CASCADE,
         verbose_name='Настройка'
     )
-    count = models.IntegerField(
-        default=0,
-        verbose_name='Количество'
-    )
-
-    def get_absolut_url(self):
-        return reverse(APP_NAME + ':task_detail', kwargs={'pk': self.pk})
 
     class Meta:
         verbose_name = 'Задача'

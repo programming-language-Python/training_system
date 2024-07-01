@@ -3,7 +3,6 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 from apps.testing_by_code.constants import APP_NAME
-from apps.user.models import User
 from config.settings import MAX_LENGTH
 
 
@@ -16,11 +15,8 @@ class Setting(models.Model):
         SIMPLE = 'Простое', _('Простое')
         COMPOSITE = 'Составное', _('Составное')
 
-    # TODO Сделать тип bool
-    is_if_operator = models.CharField(
-        max_length=MAX_LENGTH,
-        choices=OperatorPresenceType.choices,
-        default=OperatorPresenceType.ABSENT,
+    is_if_operator = models.BooleanField(
+        default=False,
         verbose_name='Наличие оператора if'
     )
     condition_of_if_operator = models.CharField(
@@ -51,11 +47,6 @@ class Setting(models.Model):
     )
     is_OOP = models.BooleanField(default=False, verbose_name='ООП')
     is_strings = models.BooleanField(default=False, verbose_name='Строки')
-    users = models.ManyToManyField(
-        User,
-        blank=True,
-        verbose_name='Пользователи'
-    )
 
     def get_absolute_url(self):
         return reverse(APP_NAME + ':setting_detail', kwargs={'pk': self.pk})
@@ -64,5 +55,5 @@ class Setting(models.Model):
         return str(self.id)
 
     class Meta:
-        verbose_name = 'Настройка'
-        verbose_name_plural = 'Настройки'
+        verbose_name = _('Настройка')
+        verbose_name_plural = _('Настройки')
