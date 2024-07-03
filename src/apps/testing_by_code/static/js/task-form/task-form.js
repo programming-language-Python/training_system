@@ -40,11 +40,8 @@ $(document).ready(function () {
         }
 
         function blockOrUnlockFieldOperatorNesting() {
-            let valueIsIfOperator = $isIfOperator.val(),
-                firstSelectValue = $isIfOperator.find('option:first').val(),
-                isIfOperator = valueIsIfOperator === firstSelectValue,
-                checkbox_operator_nesting = $operatorNesting.find('input:checkbox');
-            if (isIfOperator && checkboxCycle.is(':checked')) {
+            let checkbox_operator_nesting = $operatorNesting.find('input:checkbox');
+            if ($isIfOperator.is(':checked') && checkboxCycle.is(':checked')) {
                 unlock($operatorNesting)
                 checkbox_operator_nesting.removeAttr(CLASS_DISABLED);
             } else {

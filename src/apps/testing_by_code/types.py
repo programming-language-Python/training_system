@@ -1,10 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum
-from typing import Sequence, Mapping, TypedDict
 
 from django.db.models import QuerySet
-
-from apps.testing_by_code.models import Testing, Task
 
 Weight = int
 
@@ -68,14 +65,3 @@ class Variable:
     def get_expression_in_if(self) -> str:
         return f'{self.name} {self.arithmetic_operation_in_condition}= ' \
                f'{self.value_in_condition}'
-
-
-TaskId = int
-
-
-@dataclass
-class TaskData:
-    number: int
-    count: int
-    weight: int
-    code: str

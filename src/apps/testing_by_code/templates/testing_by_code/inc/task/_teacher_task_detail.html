@@ -22,7 +22,11 @@
                                     {% get_verbose_name_for_field setting 'is_if_operator' %}:
                                 </span>
                                 <div>
-                                    {{ setting.is_if_operator }}
+                                    {% if setting.is_if_operator %}
+                                        Да
+                                    {% else %}
+                                        Нет
+                                    {% endif %}
                                 </div>
                             </div>
                             <div class="uk-margin">
