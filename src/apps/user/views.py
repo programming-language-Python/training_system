@@ -1,3 +1,5 @@
+from itertools import chain
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.db.models import Q, Value
@@ -5,10 +7,11 @@ from django.db.models.functions import Concat
 from django.views.generic import ListView, DetailView
 
 from config import settings
-from apps.testing_by_code.models import SolvingTesting
 from apps.testing_by_code.services.find_testing import find_solved_testings
 from .forms import UserLoginForm
 from .models import Student, User
+from ..testing.models import SolvingTesting
+from ..testing_by_code.models import SolvingTesting as SolvingTestingByCode
 
 
 class LoginUser(LoginView):
@@ -30,7 +33,9 @@ class HomeListView(LoginRequiredMixin, ListView):
                 student=self.request.user.student,
                 query=query
             )
-        return SolvingTesting.objects.filter(student=self.request.user.student)
+        solving_testing = SolvingTesting.objects.filter(student=self.request.user.student)
+        solving_testing_by_code = SolvingTestingByCode.objects.filter(student=self.request.user.student)
+        return chain(solving_testing, solving_testing_by_code)
 
 
 class SearchStudentView(HomeListView):
