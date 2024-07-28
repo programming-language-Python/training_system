@@ -1,4 +1,4 @@
 <h2>Добавить задачи</h2>
-{% for name, url in task_data.items %}
-    |<a href="{% url url testing.pk %}">{{ name }}</a>|
+{% for task_type in tasks_types %}
+    |<a href="{% url task_type.get_task_creation_url testing.pk task_type.name %}">{{ task_type.name }}</a>|
 {% endfor %}

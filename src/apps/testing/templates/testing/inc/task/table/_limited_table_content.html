@@ -1,0 +1,21 @@
+<input form="serial-number-update-form" name="class-name" type="hidden"
+       value="{{ task.get_class_name }}">
+<input form="serial-number-update-form" name="pk" type="hidden" value="{{ task.pk }}">
+<a class="uk-width-small" href="{{ task.get_absolute_url }}">
+    <label>
+        <input form="serial-number-update-form" class="serial-number" name="serial-number"
+               data-name="serial-number"
+               data-is-fit-block-to-content-size="True" type="text"
+               value="{{ task.serial_number }}">
+    </label>
+</a>
+<a class="uk-width-small" href="{{ task.get_absolute_url }}">
+    <div>
+        {{ task.task_type }}
+    </div>
+</a>
+<a class="uk-width-expand" href="{{ task.get_absolute_url }}">
+    <div>
+        {{ task.description|safe }}
+    </div>
+</a>

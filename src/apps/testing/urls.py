@@ -19,14 +19,15 @@ urlpatterns = [
     path('update/<pk>', TestingUpdateView.as_view(), name='testing_update'),
     path('delete/<pk>', TestingDeleteView.as_view(), name='testing_delete'),
 
-    path('<testing_pk>/task/create/closed_question', ClosedQuestionCreateView.as_view(),
+    path('<testing_pk>/task/closed_question/<type>/create', ClosedQuestionCreateView.as_view(),
          name='task_closed_question_create'),
     path('task/closed_question/update/<pk>', ClosedQuestionUpdateView.as_view(),
          name='task_closed_question_update'),
     path('task/closed_question/delete/<pk>', ClosedQuestionDeleteView.as_view(),
          name='task_closed_question_delete'),
 
-    path('<testing_pk>/task/open_question/create', OpenQuestionCreateView.as_view(), name='task_open_question_create'),
+    path('<testing_pk>/task/open_question/<type>/create', OpenQuestionCreateView.as_view(),
+         name='task_open_question_create'),
     path('task/open_question/update/<pk>', OpenQuestionUpdateView.as_view(),
          name='task_open_question_update'),
     path('task/open_question/delete/<pk>', OpenQuestionDeleteView.as_view(),

@@ -1,0 +1,12 @@
+<span name="sort-sign" class="uk-width-small uk-sortable-handle" uk-icon="icon: table"></span>
+{% include "testing/inc/task/table/_limited_table_content.html" %}
+<div class="uk-width-small">
+    <form method="post" action="{{ task.get_deletion_url }}?testing_pk={{ testing.pk }}">
+        {% csrf_token %}
+        <button type="submit"
+                name="btn-delete"
+                uk-icon="trash"
+                uk-tooltip="Удалить">
+        </button>
+    </form>
+</div>

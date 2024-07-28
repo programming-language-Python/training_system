@@ -1,0 +1,25 @@
+<ul class="uk-background-default" uk-sticky>
+    <li class="uk-grid-small" uk-grid>
+        <div class="uk-width-small">Изменить порядок</div>
+        <div class="uk-width-small">Порядковый номер</div>
+        <div class="uk-width-expand">Описание</div>
+        <div class="uk-width-small">Правильный вариант</div>
+        <div class="uk-width-small">Удалить</div>
+    </li>
+</ul>
+<ul id="answer-options" name="answer-options"
+    uk-sortable="handle: .uk-sortable-handle">
+    {{ answer_option_form_set.management_form }}
+    {% for answer_option_form in answer_option_form_set %}
+        <li name="answer-option" class="uk-grid-small" uk-grid>
+            <span name="sort-sign" class="uk-width-small uk-sortable-handle" uk-icon="icon: table"></span>
+            <div class="uk-width-small">{{ answer_option_form.serial_number }}</div>
+            <div class="uk-width-expand">{{ answer_option_form.description }}</div>
+            <div class="uk-width-small">{{ answer_option_form.is_correct }}</div>
+            <div class="uk-width-small">{{ answer_option_form.DELETE }}</div>
+            {% for hidden_field in answer_option_form.hidden_fields %}
+                {{ hidden_field }}
+            {% endfor %}
+        </li>
+    {% endfor %}
+</ul>

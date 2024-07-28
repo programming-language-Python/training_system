@@ -8,13 +8,13 @@ from django.views.generic import DetailView
 
 from apps.testing.models import Testing
 from apps.testing.constants import APP_NAME
+from apps.testing.models.tasks import TaskType
 from apps.testing.services import TaskService
 from apps.testing.services.task_service import update_tasks_serial_number
-from apps.testing.types import TaskType
-from mixins import URLMixin
+from mixins import ContextMixin
 
 
-class TestingDetailTeacherView(URLMixin, LoginRequiredMixin, DetailView):
+class TestingDetailTeacherView(ContextMixin, LoginRequiredMixin, DetailView):
     template_name = 'testing/testing_detail_teacher.html'
     model = Testing
     APP_NAME = APP_NAME
@@ -26,26 +26,21 @@ class TestingDetailTeacherView(URLMixin, LoginRequiredMixin, DetailView):
         update_tasks_serial_number(tasks_data=request.POST)
         return redirect('testing:testing_detail', pk=kwargs['pk'])
 
-    #
     def get_context_data(self, *args, **kwargs) -> Mapping:
         context = super().get_context_data(**kwargs)
-        task_service = TaskService(testing_pk=self.kwargs['pk'])
-        sorted_tasks = task_service.sort_tasks_serial_number()
-        context |= self._get_task_context_data(sorted_tasks)
+        context |= self.get_testing_detail_data(
+            is_solving_testing=self.object.testing_solving_testing_set.exists(),
+        )
+        context |= self._get_task_context_data()
         return context
 
-    def _get_task_context_data(self, sorted_tasks: Sequence[QuerySet]) -> Mapping[str, Mapping | Sequence[QuerySet]]:
-        context = {}
-        context |= self.get_testing_update_url_data() | self.get_testing_delete_url_data()
-        tasks = [
-            TaskType(name='Закрытый вопрос', url='task_closed_question_create'),
-            TaskType(name='Открытый вопрос', url='task_open_question_create'),
-            # TaskType(name='Установление последовательности', url='task_sequencing_create'),
-            # TaskType(name='Установление соответствия', url='task_establishing_accordance_create'),
-        ]
-        context['task_data'] = {}
-        for task in tasks:
-            context['task_data'][task.name] = f'{APP_NAME}:{task.url}'
-        context['tasks'] = sorted_tasks
-        context['quantity_task'] = len(sorted_tasks)
+    def _get_task_context_data(self) -> Mapping[str, Mapping | Sequence[QuerySet]]:
+        task_service = TaskService(testing_pk=self.kwargs['pk'])
+        sorted_tasks = task_service.sort_tasks_serial_number()
+        context = {
+            'task_data': {},
+            'tasks': sorted_tasks,
+            'quantity_task': len(sorted_tasks),
+            'tasks_types': TaskType.objects.all()
+        }
         return context

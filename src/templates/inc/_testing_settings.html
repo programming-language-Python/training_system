@@ -1,5 +1,10 @@
-<section class="content__testing-settings" id="testing-settings">
+<section class='content__testing-settings' id='testing-settings'>
     {% if user.is_teacher %}
+        {% if is_solving_testing %}
+            <span class="error">
+            Данное тестирование нельзя обновить. Кто-то из студентов его прошёл. <br> Его можно только удалить. Результаты студентов, которые прошли тестирование, останутся нетронутыми.
+            </span>
+        {% endif %}
         {% include 'inc/_testing_fields.html' %}
         {% include 'inc/_testing_detail_buttons.html' %}
     {% else %}
@@ -8,16 +13,16 @@
         </h2>
     {% endif %}
 </section>
-<section class="content__task-form task-form uk-margin" id="task-form"></section>
-<h3 class="task-form__count-tasks">
+<section class='content__task-form task-form uk-margin' id='task-form'></section>
+<h3 class='task-form__count-tasks'>
     {% with 'Количество задач: ' as text %}
         {% if user.is_teacher %}
             {{ text }}{{ quantity_task }}
         {% else %}
-            <form id="answer-form" method="post">
-                {% csrf_token %}
-                <button class="uk-button uk-button-primary" type="submit">Завершить тестирование</button>
-            </form>
+            {#            <button form='solving-testing-form' class='uk-button uk-button-primary' type='submit'#}
+            {#                    name='complete-testing'#}
+            {#                    value='complete-testing'>Завершить тестирование#}
+            {#            </button>#}
             {{ text }}{{ wizard.steps.count }}
         {% endif %}
     {% endwith %}

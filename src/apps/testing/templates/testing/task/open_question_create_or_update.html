@@ -5,47 +5,5 @@
     {{ form.media }}
 {% endblock %}
 {% block content %}
-    <h1>Открытый вопрос</h1>
-    {% if answer_option_form_set_errors %}
-        {{ answer_option_form_set_errors }}
-    {% endif %}
-    <form class="form" method="get">
-        <label for="quantity-answer-options-add">Добавить пустой ответ</label>
-        <input class="uk-input uk-width-1-4" id="quantity-answer-options-add" name="quantity-answer-options-add"
-               type="number" value="1" min="1" max="8">
-        <button class="uk-button uk-button-primary" type="submit">Добавить ответ</button>
-    </form>
-    <form class="form" enctype="multipart/form-data" method="post">
-        {% csrf_token %}
-        <div class="uk-margin">
-            <button name="btn-submit" class="uk-button uk-button-primary" type="submit" id="btn-submit">
-                {{ btn_text }}
-            </button>
-        </div>
-        <div>
-            {{ form.as_p }}
-        </div>
-        <h2>Варианты ответов</h2>
-        <ul class="uk-margin uk-nav uk-nav-default">
-            <li class="uk-grid-small uk-child-width-1-2" uk-grid>
-                <div>Ответ</div>
-                <div>Удалить</div>
-            </li>
-        </ul>
-        <ul id="answer-options" name="answer-options" class="uk-margin uk-nav uk-nav-default"
-            uk-sortable="handle: .uk-sortable-handle">
-            {{ answer_option_form_set.management_form }}
-            {% for answer_option_form in answer_option_form_set %}
-                <li name="answer-option" class="uk-grid-small uk-child-width-1-2" uk-grid>
-                {% for field in answer_option_form.visible_fields %}
-                    <div>
-                        {{ field }}
-                    </div>
-                {% endfor %}
-                {% for hidden_field in answer_option_form.hidden_fields %}
-                    {{ hidden_field }}
-                {% endfor %}
-            {% endfor %}
-        </ul>
-    </form>
+    {% include "testing/inc/task/_content.html" %}
 {% endblock %}

@@ -9,6 +9,12 @@ class TaskType(models.Model):
     def __str__(self) -> str:
         return self.name
 
+    def get_task_creation_url(self):
+        if self.name == 'Закрытый вопрос':
+            return f'{APP_NAME}:task_closed_question_create'
+        if self.name == 'Открытый вопрос':
+            return f'{APP_NAME}:task_open_question_create'
+
     @staticmethod
     def get_default_value(class_name: str):
         if class_name == 'ClosedQuestion':

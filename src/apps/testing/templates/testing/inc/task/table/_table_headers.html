@@ -1,0 +1,9 @@
+<ul class="uk-background-default">
+    <li class="uk-grid-small" uk-grid>
+        {% if is_solving_testing %}
+            {% include "testing/inc/task/table/_limited_table_headers.html" %}
+        {% else %}
+            {% include "testing/inc/task/table/_no_limited_table_headers.html" %}
+        {% endif %}
+    </li>
+</ul>

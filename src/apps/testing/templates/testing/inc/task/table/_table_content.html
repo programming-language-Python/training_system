@@ -1,0 +1,12 @@
+<ul id="tasks" {% if not is_solving_testing %} uk-sortable="handle: .uk-sortable-handle" {% endif %}>
+    {% for task in tasks %}
+        <li class="uk-grid-small {% if is_solving_testing %} uk-child-width-1-3 {% else %} uk-child-width-1-5 {% endif %}"
+            uk-grid>
+            {% if is_solving_testing %}
+                {% include "testing/inc/task/table/_limited_table_content.html" %}
+            {% else %}
+                {% include "testing/inc/task/table/_no_limited_table_content.html" %}
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>

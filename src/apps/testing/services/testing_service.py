@@ -1,12 +1,12 @@
 import datetime
-from typing import Iterable
+from typing import Iterable, Sequence
 
 from django.shortcuts import redirect
 
 from apps.testing.interfaces import ITask
 from apps.testing.models import SolvingTesting
 from apps.testing.services import TaskService
-from apps.testing.types import SolvingTestingData, TaskFormData, PageData, Task, Id
+from apps.testing.types import SolvingTestingData, TaskFormData, PageData, Task, Id, SolvingTask
 from apps.testing_by_code.utils.utils import round_up
 from apps.user.models import Student
 
@@ -49,13 +49,13 @@ class TestingService(TaskService):
         )
         return page_data
 
-    def end_testing(self, task_forms) -> redirect:
+    def end_testing(self, task_forms: Sequence[SolvingTask]) -> redirect:
         self.solving_testing.end_passage = datetime.datetime.now()
         self.solving_testing.assessment = self.get_assessment(task_forms)
         self.solving_testing.save()
         return redirect('user:home')
 
-    def get_assessment(self, task_forms) -> float:
+    def get_assessment(self, task_forms: Sequence[SolvingTask]) -> float:
         answer: str | Iterable[Id]
         for task_form in task_forms:
             task = task_form.initial['solving_task'].task

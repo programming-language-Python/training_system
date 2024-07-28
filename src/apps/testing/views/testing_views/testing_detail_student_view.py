@@ -1,11 +1,12 @@
 from dataclasses import asdict
+from typing import Sequence
 
 from django.forms import MultipleChoiceField
 from django.shortcuts import redirect
 from django.utils.safestring import mark_safe
 from formtools.wizard.views import SessionWizardView
 
-from apps.testing.types import TaskFormData
+from apps.testing.types import TaskFormData, SolvingTask
 
 
 class TestingDetailStudentView(SessionWizardView):
@@ -29,7 +30,7 @@ class TestingDetailStudentView(SessionWizardView):
             answer_field.choices = self.initial_dict.pages[page].solving_task.task.get_set_answer_options()
         return asdict(self.initial_dict.pages[page])
 
-    def done(self, task_forms, **kwargs) -> redirect:
+    def done(self, task_forms: Sequence[SolvingTask], **kwargs) -> redirect:
         return self.initial_dict.testing_service.end_testing(task_forms)
 
     def post(self, *args, **kwargs):

@@ -66,4 +66,4 @@ class TestingForm(AbstractTestingForm):
     class Meta:
         model = Testing
         fields = '__all__'
-        exclude = ['user', 'date_of_deletion', ]
+        exclude = ['teacher', 'date_of_deletion', ]

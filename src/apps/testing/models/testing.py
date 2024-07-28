@@ -23,10 +23,6 @@ class Testing(AbstractTesting):
         ],
         verbose_name='Пороговое значение оценки'
     )
-    is_established_order_tasks = models.BooleanField(
-        verbose_name='Установленный порядок задач',
-        default=False
-    )
 
     def get_absolute_url(self):
         return reverse(f'{APP_NAME}:testing_detail', kwargs={'pk': self.pk})

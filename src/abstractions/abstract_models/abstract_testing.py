@@ -5,7 +5,6 @@ from django.db.models import OneToOneRel, ManyToManyRel, ManyToOneRel
 
 from abstractions.abstract_fields import AbstractFieldTitle
 from apps.user.models import StudentGroup, Teacher
-from config.settings import AUTH_USER_MODEL
 
 
 class AbstractTesting(AbstractFieldTitle):
@@ -20,6 +19,10 @@ class AbstractTesting(AbstractFieldTitle):
         blank=True,
         default=True,
         verbose_name='Просмотр результата студентом'
+    )
+    is_established_order_tasks = models.BooleanField(
+        verbose_name='Установленный порядок задач',
+        default=False
     )
     date_of_creation = models.DateTimeField(
         auto_now_add=True,
@@ -54,7 +57,7 @@ class AbstractTesting(AbstractFieldTitle):
         return self.title
 
     def get_fields_data(self) -> Mapping[str, str]:
-        exclude = ['id', 'user', 'date_of_deletion']
+        exclude = ['id', 'teacher', 'date_of_deletion']
         exclude_types = (OneToOneRel, ManyToOneRel, ManyToManyRel)
         fields_data = {}
         for field in self._meta.get_fields():
