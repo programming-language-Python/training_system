@@ -11,9 +11,5 @@ class TestingForm(AbstractTestingForm):
 
     class Meta:
         model = Testing
-        fields = (
-            'title',
-            'student_groups',
-            'is_published',
-            'is_review_of_result_by_student'
-        )
+        fields = '__all__'
+        exclude = ('teacher', 'date_of_creation', 'date_of_deletion')

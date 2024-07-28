@@ -8,11 +8,11 @@ from apps.testing_by_code.forms import TaskForm, SettingForm
 from apps.testing_by_code.models import Testing, SolvingTesting
 from apps.testing_by_code.services import TestingService
 from apps.testing_by_code.services.task_service import TaskService
-from mixins import URLMixin
 from apps.testing_by_code.constants import APP_NAME
+from mixins import ContextMixin
 
 
-class TestingDetailView(URLMixin, LoginRequiredMixin, DetailView):
+class TestingDetailView(ContextMixin, LoginRequiredMixin, DetailView):
     model = Testing
     APP_NAME = APP_NAME
 
@@ -20,7 +20,10 @@ class TestingDetailView(URLMixin, LoginRequiredMixin, DetailView):
         is_teacher_ = self.request.user.is_teacher()
         if is_teacher_:
             context = super().get_context_data(**kwargs)
-            context |= self.get_testing_detail_url_button_data()
+            context |= self.get_testing_detail_data(
+                is_solving_testing=kwargs['object'].testing_by_code_solving_testing_set.exists()
+            )
+            context |= {'add_task_form_url': f'{self.APP_NAME}:add_task_form'}
         else:
             testing = kwargs['object']
             context = self._start_testing(testing)
