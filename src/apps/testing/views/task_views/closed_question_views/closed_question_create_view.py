@@ -7,4 +7,4 @@ class ClosedQuestionCreateView(AbstractTaskCreateView):
     model = ClosedQuestion
     form_class = ClosedQuestionForm
     answer_option_form_set = ClosedQuestionAnswerOptionFormSet
-    template_name = 'testing/task/closed_question_create_or_update.html'
+    template_name = 'testing/task/closed_question/closed_question_create_or_update.html'

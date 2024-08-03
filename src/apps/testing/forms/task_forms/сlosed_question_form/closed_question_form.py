@@ -6,6 +6,7 @@ from apps.testing.models.tasks import ClosedQuestion
 
 class ClosedQuestionForm(AbstractTaskForm):
     closed_question_meta = ClosedQuestion._meta
+
     is_several_correct_answers = forms.BooleanField(
         label=closed_question_meta.get_field('is_several_correct_answers').verbose_name,
         required=False,

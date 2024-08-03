@@ -1,6 +1,7 @@
 from typing import Type
 
 from django.db import models
+from django.db.models import QuerySet
 from django.forms import ModelForm
 
 from abstractions.abstract_models import AbstractTask
@@ -25,6 +26,9 @@ class OpenQuestion(AbstractTask):
         related_name=RELATED_NAME,
         verbose_name='Тестирование'
     )
+
+    def get_set_answer_options(self) -> QuerySet:
+        return self.open_question_answer_option_set.all()
 
     @staticmethod
     def get_solving_task_form() -> Type[ModelForm]:

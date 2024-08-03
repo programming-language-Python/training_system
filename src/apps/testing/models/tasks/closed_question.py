@@ -1,6 +1,7 @@
 from typing import Iterable, Type
 
 from django.db import models
+from django.db.models import QuerySet
 from django.forms import ModelForm
 from django.utils.html import strip_tags
 
@@ -8,6 +9,7 @@ from abstractions.abstract_models import AbstractTask
 from apps.testing.constants import APP_NAME
 from apps.testing.models import Testing
 from apps.testing.models.solving_tasks import SolvingClosedQuestion
+
 from apps.testing.models.tasks import TaskType
 from apps.testing.types import Id, Description, SolvingTask
 
@@ -61,7 +63,7 @@ class ClosedQuestion(AbstractTask):
         ).count()
         return 1 if quantity_correct_answers == quantity_correct_user_answers else 0
 
-    def get_set_answer_options(self) -> Iterable[Id | Description]:
+    def get_initial_set_answer_options(self) -> Iterable[Id | Description]:
         if self.is_random_order_answer_options:
             all_answer_options = self.closed_question_answer_option_set.order_by('?')
         else:
@@ -69,6 +71,13 @@ class ClosedQuestion(AbstractTask):
         ids = all_answer_options.values_list('id', flat=True)
         descriptions = map(strip_tags, all_answer_options.values_list('description', flat=True))
         return set(zip(ids, descriptions))
+
+    def get_set_answer_options(self) -> QuerySet:
+        if self.is_random_order_answer_options:
+            all_answer_options = self.closed_question_answer_option_set.order_by('?')
+        else:
+            all_answer_options = self.closed_question_answer_option_set.all()
+        return all_answer_options
 
     class Meta(AbstractTask.Meta):
         db_table = f'{APP_NAME}_closed-question'

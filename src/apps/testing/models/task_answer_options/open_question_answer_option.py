@@ -1,10 +1,14 @@
 from django.db import models
 
+from apps.testing.abstractions.abstract_models.abstract_answer_options import AbstractAnswerOption
 from apps.testing.constants import APP_NAME
 from apps.testing.models.tasks import OpenQuestion
 
 
-class OpenQuestionAnswerOption(models.Model):
+class OpenQuestionAnswerOption(AbstractAnswerOption):
+    serial_number = None
+    description = None
+
     correct_answer = models.CharField(verbose_name='Правильный ответ')
     open_question = models.ForeignKey(
         OpenQuestion,

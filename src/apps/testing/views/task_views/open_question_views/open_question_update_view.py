@@ -7,4 +7,4 @@ class OpenQuestionUpdateView(AbstractTaskUpdateView):
     model = OpenQuestion
     form_class = OpenQuestionForm
     answer_option_form_set = OpenQuestionAnswerOptionFormSet
-    template_name = 'testing/task/open_question_create_or_update.html'
+    template_name = 'testing/task/open_question/open_question_create_or_update.html'

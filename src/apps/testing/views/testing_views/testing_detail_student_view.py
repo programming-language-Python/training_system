@@ -27,7 +27,7 @@ class TestingDetailStudentView(SessionWizardView):
         page = int(step)
         answer_field = self.form_list[step].base_fields['answer']
         if isinstance(answer_field, MultipleChoiceField):
-            answer_field.choices = self.initial_dict.pages[page].solving_task.task.get_set_answer_options()
+            answer_field.choices = self.initial_dict.pages[page].solving_task.task.get_initial_set_answer_options()
         return asdict(self.initial_dict.pages[page])
 
     def done(self, task_forms: Sequence[SolvingTask], **kwargs) -> redirect:

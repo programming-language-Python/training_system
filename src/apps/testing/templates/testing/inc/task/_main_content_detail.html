@@ -1,0 +1,7 @@
+<h1>{{ title }}</h1>
+{% for field in task.get_fields %}
+    <div>
+        {{ field|safe }}
+    </div>
+{% endfor %}
+<h2>Варианты ответов</h2>
