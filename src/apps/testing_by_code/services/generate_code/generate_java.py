@@ -11,7 +11,7 @@ from .generate_java_work_with_strings import GenerateJavaWorkWithStrings
 from .generate_operator_nesting import GenerateOperatorNesting
 from .templates import get_print_template
 from ... import abstractions
-from ...types import NestingType, OperatorPresenceType
+from ...types import NestingType
 
 
 class GenerateJava(abstractions.Setting, abstractions.Variable):
@@ -63,8 +63,7 @@ class GenerateJava(abstractions.Setting, abstractions.Variable):
         return generate_operator_nesting.generate_cycle_nested_in_condition()
 
     def get_operator(self) -> str:
-        is_condition = self.setting.is_if_operator == OperatorPresenceType \
-            .BE_PRESENT
+        is_condition = self.setting.is_if_operator
         is_cycle = self.setting.cycle
         if is_condition and is_cycle:
             return self._get_random_order_of_operators()

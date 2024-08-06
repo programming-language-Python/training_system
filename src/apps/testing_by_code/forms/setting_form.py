@@ -1,7 +1,7 @@
 from django import forms
 
 from apps.testing_by_code.models import OperatorNesting, Cycle, Setting
-from apps.testing_by_code.types import OperatorPresenceType, ConditionType
+from apps.testing_by_code.types import ConditionType
 
 CLASS_UK_SELECT = 'uk-select'
 CLASS_UK_FORM_WIDTH_SMALL = 'uk-form-width-small'
@@ -62,12 +62,12 @@ class SettingForm(forms.ModelForm):
         is_OOP = cleaned_data.get('is_OOP')
         is_strings = cleaned_data.get('is_strings')
 
-        is_absent_if_operator = is_if_operator == OperatorPresenceType.ABSENT
-        if is_absent_if_operator:
-            cleaned_data['condition_of_if_operator'] = ConditionType.SIMPLE
+        # is_absent_if_operator = is_if_operator == OperatorPresenceType.ABSENT
+        # if is_if_operator:
+        #     cleaned_data['condition_of_if_operator'] = ConditionType.SIMPLE
         if cycle:
             cleaned_data['cycle_condition'] = ConditionType.SIMPLE
-        is_lock_nesting_of_operators = is_absent_if_operator or not cycle
+        is_lock_nesting_of_operators = is_if_operator or not cycle
         if is_lock_nesting_of_operators:
             cleaned_data['operator_nesting'] = OperatorNesting.objects.none()
         if is_OOP:
@@ -79,7 +79,7 @@ class SettingForm(forms.ModelForm):
 
     @staticmethod
     def _set_default_basic_fields(cleaned_data: dict) -> dict:
-        cleaned_data['is_if_operator'] = OperatorPresenceType.ABSENT
+        cleaned_data['is_if_operator'] = True
         cleaned_data['condition_of_if_operator'] = ConditionType.SIMPLE
         cleaned_data['cycle'] = Cycle.objects.none()
         cleaned_data['cycle_condition'] = ConditionType.SIMPLE

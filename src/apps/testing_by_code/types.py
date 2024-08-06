@@ -6,11 +6,6 @@ from django.db.models import QuerySet
 Weight = int
 
 
-class OperatorPresenceType(str, Enum):
-    BE_PRESENT = 'Присутствует'
-    ABSENT = 'Отсутствует'
-
-
 class ConditionType(str, Enum):
     SIMPLE = 'Простое'
     COMPOSITE = 'Составное'
