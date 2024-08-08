@@ -1,3 +1,5 @@
+from typing import Iterable
+
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
@@ -43,6 +45,14 @@ class MaxScore(models.Model):
         related_name='max_score_set',
         verbose_name='Тестирование'
     )
+
+    def get_fields(self) -> Iterable:
+        exclude = ['id', 'testing']
+        fields = []
+        for field in self._meta.fields:
+            if field.name not in exclude:
+                fields.append(field)
+        return fields
 
     class Meta:
         db_table = f'{APP_NAME}_max-score'

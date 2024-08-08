@@ -6,5 +6,5 @@ from apps.testing.models.tasks import ClosedQuestion
 class ClosedQuestionCreateView(AbstractTaskCreateView):
     model = ClosedQuestion
     form_class = ClosedQuestionForm
-    answer_option_form_set = ClosedQuestionAnswerOptionFormSet
+    form_set = ClosedQuestionAnswerOptionFormSet
     template_name = 'testing/task/closed_question/closed_question_create_or_update.html'

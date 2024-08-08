@@ -8,7 +8,7 @@
             {% for fields in form %}
                 {% if fields.label == 'Наименование' %}
                     <h2 class="testing__title">
-                        Создать настройки задач для тестирования {{ fields }}
+                        Обновить настройки задач для тестирования {{ fields }}
                     </h2>
                     {{ fields.errors }}
                 {% else %}
@@ -19,6 +19,8 @@
                     </div>
                 {% endif %}
             {% endfor %}
+            <div>Максимальный балл</div>
+            {{ max_score_form.as_div }}
             <button type="submit" uk-icon="refresh" uk-tooltip="Обновить"></button>
             <a href="{{ request.META.HTTP_REFERER }}"
                uk-icon="close"

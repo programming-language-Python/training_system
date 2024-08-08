@@ -1,13 +1,13 @@
 from types import NoneType
-from typing import Mapping
+from typing import Mapping, Type
 
 from django.forms import inlineformset_factory
 
 
 class AnswerOptionService:
-    form_set: inlineformset_factory
+    form_set: Type[inlineformset_factory]
 
-    def __init__(self, form_set: inlineformset_factory) -> None:
+    def __init__(self, form_set: Type[inlineformset_factory]) -> None:
         self.form_set = form_set
 
     def get_context_data(self, quantity_answer_options_add: str | NoneType) -> Mapping:
@@ -20,7 +20,7 @@ class AnswerOptionService:
         self.set_attributes_for_form_set()
         return {'answer_option_form_set': self.get_form_set()}
 
-    def get_form_set(self) -> inlineformset_factory:
+    def get_form_set(self) -> Type[inlineformset_factory]:
         return self.form_set
 
     def add_form_set(self, quantity: int) -> None:

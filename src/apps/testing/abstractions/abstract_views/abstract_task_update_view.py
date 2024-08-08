@@ -1,16 +1,17 @@
 from collections.abc import MutableMapping
-from typing import Mapping, Iterable
+from typing import Mapping, Iterable, Type
 
+from django.forms import inlineformset_factory, ModelForm
 from django.shortcuts import redirect
 from django.views.generic import UpdateView
 
-from apps.testing.abstractions.abstract_views.abstract_base_task_view import AbstractBaseTaskView
+from apps.testing.abstractions.abstract_views import AbstractFormSetView
 from apps.testing.constants import APP_NAME
 from apps.testing.services.answer_option_service import AnswerOptionService
 from apps.testing.utils.text import convert_from_PascalCase_to_snake_case
 
 
-class AbstractTaskUpdateView(AbstractBaseTaskView, UpdateView):
+class AbstractTaskUpdateView(AbstractFormSetView, UpdateView):
     def get_context_data(self, **kwargs) -> MutableMapping:
         context = super().get_context_data(**kwargs)
         context |= self._get_answer_option_context_data()
@@ -19,19 +20,19 @@ class AbstractTaskUpdateView(AbstractBaseTaskView, UpdateView):
         return context
 
     def _get_answer_option_context_data(self) -> Mapping:
-        form_set = self.answer_option_form_set(instance=self.get_object())
+        form_set = self.form_set(instance=self.get_object())
         form_set.extra = 0
         answer_option_service = AnswerOptionService(form_set)
         quantity_answer_options_add = self.request.GET.get('quantity-answer-options-add')
         return answer_option_service.get_context_data(quantity_answer_options_add)
 
-    def _get_forms(self) -> Iterable:
+    def _get_forms(self) -> Iterable[Type[ModelForm] | Type[inlineformset_factory]]:
         return (
             self.form_class(
                 self.request.POST,
                 instance=self.get_object()
             ),
-            self.answer_option_form_set(
+            self.form_set(
                 self.request.POST,
                 self.request.FILES,
                 instance=self.get_object()

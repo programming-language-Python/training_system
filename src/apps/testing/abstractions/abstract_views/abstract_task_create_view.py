@@ -1,17 +1,18 @@
 from collections.abc import MutableMapping
-from typing import Mapping, Iterable
+from typing import Mapping, Iterable, Type
 
+from django.forms import inlineformset_factory, ModelForm
 from django.shortcuts import redirect
 from django.views.generic import CreateView
 
-from apps.testing.abstractions.abstract_views.abstract_base_task_view import AbstractBaseTaskView
+from apps.testing.abstractions.abstract_views import AbstractFormSetView
 from apps.testing.constants import APP_NAME
 from apps.testing.models.tasks import TaskType
 from apps.testing.services import TaskService
 from apps.testing.services.answer_option_service import AnswerOptionService
 
 
-class AbstractTaskCreateView(AbstractBaseTaskView, CreateView):
+class AbstractTaskCreateView(AbstractFormSetView, CreateView):
     pk_url_kwarg = 'testing_pk'
 
     def get_context_data(self, **kwargs) -> MutableMapping:
@@ -28,14 +29,14 @@ class AbstractTaskCreateView(AbstractBaseTaskView, CreateView):
         return task_service.set_initial_values_form_fields(fields)
 
     def _get_answer_option_context_data(self) -> Mapping:
-        answer_option_service = AnswerOptionService(form_set=self.answer_option_form_set())
+        answer_option_service = AnswerOptionService(form_set=self.form_set())
         quantity_answer_options_add = self.request.GET.get('quantity-answer-options-add')
         return answer_option_service.get_context_data(quantity_answer_options_add)
 
-    def _get_forms(self) -> Iterable:
+    def _get_forms(self) -> Iterable[Type[ModelForm] | Type[inlineformset_factory]]:
         return (
             self.form_class(self.request.POST),
-            self.answer_option_form_set(
+            self.form_set(
                 self.request.POST,
                 self.request.FILES,
             )

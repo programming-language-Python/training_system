@@ -1,3 +1,4 @@
+{% load filters %}
 {% for field, value in testing.get_fields_data.items %}
     {% if field == 'Наименование' %}
         <h2>
@@ -28,3 +29,11 @@
         </div>
     {% endif %}
 {% endfor %}
+<div>Максимальный балл</div>
+{% with testing.max_score_set.all.0 as max_score %}
+    {% for field in max_score.get_fields %}
+        <div>
+            {{ field.verbose_name }}: {{ max_score|get_attr:field.name }}
+        </div>
+    {% endfor %}
+{% endwith %}

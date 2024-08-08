@@ -1,4 +1,4 @@
-from apps.testing.abstractions.abstract_views.abstract_task_detail_view import AbstractTaskDetailView
+from apps.testing.abstractions.abstract_views import AbstractTaskDetailView
 from apps.testing.models.tasks import OpenQuestion
 
 
