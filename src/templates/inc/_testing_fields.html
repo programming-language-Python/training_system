@@ -35,5 +35,7 @@
         <div>
             {{ field.verbose_name }}: {{ max_score|get_attr:field.name }}
         </div>
+        {% empty %}
+        <div>Не задан</div>
     {% endfor %}
 {% endwith %}
