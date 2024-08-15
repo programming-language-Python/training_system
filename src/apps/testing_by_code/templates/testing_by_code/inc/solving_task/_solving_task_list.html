@@ -1,0 +1,32 @@
+{% for solving_task in solving_testing.solving_task_set.all %}
+    {{ solving_task }}
+    <div>
+        <div class="uk-card uk-card-default uk-card-body">
+            <div class="task-student-list__header header uk-card-header">
+                <div class="uk-grid-small uk-flex-middle" uk-grid>
+                    <div class="uk-width-expand">
+                        {% if solving_task.is_correctly_resolved %}
+                            <h3 class="check uk-card-title uk-margin-remove-bottom" uk-icon="check">
+                                Задача №{{ forloop.counter }} (вес {{ solving_task.task.weight }})
+                            </h3>
+                        {% else %}
+                            <h3 class="close uk-card-title uk-margin-remove-bottom" uk-icon="close">
+                                Задача №{{ forloop.counter }} (вес {{ solving_task.task.weight }})
+                            </h3>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="task-student-list__body uk-card-body">
+                <p>Ответ: {{ solving_task.correct_answer }}</p>
+                <p>Ответ студента: {{ solving_task.answer }}</p>
+                <h4>
+                    Определить выводимое на экран значение переменной по результатам выполнения
+                    программы на Java:
+                </h4>
+                <pre onmousedown="return false"
+                     class="uk-text-justify"><code>{{ solving_task.code }}</code></pre>
+            </div>
+        </div>
+    </div>
+{% endfor %}

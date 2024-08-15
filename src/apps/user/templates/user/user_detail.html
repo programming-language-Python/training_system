@@ -2,10 +2,10 @@
 
 {% block content %}
     <section class="content__user user">
-        {% if request.user.is_teacher %}
-            {% include 'user/inc/user/_teacher_detail.html' %}
+        {% if user.is_teacher %}
+            {% include 'user/inc/teacher/_teacher_detail.html' %}
         {% else %}
-            {% include 'user/inc/user/_student_detail.html' %}
+            {% include 'user/inc/student/_student_detail.html' %}
         {% endif %}
     </section>
 {% endblock %}

@@ -1,0 +1,39 @@
+{% load static %}
+<a class="completed-testing_link" href="#testing_by_code{{ solving_testing.pk }}" uk-toggle>
+    <div class="uk-grid-small uk-child-width-expand@s uk-text-center" uk-grid>
+        <div>
+            <div class="uk-card uk-card-default uk-card-body">
+                {{ testing.title }}
+                <img class="icon" src="{% static 'img/eye.svg' %}" alt="dots icon">
+            </div>
+        </div>
+        <div>
+            <div class="uk-card uk-card-default uk-card-body">
+                {{ solving_testing.start_passage }}
+            </div>
+        </div>
+        <div>
+            <div class="uk-card uk-card-default uk-card-body">
+                {{ solving_testing.end_passage }}
+            </div>
+        </div>
+        <div>
+            <div class="uk-card uk-card-default uk-card-body">
+                {% with solving_testing.assessment as assessment %}
+                    <span class="assessment
+                                {% if assessment <= 2 %}
+                                    two
+                                {% elif assessment == 3 %}
+                                    three
+                                {% elif assessment == 4 %}
+                                    four
+                                {% elif assessment == 5 %}
+                                    five
+                                {% endif %}">
+                                    {{ assessment }}
+                            </span>
+                {% endwith %}
+            </div>
+        </div>
+    </div>
+</a>

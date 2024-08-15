@@ -1,75 +1,74 @@
-from itertools import chain
+from typing import Mapping
 
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.db.models import Q, Value
 from django.db.models.functions import Concat
-from django.views.generic import ListView, DetailView
+from django.urls import reverse_lazy
+from django.views.generic import DetailView
 
 from config import settings
-from apps.testing_by_code.services.find_testing import find_solved_testings
+from mixins import LoginMixin
+from .constants import APP_NAME
 from .forms import UserLoginForm
+from .mixins import StudentSolvingTestingListMixin
 from .models import Student, User
 from ..testing.models import SolvingTesting
 from ..testing_by_code.models import SolvingTesting as SolvingTestingByCode
 
 
+class StudentSolvingTestingListView(StudentSolvingTestingListMixin):
+    model = SolvingTesting
+
+
+class StudentSolvingTestingByCodeListView(StudentSolvingTestingListMixin):
+    model = SolvingTestingByCode
+
+
 class LoginUser(LoginView):
     form_class = UserLoginForm
     template_name = 'user/login.html'
+    redirect_authenticated_user = True
 
+    def get_redirect_url(self) -> reverse_lazy:
+        if self.request.user.is_authenticated:
+            return self.get_success_url()
+        return super().get_redirect_url()
 
-class HomeListView(LoginRequiredMixin, ListView):
-    login_url = 'user:login'
-    template_name = 'user/user_detail.html'
-    context_object_name = 'home_list'
-
-    def get_queryset(self):
+    def get_success_url(self) -> reverse_lazy:
+        kwargs = {'pk': self.request.user.pk}
         if self.request.user.is_teacher():
-            return Student.objects.all()
-        query = self.request.GET.get('search')
-        if query:
-            return find_solved_testings(
-                student=self.request.user.student,
-                query=query
-            )
-        solving_testing = SolvingTesting.objects.filter(student=self.request.user.student)
-        solving_testing_by_code = SolvingTestingByCode.objects.filter(student=self.request.user.student)
-        return chain(solving_testing, solving_testing_by_code)
+            return reverse_lazy(f'{APP_NAME}:teacher_detail', kwargs=kwargs)
+        return reverse_lazy(f'{APP_NAME}:student_detail', kwargs=kwargs)
 
 
-class SearchStudentView(HomeListView):
-    def get_queryset(self):
-        query = self.request.GET.get('search')
-        students = Student.objects.annotate(
-            full_name=Concat(
-                'user__last_name',
-                Value(' '),
-                'user__first_name',
-                Value(' '),
-                'user__patronymic'
-            )
-        ).filter(
-            Q(full_name__icontains=query)
-            | Q(student_group__name__icontains=query)
-        )
-        return students
-
-
-class TestingCompletedListView(LoginRequiredMixin, DetailView):
+class TeacherDetailView(LoginMixin, DetailView):
     model = User
-    template_name = 'user/testing_completed_list.html'
+    template_name = 'user/user_detail.html'
 
-    def get_context_data(self, *, object_list=None, **kwargs):
+    def get_context_data(self, **kwargs) -> Mapping:
         context = super().get_context_data(**kwargs)
         query = self.request.GET.get('search')
         if query:
-            context['solving_testings'] = SolvingTesting.objects.filter(
-                Q(student__in=self.kwargs['pk']) & Q(title=query)
+            context['students'] = Student.objects.annotate(
+                full_name=Concat(
+                    'user__last_name',
+                    Value(' '),
+                    'user__first_name',
+                    Value(' '),
+                    'user__patronymic'
+                )
+            ).filter(
+                Q(full_name__icontains=query)
+                | Q(student_group__name__icontains=query)
             )
         else:
-            context['solving_testings'] = SolvingTesting.objects.filter(student_id=self.kwargs['pk'])
+            context['students'] = Student.objects.all()
         return context
+
+
+class StudentDetailView(LoginMixin, DetailView):
+    model = User
+    template_name = 'user/user_detail.html'
 
 
 class CustomLogoutView(LogoutView):

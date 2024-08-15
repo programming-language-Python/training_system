@@ -1,0 +1,106 @@
+{% load static %}
+{% load model_manipulation %}
+<li>
+    <a class="completed-testing_link" href="#testing{{ solving_testing.pk }}" uk-toggle>
+        <div class="uk-grid-small uk-child-width-expand@s uk-text-center" uk-grid>
+            <div>
+                <div class="uk-card uk-card-default uk-card-body">
+                    {{ solving_testing.testing.title }}
+                    <img class="icon" src="{% static 'img/eye.svg' %}" alt="dots icon">
+                </div>
+            </div>
+            <div>
+                <div class="uk-card uk-card-default uk-card-body">
+                    {{ solving_testing.start_passage }}
+                </div>
+            </div>
+            <div>
+                <div class="uk-card uk-card-default uk-card-body">
+                    {{ solving_testing.end_passage }}
+                </div>
+            </div>
+            <div>
+                <div class="uk-card uk-card-default uk-card-body">
+                    {% with solving_testing.assessment as assessment %}
+                        <span class="assessment
+                                {% if assessment <= 2 %}
+                                    two
+                                {% elif assessment == 3 %}
+                                    three
+                                {% elif assessment == 4 %}
+                                    four
+                                {% elif assessment == 5 %}
+                                    five
+                                {% endif %}">
+                                    {{ assessment }}
+                            </span>
+                    {% endwith %}
+                </div>
+            </div>
+        </div>
+    </a>
+    <div id="testing{{ solving_testing.pk }}" class="uk-flex-top" uk-modal>
+        <div class="uk-modal-dialog uk-width-auto uk-margin-auto-vertical">
+            <button class="uk-modal-close-outside" type="button" uk-close></button>
+            <section class="content__testing testing" id="testing">
+                <div>
+                    <div class="uk-car d uk-card-default uk-card-body">
+                        <div class="testing__title uk-card-header" id="testing-title">
+                            <div class="uk-grid-small uk-flex-middle" uk-grid>
+                                <div class="uk-width-expand">
+                                    <h2>{{ testing.title }}</h2>
+                                    <h3>
+                                        {% with solving_testing.assessment as assessment %}
+                                            <span class="assessment
+                                                        {% if assessment <= 2 %}
+                                                            two
+                                                        {% elif assessment == 3 %}
+                                                            three
+                                                        {% elif assessment == 4 %}
+                                                            four
+                                                        {% elif assessment == 5 %}
+                                                            five
+                                                        {% endif %}">
+                                                            {% get_verbose_name_for_field solving_testing 'assessment' %}:
+                                                            {{ assessment }}
+                                                    </span>
+                                        {% endwith %}
+                                    </h3>
+                                    <h3>
+                                        {% with solving_testing.assessment as assessment %}
+                                            <span class="assessment
+                                        {% if assessment <= 2 %}
+                                            two
+                                        {% elif assessment == 3 %}
+                                            three
+                                        {% elif assessment == 4 %}
+                                            four
+                                        {% elif assessment == 5 %}
+                                            five
+                                        {% endif %}">
+                                            {% get_verbose_name_for_field solving_testing 'assessment' %} в %:
+                                            {{ solving_testing.get_assessment_in_percentage }}%
+                                    </span>
+                                        {% endwith %}
+                                    </h3>
+                                    {% if is_testing_by_code %}
+                                        <h3>
+                                            {% get_verbose_name_for_field solving_testing 'earned_weight' %}: {{ solving_testing.earned_weight }}
+                                        </h3>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <section
+                                class="content__task-student-list task-student-list uk-flex uk-flex-column uk-text-center uk-card-body"
+                                id="task-student-list">
+                            <ul class="uk-child-width-1-2@m" uk-grid>
+                                {% include solving_task_list_template %}
+                            </ul>
+                        </section>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</li>

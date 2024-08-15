@@ -1,5 +1,7 @@
 from django.db import models
+from django.urls import reverse
 
+from apps.user.constants import APP_NAME
 from apps.user.models import StudentGroup
 from config.settings import AUTH_USER_MODEL
 
@@ -16,6 +18,15 @@ class Student(models.Model):
         on_delete=models.CASCADE,
         verbose_name='Группа'
     )
+
+    def get_absolute_url(self) -> reverse:
+        return reverse(f'{APP_NAME}:student_detail', kwargs={'pk': self.pk})
+
+    def get_solving_testing_list_url(self) -> reverse:
+        return reverse(f'{APP_NAME}:student_solving_testing_list', kwargs={'pk': self.pk})
+
+    def get_solving_testing_by_code_list_url(self) -> reverse:
+        return reverse(f'{APP_NAME}:student_solving_testing_by_code_list', kwargs={'pk': self.pk})
 
     def save(self, *args, **kwargs):
         if not self.id:

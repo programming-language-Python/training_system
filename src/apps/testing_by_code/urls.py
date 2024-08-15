@@ -1,8 +1,9 @@
 from django.urls import path
 
+from .views.solving_testing_views import SolvingTestingView
 from .views.task_views import TaskDetailView, update_task, duplicate_task, delete_task, add_task_form
 from .views.testing_views import TestingCreateView, TestingListView, TestingDetailView, TestingUpdateView, \
-    TestingDeleteView, SolvingTestingView
+    TestingDeleteView
 
 app_name = 'testing_by_code'
 urlpatterns = [

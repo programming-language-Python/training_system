@@ -1,0 +1,34 @@
+{% for solving_closed_question in solving_testing.solving_closed_question_set.all %}
+    <div>
+        <div class="uk-card uk-card-default uk-card-body">
+            <div class="task-student-list__header header uk-card-header">
+                <div class="uk-grid-small uk-flex-middle" uk-grid>
+                    <div class="uk-width-expand">
+                        {% if solving_task.is_correctly_resolved %}
+                            <h3 class="check uk-card-title uk-margin-remove-bottom" uk-icon="check">
+                                Задача №{{ solving_task.task.serial_number }}
+                            </h3>
+                        {% else %}
+                            <h3 class="close uk-card-title uk-margin-remove-bottom" uk-icon="close">
+                                Задача №{{ solving_task.task.serial_number }}
+                            </h3>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="task-student-list__body uk-card-body">
+                {% for field in solving_closed_question.get_fields %}
+                    <p>{{ field }}</p>
+                {% endfor %}
+                <h4>Описание</h4>
+                <h4>
+                    {{ solving_closed_question.task.description|safe }}
+                </h4>
+                <h4>Варианты ответа:</h4>
+                <div>
+                    {{ solving_closed_question.task.closed_question_answer_option_set.all }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}

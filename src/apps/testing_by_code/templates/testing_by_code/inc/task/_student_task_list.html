@@ -3,8 +3,8 @@
     <form action="{% url 'testing_by_code:solving_testing' %}" method="post">
         {% csrf_token %}
         <input name="testing_title" type="hidden" value="{{ testing_title }}">
-        {#        <input name="testing_is_review_of_result_by_student" type="hidden"#}
-        {#               value="{{ testing.is_review_of_result_by_student }}">#}
+{#                <input name="testing_is_review_of_result_by_student" type="hidden"#}
+        {#                       value="{{ testing.is_review_of_result_by_student }}">#}
         <input name="solving_testing_pk" type="hidden" value="{{ solving_testing.pk }}">
         <button class="uk-margin uk-button uk-button-primary" type="submit">Завершить тест</button>
         <div class="uk-grid-match uk-child-width-1-3@m" uk-grid>
