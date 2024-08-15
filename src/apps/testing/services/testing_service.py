@@ -1,5 +1,5 @@
 import datetime
-from typing import Iterable, Sequence
+from typing import Iterable, Sequence, Mapping
 
 from django.shortcuts import redirect
 
@@ -65,7 +65,6 @@ class TestingService(TaskService):
         return assessment
 
     @staticmethod
-    def update_solving_task(solving_task, cleaned_data) -> None:
-        if solving_task.task.task_type.name == 'Открытый вопрос':
-            solving_task.answer = cleaned_data['answer']
-            solving_task.save()
+    def update_solving_task(solving_task: SolvingTask, cleaned_data: Mapping[str, str]) -> None:
+        solving_task.answer = cleaned_data['answer']
+        solving_task.save()
