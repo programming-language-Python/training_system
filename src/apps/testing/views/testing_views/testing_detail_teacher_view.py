@@ -1,6 +1,5 @@
 from typing import Mapping, Sequence
 
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.handlers.wsgi import WSGIRequest
 from django.db.models import QuerySet
 from django.shortcuts import redirect
@@ -11,10 +10,10 @@ from apps.testing.constants import APP_NAME
 from apps.testing.models.tasks import TaskType
 from apps.testing.services import TaskService
 from apps.testing.services.task_service import update_tasks_serial_number
-from mixins import ContextMixin
+from mixins import ContextMixin, LoginMixin
 
 
-class TestingDetailTeacherView(ContextMixin, LoginRequiredMixin, DetailView):
+class TestingDetailTeacherView(LoginMixin, ContextMixin, DetailView):
     template_name = 'testing/testing_detail_teacher.html'
     model = Testing
     APP_NAME = APP_NAME

@@ -1,10 +1,10 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import QuerySet
 from django.views.generic import ListView
 
+from mixins import LoginMixin
 
-class AbstractTestingListView(LoginRequiredMixin, ListView):
-    login_url = 'user:login'
+
+class AbstractTestingListView(LoginMixin, ListView):
 
     def get_queryset(self) -> QuerySet:
         query = self.request.GET.get('search')

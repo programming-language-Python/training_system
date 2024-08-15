@@ -1,6 +1,5 @@
 from typing import Mapping
 
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import DetailView
 
@@ -9,10 +8,10 @@ from apps.testing_by_code.models import Testing, SolvingTesting
 from apps.testing_by_code.services import TestingService
 from apps.testing_by_code.services.task_service import TaskService
 from apps.testing_by_code.constants import APP_NAME
-from mixins import ContextMixin
+from mixins import ContextMixin, LoginMixin
 
 
-class TestingDetailView(ContextMixin, LoginRequiredMixin, DetailView):
+class TestingDetailView(LoginMixin, ContextMixin, DetailView):
     model = Testing
     APP_NAME = APP_NAME
 

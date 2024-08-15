@@ -1,16 +1,14 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import QuerySet
 from django.views.generic import ListView
 
 from apps.testing_by_code.models import Testing
 from apps.testing_by_code.services.filter_testing import FilterTesting
 from apps.testing_by_code.services.find_testing import find_testings
-from mixins import ContextMixin
+from mixins import ContextMixin, LoginMixin
 from apps.testing_by_code.constants import APP_NAME
 
 
-class TestingListView(ContextMixin, LoginRequiredMixin, ListView):
-    login_url = 'user:login'
+class TestingListView(LoginMixin, ContextMixin, ListView):
     model = Testing
     template_name = 'testing_list.html'
     APP_NAME = APP_NAME

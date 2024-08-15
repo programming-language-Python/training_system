@@ -1,12 +1,13 @@
 from typing import Iterable, Type
 
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.forms import inlineformset_factory, ModelForm
 from django.shortcuts import redirect
 from django.views.generic.base import TemplateResponseMixin
 
+from mixins import LoginMixin
 
-class AbstractFormSetView(LoginRequiredMixin):
+
+class AbstractFormSetView(LoginMixin):
     form_set: Type[ModelForm] | Type[inlineformset_factory]
     template_name: str
 

@@ -3,4 +3,3 @@ from .testing_detail_view import TestingDetailView
 from .testing_create_view import TestingCreateView
 from .testing_update_view import TestingUpdateView
 from .testing_delete_view import TestingDeleteView
-from .solving_testing_view import SolvingTestingView
