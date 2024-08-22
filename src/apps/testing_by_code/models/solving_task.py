@@ -31,3 +31,4 @@ class SolvingTask(AbstractSolvingTask):
 
     class Meta:
         db_table = f'{APP_NAME}_solving-task'
+        ordering = ['task__serial_number', ]

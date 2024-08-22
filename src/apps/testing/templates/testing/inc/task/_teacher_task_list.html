@@ -5,6 +5,10 @@
             <button class="uk-button uk-button-primary" type="submit">Обновить нумерацию задач</button>
         </form>
     {% endif %}
-    {% include "testing/inc/task/table/_table_headers.html" %}
-    {% include "testing/inc/task/table/_table_content.html" %}
+    {% if tasks %}
+        {% include "testing/inc/task/table/_table_headers.html" %}
+        {% include "testing/inc/task/table/_table_content.html" %}
+    {% else %}
+        <h3 class="uk-text-danger">Задачи не добавлены</h3>
+    {% endif %}
 </section>

@@ -5,17 +5,17 @@
     <div class="uk-margin">
         <form class="form__testing testing" method="POST">
             {% csrf_token %}
-            {% for fields in form %}
-                {% if fields.label == 'Наименование' %}
+            {% for field in form %}
+                {% if field.label == 'Наименование' %}
                     <h2 class="testing__title">
-                        Обновить настройки задач для тестирования {{ fields }}
+                        Обновить настройки тестирования {{ field }}
                     </h2>
-                    {{ fields.errors }}
+                    {{ field.errors }}
                 {% else %}
                     <div>
-                        {{ fields.label }}
-                        {{ fields }}
-                        {{ fields.errors }}
+                        {{ field.label }}
+                        {{ field }}
+                        {{ field.errors }}
                     </div>
                 {% endif %}
             {% endfor %}

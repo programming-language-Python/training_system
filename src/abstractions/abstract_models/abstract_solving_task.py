@@ -18,7 +18,7 @@ class AbstractSolvingTask(models.Model):
     )
 
     def get_fields(self) -> Iterable:
-        exclude = ['id', 'task', 'solving_testing']
+        exclude = ['id', 'task', 'solving_testing', 'answer']
         field_values = []
         for field in self.__class__._meta.fields:
             if field.name not in exclude:

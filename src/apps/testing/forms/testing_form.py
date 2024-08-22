@@ -38,25 +38,6 @@ class TestingForm(AbstractTestingForm):
             }
         )
     )
-    is_established_order_tasks = forms.BooleanField(
-        label=testing_meta.get_field('is_established_order_tasks').verbose_name,
-        required=False,
-        widget=forms.CheckboxInput(
-            attrs={
-                'class': 'uk-checkbox'
-            }
-        )
-    )
-    task_lead_time = forms.TimeField(
-        label=testing_meta.get_field('task_lead_time').verbose_name,
-        required=False,
-        widget=forms.TimeInput(
-            attrs={
-                'class': CLASS,
-                'type': 'time'
-            }
-        )
-    )
 
     def __init__(self, *args, **kwargs):
         super(TestingForm, self).__init__(*args, **kwargs)

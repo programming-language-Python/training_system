@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import QuerySet, Case, When, Value, BooleanField
 
 from abstractions.abstract_models import AbstractSolvingTask
 from apps.testing.constants import APP_NAME
@@ -20,6 +21,15 @@ class SolvingClosedQuestion(AbstractSolvingTask):
         related_name=RELATED_NAME,
         verbose_name='Решение тестирования'
     )
+
+    def get_selected_answer_options(self) -> QuerySet:
+        return self.task.closed_question_answer_option_set.all().annotate(
+            is_selected=Case(
+                When(id__in=self.answer.split(', '), then=Value(True)),
+                default=Value(False),
+                output_field=BooleanField()
+            )
+        )
 
     class Meta:
         db_table = f'{APP_NAME}_solving-closed-question'

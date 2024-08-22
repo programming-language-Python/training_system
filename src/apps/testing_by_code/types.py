@@ -13,7 +13,7 @@ class ConditionType(str, Enum):
 
 class NestingType(QuerySet):
     IF_IN_CYCLE = 'Оператор if вложен в цикл'
-    CYCLE_IN_IF = 'Цикл вложен в if'
+    CYCLE_IN_IF = 'Цикл вложен в оператор if'
 
 
 class Cycle(QuerySet):

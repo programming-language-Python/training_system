@@ -1,0 +1,44 @@
+{% for solving_closed_question in solving_testing.solving_closed_question_set.all %}
+    <div>
+        <div class="uk-card uk-card-default uk-card-body">
+            <div class="task-student-list__header header uk-card-header">
+                <div class="uk-grid-small uk-flex-middle" uk-grid>
+                    <div class="uk-width-expand">
+                        {% if solving_task.is_correctly_resolved %}
+                            <h3 class="check uk-card-title uk-margin-remove-bottom" uk-icon="check">
+                                Задача №{{ solving_closed_question.task.serial_number }}
+                            </h3>
+                        {% else %}
+                            <h3 class="close uk-card-title uk-margin-remove-bottom" uk-icon="close">
+                                Задача №{{ solving_closed_question.task.serial_number }}
+                            </h3>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="task-student-list__body uk-card-body">
+                {% for field in solving_closed_question.get_fields %}
+                    <p>{{ field }}</p>
+                {% endfor %}
+                <h4>Описание</h4>
+                <p>
+                    {{ solving_closed_question.task.description|safe }}
+                </p>
+                <h4>Варианты ответа:</h4>
+                <ul class="uk-list">
+                    {% for answer_option in solving_closed_question.get_selected_answer_options %}
+                        <li>
+                            <div class="uk-flex-inline">
+                                <div>
+                                    <input class="uk-checkbox" type="checkbox" disabled
+                                           {% if answer_option.is_selected %}checked{% endif %}>
+                                </div>
+                                <div>{{ answer_option.description|safe }}</div>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endfor %}

@@ -17,7 +17,7 @@ class AnswerOptionService:
                     int(quantity_answer_options_add)
                 )
             )
-        self.set_attributes_for_form_set()
+        self._set_attributes_for_form_set()
         return {'answer_option_form_set': self.get_form_set()}
 
     def get_form_set(self) -> Type[inlineformset_factory]:
@@ -29,7 +29,7 @@ class AnswerOptionService:
     def set_form_set(self, quantity: int) -> None:
         self.form_set.extra = quantity
 
-    def set_attributes_for_form_set(self) -> None:
+    def _set_attributes_for_form_set(self) -> None:
         task_name = self.form_set.fk.attname.replace('_id', '')
         for form in self.form_set.forms:
             form.fields[task_name].widget.attrs = {

@@ -66,5 +66,5 @@ class TestingService(TaskService):
 
     @staticmethod
     def update_solving_task(solving_task: SolvingTask, cleaned_data: Mapping[str, str]) -> None:
-        solving_task.answer = cleaned_data['answer']
+        solving_task.answer = ', '.join(cleaned_data['answer'])
         solving_task.save()

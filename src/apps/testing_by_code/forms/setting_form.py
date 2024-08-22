@@ -62,12 +62,11 @@ class SettingForm(forms.ModelForm):
         is_OOP = cleaned_data.get('is_OOP')
         is_strings = cleaned_data.get('is_strings')
 
-        # is_absent_if_operator = is_if_operator == OperatorPresenceType.ABSENT
-        # if is_if_operator:
-        #     cleaned_data['condition_of_if_operator'] = ConditionType.SIMPLE
-        if cycle:
+        if not is_if_operator:
+            cleaned_data['condition_of_if_operator'] = ConditionType.SIMPLE
+        if not cycle:
             cleaned_data['cycle_condition'] = ConditionType.SIMPLE
-        is_lock_nesting_of_operators = is_if_operator or not cycle
+        is_lock_nesting_of_operators = not (is_if_operator or cycle)
         if is_lock_nesting_of_operators:
             cleaned_data['operator_nesting'] = OperatorNesting.objects.none()
         if is_OOP:

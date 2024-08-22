@@ -41,3 +41,22 @@ class AbstractTestingForm(forms.ModelForm):
             }
         )
     )
+    is_established_order_tasks = forms.BooleanField(
+        label='Установленный порядок задач',
+        required=False,
+        widget=forms.CheckboxInput(
+            attrs={
+                'class': 'uk-checkbox'
+            }
+        )
+    )
+    task_lead_time = forms.TimeField(
+        label='Время выполнения задачи',
+        required=False,
+        widget=forms.TimeInput(
+            attrs={
+                'class': 'uk-margin-small uk-input uk-width-small',
+                'type': 'time'
+            }
+        )
+    )
