@@ -8,7 +8,7 @@ from django.views.generic import UpdateView
 from apps.testing.abstractions.abstract_views import AbstractFormSetView
 from apps.testing.constants import APP_NAME
 from apps.testing.services.answer_option_service import AnswerOptionService
-from apps.testing.utils.text import convert_from_PascalCase_to_snake_case
+from apps.testing.utils.conversion import convert_from_PascalCase_to_snake_case
 
 
 class AbstractTaskUpdateView(AbstractFormSetView, UpdateView):

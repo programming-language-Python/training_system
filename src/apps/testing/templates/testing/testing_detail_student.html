@@ -5,12 +5,16 @@
 {% block head %}
     {{ wizard.form.media }}
 {% endblock %}
-
+{% block head_script %}
+    <script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/timer.js' %}"></script>
+{% endblock %}
 {% block content %}
     {% include "inc/_testing_settings.html" %}
     <p>Задача {{ wizard.steps.step1 }} из {{ wizard.steps.count }}</p>
     <form id="solving-testing-form" action="" method="post">
         {% csrf_token %}
+        {% include "testing/inc/testing/_timer.html" %}
         {{ wizard.management_form }}
         {{ task_description }}
         {{ wizard.form.as_div }}
@@ -21,7 +25,7 @@
             {% endif %}
             <button class="uk-button uk-button-default uk-button-small" name="wizard_goto_step" type="submit"
                     value="{{ wizard.steps.prev }}">{% translate "<" %}</button>
-            <button class="uk-button uk-button-default uk-button-small" name="wizard_goto_step" type="submit"
+            <button class="uk-button uk-button-default uk-button-small" id="btn-next" name="wizard_goto_step" type="submit"
                     value="{% translate "submit" %}">{% translate ">" %}</button>
             {#        <input name="wizard_goto_step" type="submit" value="{% translate "submit" %}"/>#}
         </div>

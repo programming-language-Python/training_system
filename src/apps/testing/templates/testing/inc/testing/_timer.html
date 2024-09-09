@@ -1,0 +1,16 @@
+<div class="uk-grid-small uk-child-width-auto uk-margin" id="timer" uk-grid
+     uk-countdown="date: {{ end_passage }}" data-end-passage="{{ end_passage }}">
+    <input type="hidden" id="duration" value="{{ duration }}">
+    <div>Оставшееся время выполнения тестирования</div>
+    <div>
+        <div class="uk-countdown-number uk-countdown-hours"></div>
+    </div>
+    <div class="uk-countdown-separator">:</div>
+    <div>
+        <div class="uk-countdown-number uk-countdown-minutes"></div>
+    </div>
+    <div class="uk-countdown-separator">:</div>
+    <div>
+        <div class="uk-countdown-number uk-countdown-seconds"></div>
+    </div>
+</div>

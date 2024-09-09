@@ -15,13 +15,23 @@ class TestingDetailStudentView(SessionWizardView):
 
     def get_context_data(self, form, **kwargs):
         context = super().get_context_data(form=form, **kwargs)
+        context |= self._get_testing_context_data() | self._get_task_context_data()
+        return context
+
+    def _get_testing_context_data(self) -> dict[str, str]:
+        solving_testing = self.initial_dict.testing_service.get_solving_testing()
+        return {
+            'testing_title': solving_testing.testing.title,
+            'end_passage': solving_testing.end_passage.isoformat(),
+            'duration': round(solving_testing.get_duration().total_seconds()),
+            'is_time_up': solving_testing.is_time_up(),
+        }
+
+    def _get_task_context_data(self) -> dict[str, str]:
         page = int(self.steps.current)
         solving_task = self.initial_dict.pages[page].solving_task
         solving_task.set_start_passage()
-        solving_testing = self.initial_dict.testing_service.get_solving_testing()
-        context['testing_title'] = solving_testing.testing.title
-        context['task_description'] = mark_safe(solving_task.task.description)
-        return context
+        return {'task_description': mark_safe(solving_task.task.description)}
 
     def get_form_initial(self, step):
         page = int(step)
@@ -42,10 +52,7 @@ class TestingDetailStudentView(SessionWizardView):
         if current_index > goto_index:
             if form.is_valid():
                 solving_task = self.initial_dict.pages[current_index].solving_task
-                self.initial_dict.testing_service.update_solving_task(
-                    solving_task,
-                    form.cleaned_data
-                )
+                solving_task.set_answer(form.cleaned_data['answer'])
                 self.storage.set_step_data(self.steps.current, self.process_step(form))
                 self.storage.set_step_files(self.steps.current, self.process_step_files(form))
             else:

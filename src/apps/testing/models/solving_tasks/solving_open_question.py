@@ -21,5 +21,9 @@ class SolvingOpenQuestion(AbstractSolvingTask):
         verbose_name='Решение тестирования'
     )
 
+    def set_answer(self, answer: str) -> None:
+        self.answer = answer
+        self.save()
+
     class Meta:
         db_table = f'{APP_NAME}_solving-open-question'

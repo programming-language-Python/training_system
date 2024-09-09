@@ -31,5 +31,9 @@ class SolvingClosedQuestion(AbstractSolvingTask):
             )
         )
 
+    def set_answer(self, answer) -> None:
+        self.answer = ', '.join(answer)
+        self.save()
+
     class Meta:
         db_table = f'{APP_NAME}_solving-closed-question'
