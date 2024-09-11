@@ -87,7 +87,10 @@ class Variable:
     def set_arithmetic_operation_in_cycle_having_comparison_operator(self, name: types.Name,
                                                                      comparison_operator: str):
         arithmetic_operations = COMPARISON_BOUND_TO_ARITHMETIC_OPERATORS[comparison_operator]
-        arithmetic_operation = choice(arithmetic_operations)
+        try:
+            arithmetic_operation = choice(arithmetic_operations)
+        except IndexError:
+            arithmetic_operation = ''
         self.info[name].arithmetic_operation_in_cycle = arithmetic_operation
 
     def get_info(self):
