@@ -24,5 +24,6 @@ class TestingListView(LoginMixin, ContextMixin, ListView):
         else:
             return Testing.objects.filter(
                 is_published=True,
-                student_groups=user.student.student_group
+                student_groups=user.student.student_group,
+                testing_solving_testing_set__assessment__isnull=True
             )
