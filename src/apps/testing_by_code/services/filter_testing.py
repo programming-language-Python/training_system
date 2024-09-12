@@ -21,5 +21,5 @@ class FilterTesting:
             is_published=True,
             student_groups=self.user.student.student_group,
             task_set__isnull=False,
-            testing_by_code_solving_testing_set__end_passage__isnull=True
+            testing_by_code_solving_testing_set__assessment__isnull=True
         ).distinct()
