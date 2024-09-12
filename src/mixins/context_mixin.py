@@ -1,6 +1,3 @@
-from typing import Mapping
-
-
 class ContextMixin:
     APP_NAME: str
 
