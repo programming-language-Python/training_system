@@ -28,4 +28,4 @@ class StudentSolvingTestingListMixin(LoginMixin, ListView):
                 student_pk=self.kwargs['pk'],
                 query=query
             )
-        return self.model.objects.filter(student=self.kwargs['pk'])
+        return self.model.objects.filter(student=self.kwargs['pk'], assessment__isnull=False)
