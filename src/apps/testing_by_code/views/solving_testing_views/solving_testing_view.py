@@ -1,4 +1,4 @@
-from django.urls import reverse_lazy
+from django.shortcuts import redirect
 from django.views import View
 
 from apps.testing_by_code.models import SolvingTesting
@@ -13,4 +13,4 @@ class SolvingTestingView(View):
         user_answers = post_method.getlist('answer')
         solving_testing = self.model.objects.get(pk=solving_testing_pk)
         solving_testing.complete(user_answers)
-        return reverse_lazy('user:home', pk=request.user.pk)
+        return redirect('user:home')
