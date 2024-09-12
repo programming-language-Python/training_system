@@ -9,7 +9,7 @@ from apps.testing.models import Testing
 
 class MaxScore(models.Model):
     five = models.IntegerField(
-        default=1,
+        default=100,
         validators=[
             MaxValueValidator(100),
             MinValueValidator(1)
@@ -17,7 +17,7 @@ class MaxScore(models.Model):
         verbose_name='Отлично'
     )
     four = models.IntegerField(
-        default=1,
+        default=80,
         validators=[
             MaxValueValidator(100),
             MinValueValidator(1)
@@ -25,7 +25,7 @@ class MaxScore(models.Model):
         verbose_name='Хорошо'
     )
     three = models.IntegerField(
-        default=1,
+        default=60,
         validators=[
             MaxValueValidator(100),
             MinValueValidator(1)
@@ -33,7 +33,7 @@ class MaxScore(models.Model):
         verbose_name='Удовлетворительно'
     )
     two = models.IntegerField(
-        default=1,
+        default=40,
         validators=[
             MaxValueValidator(100),
             MinValueValidator(1)
