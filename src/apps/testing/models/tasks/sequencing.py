@@ -1,31 +1,23 @@
 from django.db import models
 
-from abstractions.abstract_fields import AbstractFieldWeight
-from apps.testing.abstractions.abstract_fields import AbstractFieldDescription
+from abstractions.abstract_models import AbstractTask
 from apps.testing.models import Testing
+from apps.testing.models.tasks import TaskType
 
 
-class Sequencing(AbstractFieldDescription, AbstractFieldWeight):
+class Sequencing(AbstractTask):
+    RELATED_NAME = 'sequencing_set'
+
+    is_correct = models.BooleanField(verbose_name='Правильный')
+    task_type = models.ForeignKey(
+        TaskType,
+        on_delete=models.CASCADE,
+        related_name=RELATED_NAME,
+        verbose_name='Тип задачи'
+    )
     testing = models.ForeignKey(
         Testing,
         on_delete=models.CASCADE,
-        related_name='%(app_label)s_%(class)s_related',
+        related_name=RELATED_NAME,
         verbose_name='Тестирование'
-    )
-
-
-class CorrectAnswer(AbstractFieldDescription):
-    order = models.IntegerField(verbose_name='Порядок')
-    sequencing = models.ForeignKey(
-        Sequencing,
-        on_delete=models.CASCADE,
-        verbose_name='Правильный ответ'
-    )
-
-
-class IncorrectAnswer(AbstractFieldDescription):
-    sequencing = models.ForeignKey(
-        Sequencing,
-        on_delete=models.CASCADE,
-        verbose_name='Не правильный ответ'
     )
