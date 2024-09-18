@@ -17,6 +17,9 @@ class Testing(AbstractTesting):
             total_weight=Sum('total_task_weight')
         )['total_weight']
 
+    def is_solving_testing_set(self) -> bool:
+        return self.testing_by_code_solving_testing_set.exists()
+
     def __str__(self):
         return self.title
 

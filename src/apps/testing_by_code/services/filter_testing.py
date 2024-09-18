@@ -14,7 +14,7 @@ class FilterTesting:
         return self._get_for_student()
 
     def _get_for_teacher(self) -> QuerySet[Testing]:
-        return Testing.objects.filter(teacher__user=self.user)
+        return Testing.objects.filter(teacher__user=self.user, date_of_deletion=None)
 
     def _get_for_student(self) -> QuerySet[Testing]:
         return Testing.objects.filter(
