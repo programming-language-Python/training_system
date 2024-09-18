@@ -26,3 +26,6 @@ class Testing(AbstractTesting):
 
     def get_absolute_url(self):
         return reverse(f'{APP_NAME}:testing_detail', kwargs={'pk': self.pk})
+
+    def is_solving_testing_set(self) -> bool:
+        return self.testing_solving_testing_set.exists()
