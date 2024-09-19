@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import Mapping
 
 from django.db import models
