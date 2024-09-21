@@ -2,4 +2,3 @@ from .closed_question_form import ClosedQuestionForm
 from .closed_question_answer_option_form import ClosedQuestionAnswerOptionForm
 from .closed_question_answer_option_form_set import ClosedQuestionAnswerOptionFormSet
 from .solving_closed_question_form import SolvingClosedQuestionForm
-from .solving_closed_question_form_set import SolvingClosedQuestionFormSet

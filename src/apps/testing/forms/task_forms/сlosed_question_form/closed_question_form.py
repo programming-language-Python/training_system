@@ -5,35 +5,13 @@ from apps.testing.models.tasks import ClosedQuestion
 
 
 class ClosedQuestionForm(AbstractTaskForm):
-    closed_question_meta = ClosedQuestion._meta
-
-    is_several_correct_answers = forms.BooleanField(
-        label=closed_question_meta.get_field('is_several_correct_answers').verbose_name,
-        required=False,
-        widget=forms.CheckboxInput(
-            attrs={
-                'class': 'uk-checkbox'
-            }
-        )
-    )
-    is_random_order_answer_options = forms.BooleanField(
-        label=closed_question_meta.get_field('is_random_order_answer_options').verbose_name,
-        required=False,
-        widget=forms.CheckboxInput(
-            attrs={
-                'class': 'uk-checkbox'
-            }
-        )
-    )
-    is_partially_correct_execution = forms.BooleanField(
-        label=closed_question_meta.get_field('is_partially_correct_execution').verbose_name,
-        required=False,
-        widget=forms.CheckboxInput(
-            attrs={
-                'class': 'uk-checkbox'
-            }
-        )
-    )
-
     class Meta(AbstractTaskForm.Meta):
+        checkbox_input = forms.CheckboxInput(attrs={
+            'class': 'uk-checkbox'
+        })
+        AbstractTaskForm.Meta.widgets |= {
+            'is_several_correct_answers': checkbox_input,
+            'is_random_order_answer_options': checkbox_input,
+            'is_partially_correct_execution': checkbox_input,
+        }
         model = ClosedQuestion

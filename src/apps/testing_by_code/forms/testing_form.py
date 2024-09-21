@@ -9,7 +9,7 @@ class TestingForm(AbstractTestingForm):
         student_groups_value = self.fields.pop('student_groups')
         self.fields['student_groups'] = student_groups_value
 
-    class Meta:
+    class Meta(AbstractTestingForm.Meta):
         model = Testing
         fields = '__all__'
         exclude = ('teacher', 'date_of_creation', 'date_of_deletion')

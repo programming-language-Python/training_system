@@ -1,12 +1,11 @@
 from django.db import models
 
-from apps.testing.abstractions.abstract_models.abstract_answer_options import AbstractAnswerOption
+from apps.testing.abstractions.abstract_models.abstract_answer_options import AbstractMultipleAnswerOption
 from apps.testing.constants import APP_NAME
 from apps.testing.models.tasks import ClosedQuestion
 
 
-class ClosedQuestionAnswerOption(AbstractAnswerOption):
-    is_correct = models.BooleanField(verbose_name='Правильный')
+class ClosedQuestionAnswerOption(AbstractMultipleAnswerOption):
     closed_question = models.ForeignKey(
         ClosedQuestion,
         on_delete=models.CASCADE,
@@ -14,5 +13,5 @@ class ClosedQuestionAnswerOption(AbstractAnswerOption):
         verbose_name='Закрытый вопрос'
     )
 
-    class Meta(AbstractAnswerOption.Meta):
+    class Meta(AbstractMultipleAnswerOption.Meta):
         db_table = f'{APP_NAME}_closed-question-answer-option'
