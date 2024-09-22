@@ -5,8 +5,6 @@ from apps.testing.models.task_answer_options import ClosedQuestionAnswerOption
 
 
 class ClosedQuestionAnswerOptionForm(AbstractFormFieldDescription):
-    answer_option_meta = ClosedQuestionAnswerOption._meta
-
     class Meta:
         model = ClosedQuestionAnswerOption
         widgets = {
