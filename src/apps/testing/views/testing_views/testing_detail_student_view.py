@@ -24,7 +24,6 @@ class TestingDetailStudentView(SessionWizardView):
             'testing_title': solving_testing.testing.title,
             'end_passage': solving_testing.end_passage.isoformat(),
             'duration': round(solving_testing.get_duration().total_seconds()),
-            'is_time_up': solving_testing.is_time_up(),
         }
 
     def _get_task_context_data(self) -> dict[str, str]:
