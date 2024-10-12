@@ -1,22 +1,8 @@
-from django import forms
-
-from abstractions.abstract_form_fields import AbstractFormFieldDescription
+from apps.testing.abstractions.abstract_forms import AbstractAnswerOptionWithCheckboxForm
 from apps.testing.models.task_answer_options import ClosedQuestionAnswerOption
 
 
-class ClosedQuestionAnswerOptionForm(AbstractFormFieldDescription):
-    class Meta:
+class ClosedQuestionAnswerOptionForm(AbstractAnswerOptionWithCheckboxForm):
+    class Meta(AbstractAnswerOptionWithCheckboxForm.Meta):
         model = ClosedQuestionAnswerOption
-        widgets = {
-            'serial_number': forms.NumberInput(attrs={
-                'class': 'serial-number',
-                'data-name': 'serial-number',
-                'data-is-fit-block-to-content-size': 'True',
-                'min': 1
-            }),
-            'is_correct': forms.CheckboxInput(attrs={
-                'class': 'uk-checkbox',
-                'data-name': 'is-correct',
-            })
-        }
-        fields = ('serial_number', 'description', 'is_correct', 'closed_question',)
+        fields = AbstractAnswerOptionWithCheckboxForm.Meta.fields + ('closed_question',)

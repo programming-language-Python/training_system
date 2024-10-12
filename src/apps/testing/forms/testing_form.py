@@ -14,7 +14,7 @@ class TestingForm(AbstractTestingForm):
     class Meta(AbstractTestingForm.Meta):
         CLASS = 'uk-margin-small uk-input uk-width-small'
         model = Testing
-        AbstractTestingForm.Meta.widgets |= {
+        widgets = AbstractTestingForm.Meta.widgets | {
             'number': forms.NumberInput(attrs={
                 'class': CLASS,
             }),
