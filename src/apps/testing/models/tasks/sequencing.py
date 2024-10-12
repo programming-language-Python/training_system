@@ -8,7 +8,6 @@ from apps.testing.models.tasks import TaskType
 class Sequencing(AbstractTask):
     RELATED_NAME = 'sequencing_set'
 
-    is_correct = models.BooleanField(verbose_name='Правильный')
     task_type = models.ForeignKey(
         TaskType,
         on_delete=models.CASCADE,

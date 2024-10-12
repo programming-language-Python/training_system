@@ -7,7 +7,7 @@ from django.db.models import QuerySet
 from django.http import QueryDict
 
 from apps.testing.constants import APP_NAME
-from apps.testing.models.tasks import ClosedQuestion, OpenQuestion
+from apps.testing.models.tasks import ClosedQuestion, OpenQuestion, Sequencing
 
 
 def update_tasks_serial_number(tasks_data: QueryDict) -> None:
@@ -46,7 +46,7 @@ class TaskService:
         return pagination_context
 
     def sort_tasks_serial_number(self) -> Sequence[QuerySet]:
-        search_models = [ClosedQuestion, OpenQuestion]
+        search_models = [ClosedQuestion, OpenQuestion, Sequencing]
         tasks = []
         for model in search_models:
             task = model.objects.filter(testing=self.testing_pk)

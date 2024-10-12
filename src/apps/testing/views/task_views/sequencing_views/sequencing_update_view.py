@@ -1,9 +1,9 @@
-from apps.testing.abstractions.abstract_views import AbstractTaskCreateView
+from apps.testing.abstractions.abstract_views import AbstractTaskUpdateView
 from apps.testing.forms.task_forms.sequencing_form import SequencingForm, SequencingAnswerOptionFormSet
 from apps.testing.models.tasks import Sequencing
 
 
-class SequencingCreateView(AbstractTaskCreateView):
+class SequencingUpdateView(AbstractTaskUpdateView):
     model = Sequencing
     form_class = SequencingForm
     form_set = SequencingAnswerOptionFormSet

@@ -6,7 +6,8 @@ from .views.task_views.closed_question_views import ClosedQuestionCreateView, Cl
 from .views.task_views.establishing_accordance_views import EstablishingAccordanceCreateView
 from .views.task_views.open_question_views import OpenQuestionCreateView, OpenQuestionUpdateView, \
     OpenQuestionDeleteView, OpenQuestionDetailView
-from .views.task_views.sequencing_views import SequencingCreateView
+from .views.task_views.sequencing_views import SequencingCreateView, SequencingUpdateView, SequencingDetailView, \
+    SequencingDeleteView
 from .views.testing_views import TestingCreateView, TestingListView, TestingUpdateView, \
     TestingDeleteView
 from .views.testing_views.testing_detail_view import show_testing_detail_view
@@ -38,7 +39,15 @@ urlpatterns = [
     path('task/open_question/delete/<pk>', OpenQuestionDeleteView.as_view(),
          name='task_open_question_delete'),
 
-    path('<testing_pk>/task/sequencing/create', SequencingCreateView.as_view(), name='task_sequencing_create'),
+    path('<testing_pk>/task/sequencing/<type>/create', SequencingCreateView.as_view(),
+         name='task_sequencing_create'),
+    path('task/sequencing/detail/<pk>', SequencingDetailView.as_view(),
+         name='task_sequencing_detail'),
+    path('task/sequencing/update/<pk>', SequencingUpdateView.as_view(),
+         name='task_sequencing_update'),
+    path('task/sequencing/delete/<pk>', SequencingDeleteView.as_view(),
+         name='task_sequencing_delete'),
+
     path('<testing_pk>/task/establishing_accordance/create', EstablishingAccordanceCreateView.as_view(),
          name='task_establishing_accordance_create'),
 ]
