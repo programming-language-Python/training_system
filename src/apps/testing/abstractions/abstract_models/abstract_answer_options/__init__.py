@@ -1,1 +1,2 @@
 from .abstract_answer_option import AbstractAnswerOption
+from .abstract_answer_option_with_checkbox import AbstractAnswerOptionWithCheckbox
