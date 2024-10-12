@@ -10,6 +10,7 @@ from mixins import LoginMixin
 class AbstractFormSetView(LoginMixin):
     form_set: Type[ModelForm] | Type[inlineformset_factory]
     template_name: str
+    answer_options_template_name: str
 
     def post(self, request, *args, **kwargs) -> redirect:
         form, form_set = self._get_forms()

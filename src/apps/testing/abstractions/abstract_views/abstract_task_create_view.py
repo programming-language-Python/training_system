@@ -2,7 +2,7 @@ from collections.abc import MutableMapping
 from typing import Mapping, Iterable, Type
 
 from django.forms import inlineformset_factory, ModelForm
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.views.generic import CreateView
 
 from apps.testing.abstractions.abstract_views import AbstractFormSetView
@@ -20,8 +20,12 @@ class AbstractTaskCreateView(AbstractFormSetView, CreateView):
         fields = context['form'].fields
         context['form'].fields = self._get_task_fields_context_data(fields)
         context |= self._get_answer_option_context_data()
-        context['btn_text'] = 'Создать задачу'
-        context['type'] = self.kwargs['type']
+        task_type = get_object_or_404(TaskType, name=self.kwargs['type'])
+        context |= {
+            'btn_text': 'Создать ответ',
+            'task_type': task_type,
+            'answer_options_template_name': self.answer_options_template_name
+        }
         return context
 
     def _get_task_fields_context_data(self, fields: Mapping) -> Mapping:

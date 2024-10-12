@@ -1,6 +1,7 @@
 from django.db import models
 
 from apps.testing.constants import APP_NAME
+from apps.testing.types import TaskData
 
 
 class TaskType(models.Model):
@@ -9,18 +10,13 @@ class TaskType(models.Model):
     def __str__(self) -> str:
         return self.name
 
-    def get_task_creation_url(self):
-        if self.name == 'Закрытый вопрос':
-            return f'{APP_NAME}:task_closed_question_create'
-        if self.name == 'Открытый вопрос':
-            return f'{APP_NAME}:task_open_question_create'
-
-    @staticmethod
-    def get_default_value(class_name: str):
-        if class_name == 'ClosedQuestion':
-            return TaskType.objects.get_or_create(name='Закрытый вопрос')
-        if class_name == 'OpenQuestion':
-            return TaskType.objects.get_or_create(name='Открытый вопрос')
+    def get_data(self):
+        task_data = {
+            'Закрытый вопрос': TaskData(name='closed_question'),
+            'Открытый вопрос': TaskData(name='open_question'),
+            'Установление последовательности': TaskData(name='sequencing')
+        }
+        return task_data[self.name]
 
     class Meta:
         db_table = f'{APP_NAME}_task-type'

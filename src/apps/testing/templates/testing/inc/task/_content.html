@@ -1,4 +1,4 @@
-<h1>{{ type }}</h1>
+<h1>{{ task_type.name }}</h1>
 {% if answer_option_form_set_errors %}
     {{ answer_option_form_set_errors }}
 {% endif %}
@@ -14,9 +14,5 @@
         {{ form.as_p }}
     </div>
     <h2>Варианты ответов</h2>
-    {% if type == "Закрытый вопрос" %}
-        {% include "testing/inc/task/_closed_question_table_answer_options.html" %}
-    {% elif type == "Открытый вопрос" %}
-        {% include "testing/inc/task/_open_question_table_answer_options.html" %}
-    {% endif %}
+    {% include answer_options_template_name %}
 </form>

@@ -7,4 +7,5 @@ class ClosedQuestionUpdateView(AbstractTaskUpdateView):
     model = ClosedQuestion
     form_class = ClosedQuestionForm
     form_set = ClosedQuestionAnswerOptionFormSet
-    template_name = 'testing/task/closed_question/closed_question_create_or_update.html'
+    template_name = 'testing/task/task_with_answer_option_with_checkbox.html'
+    answer_options_template_name = 'testing/inc/task/table/_table_answer_option_with_checkbox.html'
