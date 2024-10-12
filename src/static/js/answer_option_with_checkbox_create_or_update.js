@@ -1,5 +1,6 @@
 $(document).ready(function () {
-    let answerOption = new AnswerOption();
+    let taskName = $('[name="task_name"]').val();
+    let answerOption = new AnswerOption(taskName);
     let $answerOptions = $('#answer-options');
     answerOption.setSerialNumbers();
     answerOption.changeCheckboxBehaviorToRadio();
@@ -19,18 +20,22 @@ $(document).ready(function () {
 });
 
 class AnswerOption {
+    constructor(taskName) {
+        this.taskName = taskName;
+    }
+
     add() {
         let $answerOptions = $('[name="answer-option"]');
         let $newAnswerOption = $answerOptions.first().clone();
         let quantity = $answerOptions.length;
         $newAnswerOption.find('[data-name="is-correct"]').prop('checked', false);
-        $('#id_closed_question_related-TOTAL_FORMS').val(quantity + 1);
+        $(`#id_${this.taskName}_related-TOTAL_FORMS`).val(quantity + 1);
         $newAnswerOption = this.setAttributes($newAnswerOption, quantity);
         $('[name="answer-options"]').append($newAnswerOption);
     }
 
     setAttributes($answerOption, index) {
-        let firstSubstringName = 'closed_question_answer_option_set-';
+        let firstSubstringName = `${this.taskName}_answer_option_set-`;
         let firstSubstringId = "id_" + firstSubstringName;
         $answerOption.find('[data-name="serial-number"]')
             .attr('name', firstSubstringName + index + '-serial_number')
@@ -45,8 +50,8 @@ class AnswerOption {
             .attr('name', firstSubstringName + index + '-DELETE')
             .attr('id', firstSubstringId + index + '-DELETE');
         $answerOption.find('[data-name="closed-question"]')
-            .attr('name', firstSubstringName + index + '-closed_question')
-            .attr('id', firstSubstringId + index + '-closed_question');
+            .attr('name', `${firstSubstringId}${index}-${this.taskName}`)
+            .attr('id', `${firstSubstringId}${index}-${this.taskName}`);
         return $answerOption;
     }
 
