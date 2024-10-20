@@ -20,11 +20,13 @@ class TestingDetailStudentView(SessionWizardView):
 
     def _get_testing_context_data(self) -> dict[str, str]:
         solving_testing = self.initial_dict.testing_service.get_solving_testing()
-        return {
-            'testing_title': solving_testing.testing.title,
-            'end_passage': solving_testing.end_passage.isoformat(),
-            'duration': round(solving_testing.get_duration().total_seconds()),
-        }
+        testing_context_data = {'testing_title': solving_testing.testing.title, }
+        if solving_testing.get_end_passage() is not None:
+            testing_context_data |= {
+                'end_passage': solving_testing.get_end_passage_iso_format(),
+                'duration': round(solving_testing.get_duration().total_seconds()),
+            }
+        return testing_context_data
 
     def _get_task_context_data(self) -> dict[str, str]:
         page = int(self.steps.current)

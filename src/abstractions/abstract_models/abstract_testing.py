@@ -56,6 +56,9 @@ class AbstractTesting(AbstractFieldTitle):
     def __str__(self):
         return self.title
 
+    def get_task_lead_time(self):
+        return self.task_lead_time
+
     def get_fields_data(self) -> Mapping[str, str]:
         exclude = ['id', 'teacher', 'date_of_deletion']
         exclude_types = (OneToOneRel, ManyToOneRel, ManyToManyRel)

@@ -1,6 +1,8 @@
 $(document).ready(function () {
     let duration = $('#duration').val();
-    setTimeout(completeTesting, duration * 1000);
+    if (duration) {
+        setTimeout(completeTesting, duration * 1000);
+    }
 });
 
 function completeTesting() {

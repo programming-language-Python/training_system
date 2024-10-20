@@ -33,15 +33,22 @@ class AbstractSolvingTesting(models.Model):
         verbose_name='Студент'
     )
 
+    def get_end_passage(self) -> datetime:
+        return self.end_passage
+
     def get_duration(self) -> timedelta:
         return self.end_passage - datetime.now()
 
     def is_time_up(self) -> bool:
-        return self.end_passage <= datetime.now()
+        if self.end_passage is None:
+            return False
+        else:
+            return self.end_passage <= datetime.now()
 
     def set_end_passage(self, quantity_tasks: int) -> None:
-        if self.end_passage is None:
-            task_lead_time = self.testing.task_lead_time
+        task_lead_time = self.testing.get_task_lead_time()
+        is_task_lead_time = task_lead_time is not None
+        if self.end_passage is None and is_task_lead_time:
             time_delta = timedelta(
                 hours=task_lead_time.hour,
                 minutes=task_lead_time.minute,
@@ -50,6 +57,13 @@ class AbstractSolvingTesting(models.Model):
             duration = time_delta * quantity_tasks
             self.end_passage = self.start_passage + duration
             super(AbstractSolvingTesting, self).save()
+        else:
+            pass
+
+    def get_end_passage_iso_format(self) -> str:
+        if self.end_passage is None:
+            return ''
+        return self.end_passage.isoformat()
 
     def save(self, *args, **kwargs: Mapping[str, Sequence[SolvingTask]]) -> None:
         task_forms = kwargs.get('task_forms')
