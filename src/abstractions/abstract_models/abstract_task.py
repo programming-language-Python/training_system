@@ -1,10 +1,14 @@
-from typing import Iterable
+from typing import Iterable, Type
 
 from django.db import models
+from django.db.models import QuerySet
+from django.forms import ModelForm
 from django.urls import reverse
 
 from apps.testing.abstractions.abstract_fields import AbstractFieldSerialNumber, AbstractFieldDescription
+from apps.testing.abstractions.abstract_models.abstract_answer_options import AbstractAnswerOption
 from apps.testing.constants import APP_NAME
+from apps.testing.types import SolvingTask
 from apps.testing.utils.conversion import convert_from_PascalCase_to_snake_case
 
 
@@ -15,6 +19,17 @@ class AbstractTask(AbstractFieldSerialNumber, AbstractFieldDescription):
         default=None,
         verbose_name='Время выполнения'
     )
+
+    @staticmethod
+    def get_solving_task_form() -> Type[ModelForm]:
+        raise NotImplementedError('Не реализован метод get_solving_task_form')
+
+    @staticmethod
+    def get_or_create_solving_task(data) -> SolvingTask:
+        raise NotImplementedError('Не реализован метод get_or_create_solving_task')
+
+    def get_set_answer_options(self) -> QuerySet[AbstractAnswerOption]:
+        raise NotImplementedError('Не реализован метод get_set_answer_options')
 
     def get_class_name(self) -> str:
         return self.__class__.__name__
@@ -44,9 +59,6 @@ class AbstractTask(AbstractFieldSerialNumber, AbstractFieldDescription):
                 else:
                     field_values.append(f'{field.verbose_name}: нет')
         return field_values
-
-    def get_answer_options(self):
-        raise NotImplementedError('Не реализован метод get_answer_options')
 
     class Meta:
         abstract = True
