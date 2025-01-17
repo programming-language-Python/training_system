@@ -1,3 +1,0 @@
-from .solving_closed_question import SolvingClosedQuestion
-from .solving_open_question import SolvingOpenQuestion
-from .solving_sequencing import SolvingSequencing

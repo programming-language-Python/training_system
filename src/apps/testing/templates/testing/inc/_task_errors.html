@@ -1,0 +1,9 @@
+{% if form_errors %}
+    <span class="error">Ошибка в настройке задачи: {{ form_errors }}</span>
+{% endif %}
+{% if form_set_errors %}
+    <span class="error">Ошибка вариантах ответа: {{ form_set_errors }}</span>
+{% endif %}
+{% if additional_form_errors %}
+    <span class="error">Ошибка в дополнительной форме: {{ additional_form_errors }}</span>
+{% endif %}

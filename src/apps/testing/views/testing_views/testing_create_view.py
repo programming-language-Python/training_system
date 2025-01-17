@@ -4,6 +4,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 
 from abstractions.abstract_views import AbstractTestingCreateView
 from apps.testing.forms import TestingForm, MaxScoreForm
+from apps.testing.models import MaxScore
 
 
 class TestingCreateView(AbstractTestingCreateView):
@@ -18,9 +19,12 @@ class TestingCreateView(AbstractTestingCreateView):
         return context
 
     def form_valid(self, form) -> HttpResponse | HttpResponseRedirect:
-        form.instance.teacher = self.request.user.teacher
-        response = super(TestingCreateView, self).form_valid(form)
         max_score_form = MaxScoreForm(self.request.POST)
-        max_score_form.save()
-        max_score_form.instance.testing.add(form.instance.pk)
+        if max_score_form.is_valid():
+            max_score, is_created = MaxScore.objects.get_or_create(**max_score_form.cleaned_data)
+        else:
+            return HttpResponse('Форма max_score не валидна')
+        form.instance.teacher = self.request.user.teacher
+        form.instance.max_score = max_score
+        response = super(TestingCreateView, self).form_valid(form)
         return response

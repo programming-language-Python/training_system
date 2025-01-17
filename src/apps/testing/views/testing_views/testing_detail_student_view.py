@@ -1,4 +1,3 @@
-from dataclasses import asdict
 from typing import Sequence
 
 from django.forms import MultipleChoiceField
@@ -6,12 +5,18 @@ from django.shortcuts import redirect
 from django.utils.safestring import mark_safe
 from formtools.wizard.views import SessionWizardView
 
-from apps.testing.types import TaskFormData, SolvingTask
+from apps.testing.models import SolvingTask
+from apps.testing.services import TestingService, TaskService
+from apps.testing.services import ClosedQuestionService
 
 
 class TestingDetailStudentView(SessionWizardView):
     template_name = 'testing/testing_detail_student.html'
-    initial_dict: TaskFormData
+    testing_service: TestingService = ''
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.task_service = TaskService()
 
     def get_context_data(self, form, **kwargs):
         context = super().get_context_data(form=form, **kwargs)
@@ -19,7 +24,7 @@ class TestingDetailStudentView(SessionWizardView):
         return context
 
     def _get_testing_context_data(self) -> dict[str, str]:
-        solving_testing = self.initial_dict.testing_service.get_solving_testing()
+        solving_testing = self.initial_dict[0].solving_testing
         testing_context_data = {'testing_title': solving_testing.testing.title, }
         if solving_testing.get_end_passage() is not None:
             testing_context_data |= {
@@ -30,19 +35,27 @@ class TestingDetailStudentView(SessionWizardView):
 
     def _get_task_context_data(self) -> dict[str, str]:
         page = int(self.steps.current)
-        solving_task = self.initial_dict.pages[page].solving_task
+        solving_task = self.initial_dict[page]
         solving_task.set_start_passage()
         return {'task_description': mark_safe(solving_task.task.description)}
 
     def get_form_initial(self, step):
+        return self._set_answer_option_form(step)
+
+    def _set_answer_option_form(self, step: str) -> dict:
         page = int(step)
         answer_field = self.form_list[step].base_fields['answer']
+        solving_task = self.initial_dict[page]
+
         if isinstance(answer_field, MultipleChoiceField):
-            answer_field.choices = self.initial_dict.pages[page].solving_task.task.get_initial_set_answer_options()
-        return asdict(self.initial_dict.pages[page])
+            task = solving_task.task
+            answer_field.choices = self.task_service.get_answer_field_choices(
+                task_service=ClosedQuestionService(task)
+            )
+        return self.initial_dict
 
     def done(self, task_forms: Sequence[SolvingTask], **kwargs) -> redirect:
-        return self.initial_dict.testing_service.end_testing(task_forms)
+        return self.testing_service.end_testing(task_forms)
 
     def post(self, *args, **kwargs):
         current_index = self.get_step_index(self.steps.current)
@@ -52,8 +65,9 @@ class TestingDetailStudentView(SessionWizardView):
         form = self.get_form(data=self.request.POST)
         if current_index > goto_index:
             if form.is_valid():
-                solving_task = self.initial_dict.pages[current_index].solving_task
-                solving_task.set_answer(form.cleaned_data['answer'])
+                solving_task = self.initial_dict[current_index]
+                answer = form.cleaned_data['answer']
+                self.task_service.set_answer(solving_task, answer)
                 self.storage.set_step_data(self.steps.current, self.process_step(form))
                 self.storage.set_step_files(self.steps.current, self.process_step_files(form))
             else:

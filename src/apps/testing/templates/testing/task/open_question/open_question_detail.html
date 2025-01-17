@@ -4,18 +4,11 @@
 
 {% block content %}
     {% include "testing/inc/task/_main_content_detail.html" %}
-    <ul class="uk-background-default uk-nav" uk-sticky>
-        {% for field in task.get_set_answer_options.0.get_fields %}
-            <li>{{ field.verbose_name }}</li>
-        {% endfor %}
-    </ul>
     <ul id="answer-options" name="answer-options" class="uk-nav">
-        {% for answer_option in task.get_set_answer_options %}
-            {% for field in answer_option.get_fields %}
-                <li>
-                    {{ answer_option|get_attr:field.name|safe }}
-                </li>
-            {% endfor %}
+        {% for answer_option in answer_options %}
+            <li>
+                {{ answer_option.0 }}
+            </li>
         {% endfor %}
     </ul>
 {% endblock %}

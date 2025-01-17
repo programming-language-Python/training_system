@@ -1,4 +1,3 @@
 from .open_question_create_view import OpenQuestionCreateView
 from .open_question_detail_view import OpenQuestionDetailView
 from .open_question_update_view import OpenQuestionUpdateView
-from .open_question_delete_view import OpenQuestionDeleteView

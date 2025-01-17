@@ -4,7 +4,6 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 from apps.testing.constants import APP_NAME
-from apps.testing.models import Testing
 
 
 class MaxScore(models.Model):
@@ -40,19 +39,13 @@ class MaxScore(models.Model):
         ],
         verbose_name='Неудовлетворительно'
     )
-    testing = models.ManyToManyField(
-        Testing,
-        related_name='max_score_set',
-        verbose_name='Тестирование'
-    )
 
     def get_fields(self) -> Iterable:
-        exclude = ['id', 'testing']
-        fields = []
-        for field in self._meta.fields:
-            if field.name not in exclude:
-                fields.append(field)
-        return fields
+        from apps.testing.services import get_model_fields
+        return get_model_fields(
+            model=self,
+            excluded_fields=['id']
+        )
 
     class Meta:
         db_table = f'{APP_NAME}_max-score'

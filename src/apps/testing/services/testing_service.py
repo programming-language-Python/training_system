@@ -1,56 +1,86 @@
-from typing import Sequence, Mapping
+from datetime import datetime
+from typing import Sequence, Iterable, Type
 
 from django.shortcuts import redirect
 
-from apps.testing.interfaces import ITask
-from apps.testing.models import SolvingTesting
-from apps.testing.services import TaskService
-from apps.testing.types import SolvingTestingData, TaskFormData, PageData, Task, SolvingTask
+from apps.testing.forms import MaxScoreForm, TestingForm
+from apps.testing.models import SolvingTesting, SolvingTask, Testing, Task, MaxScore
+from apps.testing.services import TaskFormService, TaskService
+from apps.testing.types import SolvingTestingData, SolvingTaskEntity, Id
+from apps.testing_by_code.utils.utils import round_up
 from apps.user.models import Student
 
 
-class TestingService(TaskService):
+def update_testing(form: Type[Type[TestingForm]], max_score_form: MaxScoreForm):
+    if max_score_form.changed_data:
+        testing = form.save(commit=False)
+        max_score, _ = MaxScore.objects.get_or_create(**max_score_form.cleaned_data)
+        testing.max_score = max_score
+        testing.save()
+    else:
+        form.save()
+
+
+class TestingService:
+    testing_pk: int
+    student_pk: int
     solving_testing: SolvingTesting
 
-    def get_solving_testing(self) -> SolvingTesting:
-        return self.solving_testing
-
-    def start_testing(self) -> SolvingTestingData:
-        task: ITask
-        if self.solving_testing is None:
-            raise Exception('Не установлена переменная solving_testing')
-        pages = []
-        task_forms = []
-        for task in self.sort_tasks_serial_number():
-            pages.append(self.get_page_data(task))
-            task_forms.append(task.get_solving_task_form())
-        self.solving_testing.set_end_passage(quantity_tasks=len(pages))
-        task_form_data = TaskFormData(self, pages)
-        return SolvingTestingData(task_forms, task_form_data)
-
-    def set_solving_testing(self, student: Student) -> None:
+    def __init__(self, testing_pk: int, student: Student):
+        self.testing_pk = testing_pk
+        self.student_pk = student.pk
         self.solving_testing, is_created = SolvingTesting.objects.get_or_create(
-            testing_id=self.testing_pk,
+            testing_id=testing_pk,
             student=student
         )
 
-    def get_page_data(self, task: Task) -> PageData:
+    def start_testing(self) -> SolvingTestingData:
+        if self.solving_testing.is_time_up():
+            return redirect('user:student_solving_testing_list', pk=self.student_pk)
+        page_data = {}
+        task_forms = []
+        for i, task in enumerate(self._testing.task_set.all()):
+            page_data[i] = self._get_solving_task(task)
+            task_forms.append(self._get_solving_task_form(task_type=task.type))
+        self.solving_testing.set_end_passage(quantity_tasks=len(page_data))
+        return SolvingTestingData(task_forms, page_data)
+
+    @property
+    def _testing(self):
+        return Testing.objects.get(pk=self.testing_pk)
+
+    def _get_solving_task(self, task: Task) -> SolvingTaskEntity:
         solving_task_data = {
             'task': task,
             'solving_testing': self.solving_testing
         }
-        solving_task = task.get_or_create_solving_task(solving_task_data)
-        page_data = PageData(
-            answer=solving_task.answer,
-            solving_task=solving_task
-        )
-        return page_data
-
-    def end_testing(self, task_forms: Sequence[SolvingTask]) -> redirect:
-        self.solving_testing.save(task_forms=task_forms)
-        return redirect('user:home')
+        solving_task, is_created = SolvingTask.objects.get_or_create(**solving_task_data)
+        return solving_task
 
     @staticmethod
-    def update_solving_task(solving_task: SolvingTask, cleaned_data: Mapping[str, str]) -> None:
-        solving_task.answer = ', '.join(cleaned_data['answer'])
-        solving_task.save()
+    def _get_solving_task_form(task_type: str):
+        task_form_service = TaskFormService()
+        return task_form_service.get_solving_form(task_type)
+
+    def end_testing(self, task_forms: Sequence[SolvingTask]) -> redirect:
+        if task_forms:
+            self.solving_testing.end_passage = datetime.now()
+            self.solving_testing.assessment = self._get_assessment(task_forms)
+        self.solving_testing.save()
+        return redirect('user:home')
+
+    def _get_assessment(self, task_forms: Sequence[SolvingTask]) -> float:
+        earned_weight = self._get_earned_weight(task_forms)
+        assessment = round_up(earned_weight / len(task_forms) * 5)
+        return assessment
+
+    @staticmethod
+    def _get_earned_weight(task_forms):
+        answer: str | Iterable[Id]
+        earned_weight = 0
+        task_service = TaskService()
+        for i, task_form in enumerate(task_forms):
+            task = task_form.initial[i].task
+            answer = task_form.cleaned_data['answer']
+            earned_weight += task_service.get_weight(task, answer)
+        return earned_weight

@@ -1,4 +1,2 @@
 from .sequencing_create_view import SequencingCreateView
-from .sequencing_detail_view import SequencingDetailView
 from .sequencing_update_view import SequencingUpdateView
-from .sequencing_delete_view import SequencingDeleteView

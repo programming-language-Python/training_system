@@ -1,2 +1,4 @@
+from .abstract_field_description import AbstractFieldDescription
+from .abstract_field_serial_number import AbstractFieldSerialNumber
 from .abstract_field_title import AbstractFieldTitle
 from .abstract_field_weight import AbstractFieldWeight

@@ -1,24 +1,17 @@
-from typing import Iterable, Type
+from typing import Iterable
 
 from django.db import models
-from django.db.models import QuerySet
-from django.forms import ModelForm
 
-from apps.testing.abstractions.abstract_models.abstract_tasks import AbstractTaskWithCheckbox
 from apps.testing.constants import APP_NAME
-from apps.testing.models import Testing
-from apps.testing.models.solving_tasks import SolvingClosedQuestion
-
-from apps.testing.models.tasks import TaskType
-from apps.testing.types import Id, SolvingTask
+from services import get_field_values
 
 
-class ClosedQuestion(AbstractTaskWithCheckbox):
+class ClosedQuestion(models.Model):
     RELATED_NAME = 'closed_question_set'
 
     is_several_correct_answers = models.BooleanField(
         default=False,
-        verbose_name='Допустимо несколько правильных ответов'
+        verbose_name='Несколько правильных ответов'
     )
     is_random_order_answer_options = models.BooleanField(
         default=False,
@@ -26,48 +19,20 @@ class ClosedQuestion(AbstractTaskWithCheckbox):
     )
     is_partially_correct_execution = models.BooleanField(
         default=False,
-        verbose_name='При оценке учесть частично правильное выполнение задания'
+        verbose_name='Учет частично верного выполнения'
     )
-    task_type = models.ForeignKey(
-        TaskType,
+    task = models.OneToOneField(
+        'Task',
         on_delete=models.CASCADE,
         related_name=RELATED_NAME,
-        verbose_name='Тип задачи'
-    )
-    testing = models.ForeignKey(
-        Testing,
-        on_delete=models.CASCADE,
-        related_name=RELATED_NAME,
-        verbose_name='Тестирование'
+        verbose_name='Задача'
     )
 
-    @staticmethod
-    def get_solving_task_form() -> Type[ModelForm]:
-        from apps.testing.forms.task_forms.сlosed_question_form import SolvingClosedQuestionForm
-        return SolvingClosedQuestionForm
+    def get_fields(self) -> Iterable:
+        return get_field_values(
+            model=self,
+            excluded_fields=['id', 'task']
+        )
 
-    @staticmethod
-    def get_or_create_solving_task(data) -> SolvingTask:
-        solving_task, _ = SolvingClosedQuestion.objects.get_or_create(**data)
-        return solving_task
-
-    def get_weight(self, answer: Iterable[Id]) -> int:
-        answer_options = self.closed_question_answer_option_set
-        quantity_correct_answers = answer_options.filter(
-            is_correct=True
-        ).count()
-        quantity_correct_user_answers = answer_options.filter(
-            id__in=answer,
-            is_correct=True
-        ).count()
-        return 1 if quantity_correct_answers == quantity_correct_user_answers else 0
-
-    def get_set_answer_options(self) -> QuerySet:
-        if self.is_random_order_answer_options:
-            all_answer_options = self.closed_question_answer_option_set.order_by('?')
-        else:
-            all_answer_options = self.closed_question_answer_option_set.all()
-        return all_answer_options
-
-    class Meta(AbstractTaskWithCheckbox.Meta):
+    class Meta:
         db_table = f'{APP_NAME}_closed-question'

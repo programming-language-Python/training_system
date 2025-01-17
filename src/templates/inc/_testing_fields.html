@@ -30,7 +30,7 @@
     {% endif %}
 {% endfor %}
 <div>Максимальный балл</div>
-{% with testing.max_score_set.all.0 as max_score %}
+{% with testing.max_score as max_score %}
     {% for field in max_score.get_fields %}
         <div>
             {{ field.verbose_name }}: {{ max_score|get_attr:field.name }}

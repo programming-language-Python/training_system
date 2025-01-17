@@ -1,13 +1,18 @@
-from itertools import chain
-from typing import Mapping, Sequence
+from typing import Mapping, Type, Iterable
 
 from django.apps import apps
-from django.core.paginator import Paginator
-from django.db.models import QuerySet
+from django.forms import inlineformset_factory, ModelForm
 from django.http import QueryDict
+from django.shortcuts import get_object_or_404
+from django.utils.html import strip_tags
 
 from apps.testing.constants import APP_NAME
-from apps.testing.models.tasks import ClosedQuestion, OpenQuestion, Sequencing
+from apps.testing.interfaces import ITaskService
+from apps.testing.models import Testing, Task, SolvingTask
+from apps.testing.services import ClosedQuestionService, OpenQuestionService
+from apps.testing.services.closed_question_service import closed_question_set_answer
+from apps.testing.services.open_question_service import open_question_set_answer
+from apps.testing.types import ValidTask, InlineFormSetFactory, TaskType, Id
 
 
 def update_tasks_serial_number(tasks_data: QueryDict) -> None:
@@ -21,35 +26,71 @@ def update_tasks_serial_number(tasks_data: QueryDict) -> None:
 
 
 class TaskService:
-    testing_pk: int
+    def create(self, valid_task: ValidTask) -> None:
+        task = self._create_task(valid_task)
+        task_forms = valid_task.task_forms
+        self._create_answer_option_set(task, answer_option_form_set=task_forms.form_set)
+        additional_form = task_forms.additional_form
+        if additional_form:
+            self._create_additional_fields(task, additional_form)
 
-    def __init__(self, testing_pk: int) -> None:
-        self.testing_pk = testing_pk
+    @staticmethod
+    def _create_task(valid_task: ValidTask) -> Task:
+        testing = get_object_or_404(Testing, pk=valid_task.testing_pk)
+        task = valid_task.task_forms.form.save(commit=False)
+        task.serial_number = testing.task_set.count() + 1
+        task.type = valid_task.type
+        task.testing = testing
+        task.save()
+        return task
 
-    def set_initial_values_form_fields(self, fields: Mapping) -> Mapping:
-        if fields.get('serial_number'):
-            fields['serial_number'].initial = self.get_quantity() + 1
-        fields['testing'].initial = self.testing_pk
-        return fields
+    @staticmethod
+    def _create_answer_option_set(task: Task, answer_option_form_set: Type[inlineformset_factory]) -> None:
+        answer_option_form_set.instance = task
+        answer_option_form_set.save()
 
-    def get_quantity(self) -> int:
-        return len(self.sort_tasks_serial_number())
+    @staticmethod
+    def _create_additional_fields(task: Task, additional_form: ModelForm) -> None:
+        additional_model = additional_form.save(commit=False)
+        additional_model.task = task
+        additional_model.save()
 
-    def get_pagination_context(self, page_number: int) -> Mapping:
-        paginator = Paginator(self.sort_tasks_serial_number, 1)
-        page_obj = paginator.get_page(page_number)
-        pagination_context = {
-            'paginator': paginator,
-            'page_obj': page_obj,
-            'task': page_obj.object_list[0]
-        }
-        return pagination_context
+    def update(self, task_forms: InlineFormSetFactory) -> None:
+        task = task_forms.form.save()
+        task_forms.form_set.save()
+        if task_forms.additional_form:
+            self._update_additional_model(
+                task=task,
+                cleaned_data=task_forms.additional_form.cleaned_data
+            )
 
-    def sort_tasks_serial_number(self) -> Sequence[QuerySet]:
-        search_models = [ClosedQuestion, OpenQuestion, Sequencing]
-        tasks = []
-        for model in search_models:
-            task = model.objects.filter(testing=self.testing_pk)
-            tasks.append(task)
-        sorted_tasks = sorted(chain(*tasks), key=lambda data: data.serial_number)
-        return sorted_tasks
+    @staticmethod
+    def _update_additional_model(task: Task, cleaned_data: Mapping) -> None:
+        match task.task_type:
+            case TaskType.CLOSED_QUESTION:
+                task_service = ClosedQuestionService(task)
+        task_service.update(cleaned_data)
+
+    @staticmethod
+    def get_answer_field_choices(task_service: ITaskService):
+        answer_options = task_service.get_answer_options()
+        ids = answer_options.values_list('id', flat=True)
+        descriptions = map(strip_tags, answer_options.values_list('description', flat=True))
+        return set(zip(ids, descriptions))
+
+    @staticmethod
+    def get_weight(task: Task, answer: str | Iterable[Id]) -> int:
+        match task.task_type:
+            case TaskType.CLOSED_QUESTION:
+                task_service = ClosedQuestionService(task)
+            case TaskType.OPEN_QUESTION:
+                task_service = OpenQuestionService(task)
+        return task_service.get_weight(answer)
+
+    @staticmethod
+    def set_answer(solving_task: SolvingTask, answer: str | Iterable[Id]) -> None:
+        match solving_task.task.task_type:
+            case TaskType.CLOSED_QUESTION:
+                closed_question_set_answer(solving_task, answer)
+            case TaskType.OPEN_QUESTION:
+                open_question_set_answer(solving_task, answer)

@@ -1,10 +1,6 @@
 import {setSerialNumbers} from '../functions/set_serial_numbers.js';
 
 export class AnswerOption {
-    constructor(taskName) {
-        this.taskName = taskName;
-    }
-
     triggerEvents() {
         let $answerOptions = $('#answer-options');
 
@@ -28,29 +24,29 @@ export class AnswerOption {
         let $newAnswerOption = $answerOptions.first().clone();
         let quantity = $answerOptions.length;
         $newAnswerOption.find('[data-name="is-correct"]').prop('checked', false);
-        $(`#id_${this.taskName}_related-TOTAL_FORMS`).val(quantity + 1);
+        $(`#id_answer_option_set-TOTAL_FORMS`).val(quantity + 1);
         $newAnswerOption = this.setAttributes($newAnswerOption, quantity);
         $('[name="answer-options"]').append($newAnswerOption);
     }
 
     setAttributes($answerOption, index) {
-        let firstSubstringName = `${this.taskName}_answer_option_set-`;
-        let firstSubstringId = "id_" + firstSubstringName;
+        let firstSubstringName = `answer_option_set-${index}`;
+        let firstSubstringId = `id_${firstSubstringName}`;
         $answerOption.find('[data-name="serial-number"]')
-            .attr('name', firstSubstringName + index + '-serial_number')
-            .attr('id', firstSubstringId + index + '-serial_number');
+            .attr('name', `${firstSubstringName}-serial_number`)
+            .attr('id', `${firstSubstringId}-serial_number`);
         $answerOption.find('[data-name="description"]')
-            .attr('name', firstSubstringName + index + '-description')
-            .attr('id', firstSubstringId + index + '-description');
+            .attr('name', `${firstSubstringName}-description`)
+            .attr('id', `${firstSubstringId}-description`);
         $answerOption.find('[data-name="is-correct"]')
-            .attr('name', firstSubstringName + index + '-is_correct')
-            .attr('id', firstSubstringId + index + '-is_correct');
+            .attr('name', `${firstSubstringName}-is_correct`)
+            .attr('id', `${firstSubstringId}-is_correct`);
         $answerOption.find('[data-name="delete"]')
-            .attr('name', firstSubstringName + index + '-DELETE')
-            .attr('id', firstSubstringId + index + '-DELETE');
-        $answerOption.find('[data-name="closed-question"]')
-            .attr('name', `${firstSubstringId}${index}-${this.taskName}`)
-            .attr('id', `${firstSubstringId}${index}-${this.taskName}`);
+            .attr('name', `${firstSubstringName}-DELETE`)
+            .attr('id', `${firstSubstringId}-DELETE`);
+        $answerOption.find('[data-name="task"]')
+            .attr('name', `${firstSubstringName}-task`)
+            .attr('id', `${firstSubstringId}-task`);
         return $answerOption;
     }
 

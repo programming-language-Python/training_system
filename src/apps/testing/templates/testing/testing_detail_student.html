@@ -25,9 +25,9 @@
             {% endif %}
             <button class="uk-button uk-button-default uk-button-small" name="wizard_goto_step" type="submit"
                     value="{{ wizard.steps.prev }}">{% translate "<" %}</button>
-            <button class="uk-button uk-button-default uk-button-small" id="btn-next" name="wizard_goto_step" type="submit"
+            <button class="uk-button uk-button-default uk-button-small" id="btn-next" name="wizard_goto_step"
+                    type="submit"
                     value="{% translate "submit" %}">{% translate ">" %}</button>
-            {#        <input name="wizard_goto_step" type="submit" value="{% translate "submit" %}"/>#}
         </div>
     </form>
 {% endblock %}

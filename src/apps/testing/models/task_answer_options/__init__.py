@@ -1,3 +1,2 @@
-from .closed_question_answer_option import ClosedQuestionAnswerOption
+from .answer_option import AnswerOption
 from .open_question_answer_option import OpenQuestionAnswerOption
-from .sequencing_answer_option import SequencingAnswerOption

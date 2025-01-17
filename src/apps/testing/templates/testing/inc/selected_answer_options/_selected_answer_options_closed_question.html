@@ -1,0 +1,16 @@
+<ul class="uk-list">
+    {% for answer_option in solving_task.selected_answer_options %}
+        <li>
+            <div class="uk-flex-inline
+                {% if answer_option.is_correct %}
+            	    correct-answer
+                {% endif %}">
+                <div>
+                    <input class="uk-checkbox" type="checkbox" disabled
+                           {% if answer_option.is_selected %}checked{% endif %}>
+                </div>
+                <div>{{ answer_option.description|safe }}</div>
+            </div>
+        </li>
+    {% endfor %}
+</ul>

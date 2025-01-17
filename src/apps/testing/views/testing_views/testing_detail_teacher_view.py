@@ -1,4 +1,4 @@
-from typing import Mapping, Sequence
+from typing import Mapping
 
 from django.core.handlers.wsgi import WSGIRequest
 from django.db.models import QuerySet
@@ -7,9 +7,8 @@ from django.views.generic import DetailView
 
 from apps.testing.models import Testing
 from apps.testing.constants import APP_NAME
-from apps.testing.models.tasks import TaskType
-from apps.testing.services import TaskService
 from apps.testing.services.task_service import update_tasks_serial_number
+from apps.testing.types import TaskType
 from mixins import ContextMixin, LoginMixin
 
 
@@ -33,13 +32,11 @@ class TestingDetailTeacherView(LoginMixin, ContextMixin, DetailView):
         context |= self._get_task_context_data()
         return context
 
-    def _get_task_context_data(self) -> Mapping[str, Mapping | Sequence[QuerySet]]:
-        task_service = TaskService(testing_pk=self.kwargs['pk'])
-        sorted_tasks = task_service.sort_tasks_serial_number()
+    def _get_task_context_data(self) -> Mapping[str, Mapping | QuerySet | int]:
+        tasks = self.object.task_set.all()
         context = {
-            'task_data': {},
-            'tasks': sorted_tasks,
-            'quantity_task': len(sorted_tasks),
-            'tasks_types': TaskType.objects.all()
+            'tasks': tasks,
+            'quantity_task': tasks.count(),
+            'tasks_types': list(TaskType)
         }
         return context

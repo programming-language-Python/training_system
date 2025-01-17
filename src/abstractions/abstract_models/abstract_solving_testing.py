@@ -1,10 +1,6 @@
 from datetime import timedelta, datetime
-from typing import Iterable, Sequence, Mapping
 
 from django.db import models
-
-from apps.testing.types import Id, SolvingTask
-from apps.testing_by_code.utils.utils import round_up
 
 
 class AbstractSolvingTesting(models.Model):
@@ -64,24 +60,6 @@ class AbstractSolvingTesting(models.Model):
         if self.end_passage is None:
             return ''
         return self.end_passage.isoformat()
-
-    def save(self, *args, **kwargs: Mapping[str, Sequence[SolvingTask]]) -> None:
-        task_forms = kwargs.get('task_forms')
-        if task_forms:
-            self.end_passage = datetime.now()
-            self.assessment = self._get_assessment(task_forms)
-        super(AbstractSolvingTesting, self).save()
-
-    @staticmethod
-    def _get_assessment(task_forms: Sequence[SolvingTask]) -> float:
-        answer: str | Iterable[Id]
-        weight = 0
-        for task_form in task_forms:
-            task = task_form.initial['solving_task'].task
-            answer = task_form.cleaned_data['answer']
-            weight += task.get_weight(answer)
-        assessment = round_up(weight / len(task_forms) * 5)
-        return assessment
 
     class Meta:
         abstract = True

@@ -2,7 +2,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.urls import reverse
 
-from abstractions.abstract_models.abstract_testing import AbstractTesting
+from abstractions.abstract_models import AbstractTesting
 from apps.testing.constants import MAX_ASSESSMENT_THRESHOLD, MIN_ASSESSMENT_THRESHOLD, APP_NAME
 
 
@@ -11,9 +11,9 @@ class Testing(AbstractTesting):
         default=1,
         verbose_name='Номер работы'
     )
-    likelihood_guessing_answers = models.FloatField(
+    probability_of_guessing = models.FloatField(
         default=1,
-        verbose_name='Вероятность угадывания правильных ответов'
+        verbose_name='Вероятность угадывания'
     )
     assessment_threshold = models.IntegerField(
         default=1,
@@ -22,6 +22,11 @@ class Testing(AbstractTesting):
             MinValueValidator(MIN_ASSESSMENT_THRESHOLD)
         ],
         verbose_name='Пороговое значение оценки'
+    )
+    max_score = models.ForeignKey(
+        'MaxScore',
+        on_delete=models.CASCADE,
+        verbose_name='Максимальный балл'
     )
 
     def get_absolute_url(self):

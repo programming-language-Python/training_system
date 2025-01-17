@@ -1,0 +1,5 @@
+{{ solving_task.selected_answer_options }}
+<h4>Правильный ответ:</h4>
+{% for answer_option in solving_task.task.open_question_answer_option_set.all %}
+    {{ answer_option.correct_answer }}
+{% endfor %}

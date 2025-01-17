@@ -1,11 +1,6 @@
-from apps.testing.abstractions.abstract_views import AbstractTaskCreateView
-from apps.testing.forms.task_forms.sequencing_form import SequencingForm, SequencingAnswerOptionFormSet
-from apps.testing.models.tasks import Sequencing
+from apps.testing.abstractions.abstract_views import AbstractTaskWithChoiceCreateOrUpdateView, \
+    AbstractTaskCreateView
 
 
-class SequencingCreateView(AbstractTaskCreateView):
-    model = Sequencing
-    form_class = SequencingForm
-    form_set = SequencingAnswerOptionFormSet
-    template_name = 'testing/task/task_with_answer_option_with_checkbox.html'
-    answer_options_template_name = 'testing/inc/task/table/_table_answer_option_with_checkbox.html'
+class SequencingCreateView(AbstractTaskWithChoiceCreateOrUpdateView, AbstractTaskCreateView):
+    pass

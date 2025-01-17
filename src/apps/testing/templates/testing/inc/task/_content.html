@@ -1,17 +1,19 @@
-<h1>{{ task_type.name }}</h1>
-{% if answer_option_form_set_errors %}
-    {{ answer_option_form_set_errors }}
-{% endif %}
+<h1>{{ task_type.value }}</h1>
+{% include 'testing/inc/_task_errors.html' %}
 {% include "testing/inc/task/_button_add_answer_option.html" %}
 <form class="form" enctype="multipart/form-data" method="post">
     {% csrf_token %}
     <div class="uk-margin">
+        {# создать или обновить ответ #}
         <button name="btn-submit" class="uk-button uk-button-primary" type="submit" id="btn-submit">
             {{ btn_text }}
         </button>
     </div>
     <div>
         {{ form.as_p }}
+        {% if additional_form %}
+            {{ additional_form.as_p }}
+        {% endif %}
     </div>
     <h2>Варианты ответов</h2>
     {% include answer_options_template_name %}

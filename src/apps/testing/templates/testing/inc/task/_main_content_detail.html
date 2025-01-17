@@ -4,4 +4,9 @@
         {{ field|safe }}
     </div>
 {% endfor %}
+{% for field_values in additional_field_values %}
+    <div>
+        {{ field_values|safe }}
+    </div>
+{% endfor %}
 <h2>Варианты ответов</h2>

@@ -6,13 +6,13 @@
     {% include "testing/inc/task/_main_content_detail.html" %}
     <ul class="uk-background-default" uk-sticky>
         <li class="uk-grid-small" uk-grid>
-            {% for field in task.get_set_answer_options.0.get_fields %}
+            {% for field in fields_answer_option %}
                 <div class="{% if field.name == 'description' %}uk-width-expand{% else %}uk-width-small{% endif %}">{{ field.verbose_name }}</div>
             {% endfor %}
         </li>
     </ul>
     <ul id="answer-options" name="answer-options">
-        {% for answer_option in task.get_set_answer_options %}
+        {% for answer_option in answer_options %}
             <li name="answer-option" class="uk-grid-small" uk-grid>
                 {% for field in answer_option.get_fields %}
                     <div class="{% if field.name == 'description' %}uk-width-expand{% else %}uk-width-small{% endif %}">

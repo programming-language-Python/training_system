@@ -1,19 +1,16 @@
 from django.contrib import admin
 
-from apps.testing.models import Testing, SolvingTesting
-from apps.testing.models.solving_tasks import SolvingClosedQuestion, SolvingOpenQuestion
-from apps.testing.models.task_answer_options import ClosedQuestionAnswerOption, OpenQuestionAnswerOption
-from apps.testing.models.tasks import ClosedQuestion, OpenQuestion, TaskType
+from apps.testing.models import Testing, SolvingTesting, Task, SolvingTask
+from apps.testing.models.task_answer_options import OpenQuestionAnswerOption, AnswerOption
+from apps.testing.models.tasks import ClosedQuestion
 
 admin.site.register(Testing)
-admin.site.register(TaskType)
+admin.site.register(Task)
 
 admin.site.register(ClosedQuestion)
-admin.site.register(ClosedQuestionAnswerOption)
 
-admin.site.register(OpenQuestion)
+admin.site.register(AnswerOption)
 admin.site.register(OpenQuestionAnswerOption)
 
 admin.site.register(SolvingTesting)
-admin.site.register(SolvingClosedQuestion)
-admin.site.register(SolvingOpenQuestion)
+admin.site.register(SolvingTask)

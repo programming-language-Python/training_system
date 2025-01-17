@@ -1,7 +1,7 @@
 from django import forms
 
 from abstractions.abstract_forms import AbstractTestingForm
-from apps.testing.constants import MIN_ASSESSMENT_THRESHOLD, MAX_ASSESSMENT_THRESHOLD, MAX_LIKELIHOOD_GUESSING_ANSWERS
+from apps.testing.constants import MIN_ASSESSMENT_THRESHOLD, MAX_ASSESSMENT_THRESHOLD, MAX_PROBABILITY_OF_GUESSING
 from apps.testing.models import Testing
 
 
@@ -18,9 +18,9 @@ class TestingForm(AbstractTestingForm):
             'number': forms.NumberInput(attrs={
                 'class': CLASS,
             }),
-            'likelihood_guessing_answers': forms.NumberInput(attrs={
+            'probability_of_guessing': forms.NumberInput(attrs={
                 'class': CLASS,
-                'max': MAX_LIKELIHOOD_GUESSING_ANSWERS,
+                'max': MAX_PROBABILITY_OF_GUESSING,
                 'min': 0,
                 'step': '0.01'
             }),
@@ -30,5 +30,4 @@ class TestingForm(AbstractTestingForm):
                 'max': MAX_ASSESSMENT_THRESHOLD,
             }),
         }
-        fields = '__all__'
-        exclude = ['teacher', 'date_of_deletion', ]
+        exclude = ['teacher', 'date_of_deletion', 'max_score', ]

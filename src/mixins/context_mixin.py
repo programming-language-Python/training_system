@@ -15,7 +15,7 @@ class ContextMixin:
         context['text'] = text
         return context
 
-    def get_testing_detail_data(self, is_solving_testing: bool) -> dict[str, str]:
+    def get_testing_detail_data(self, is_solving_testing: bool) -> dict[str, str | bool]:
         return {
             'is_solving_testing': is_solving_testing,
             'testing_update_url': f'{self.APP_NAME}:testing_update',

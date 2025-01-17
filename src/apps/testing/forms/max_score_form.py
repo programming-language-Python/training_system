@@ -18,4 +18,4 @@ class MaxScoreForm(forms.ModelForm):
             'three': number_input,
             'two': number_input
         }
-        exclude = ['testing']
+        fields = '__all__'
