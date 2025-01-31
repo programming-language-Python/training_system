@@ -45,6 +45,7 @@ INSTALLED_APPS = [
 
     # Мои приложения
     'jquery',
+    'apps.base_testing',
     'apps.testing',
     'apps.testing_by_code',
     'apps.user',
