@@ -4,6 +4,15 @@
     <section class="content__user user">
         {% if user.is_teacher %}
             {% include 'user/inc/teacher/_teacher_detail.html' %}
+            <h1 class="user__title">Журналы с тестами</h1>
+            <button class="uk-margin-bottom uk-button uk-button-default uk-width-small"
+                    hx-post="."
+                    hx-target="#journal">
+                Назад
+            </button>
+            <div id="journal" class="uk-grid-small uk-child-width-expand@s uk-text-center" uk-grid>
+                {% include 'user/inc/teacher/_journal.html' %}
+            </div>
         {% else %}
             {% include 'user/inc/student/_student_detail.html' %}
         {% endif %}

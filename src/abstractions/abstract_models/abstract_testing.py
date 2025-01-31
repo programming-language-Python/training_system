@@ -4,7 +4,6 @@ from django.db import models
 from django.db.models import OneToOneRel, ManyToManyRel, ManyToOneRel
 
 from abstractions.abstract_fields import AbstractFieldTitle
-from apps.user.models import StudentGroup, Teacher
 
 
 class AbstractTesting(AbstractFieldTitle):
@@ -40,17 +39,20 @@ class AbstractTesting(AbstractFieldTitle):
         default=None,
         verbose_name='Время выполнения задачи'
     )
-    student_groups = models.ManyToManyField(
-        StudentGroup,
-        blank=True,
+    journal = models.ForeignKey(
+        'user.Journal',
         related_name=RELATED_NAME,
-        verbose_name='Группы студентов'
-    )
-    teacher = models.ForeignKey(
-        Teacher,
         on_delete=models.CASCADE,
+        verbose_name='Журнал'
+    )
+    max_score = models.ForeignKey(
+        'base_testing.MaxScore',
         related_name=RELATED_NAME,
-        verbose_name='Преподаватель'
+        blank=True,
+        null=True,
+        default=None,
+        on_delete=models.CASCADE,
+        verbose_name='Максимальный балл'
     )
 
     def __str__(self):
@@ -60,7 +62,7 @@ class AbstractTesting(AbstractFieldTitle):
         return self.task_lead_time
 
     def get_fields_data(self) -> Mapping[str, str]:
-        exclude = ['id', 'teacher', 'date_of_deletion', 'max_score', ]
+        exclude = ['id', 'teacher', 'date_of_deletion', 'max_score', 'journal', ]
         exclude_types = (OneToOneRel, ManyToOneRel, ManyToManyRel)
         fields_data = {}
         for field in self._meta.get_fields():

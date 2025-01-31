@@ -11,6 +11,11 @@ class AbstractSolvingTask(models.Model):
         null=True,
         verbose_name='Начало прохождения'
     )
+    end_passage = models.DateTimeField(
+        blank=True,
+        null=True,
+        verbose_name='Конец прохождения'
+    )
     lead_time = models.TimeField(
         blank=True,
         null=True,

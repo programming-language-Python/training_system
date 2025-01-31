@@ -7,7 +7,7 @@ from .views.testing_views import TestingCreateView, TestingListView, TestingDeta
 
 app_name = 'testing_by_code'
 urlpatterns = [
-    path('create/', TestingCreateView.as_view(), name='testing_create'),
+    path('journal/<journal_pk>/create/', TestingCreateView.as_view(), name='testing_create'),
     path('testing_list/', TestingListView.as_view(), name='testing_list'),
     path('<pk>/detail/', TestingDetailView.as_view(), name='testing_detail'),
     path('<pk>/update/', TestingUpdateView.as_view(), name='testing_update'),

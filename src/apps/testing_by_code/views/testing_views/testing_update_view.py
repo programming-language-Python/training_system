@@ -1,11 +1,10 @@
-from django.views.generic import UpdateView
-
+from abstractions.abstract_views import AbstractTestingUpdateView
+from apps.testing_by_code.constants import APP_NAME
 from apps.testing_by_code.forms import TestingForm
 from apps.testing_by_code.models import Testing
-from mixins import LoginMixin
 
 
-class TestingUpdateView(LoginMixin, UpdateView):
+class TestingUpdateView(AbstractTestingUpdateView):
+    APP_NAME = APP_NAME
     model = Testing
     form_class = TestingForm
-    template_name = 'testing_update.html'

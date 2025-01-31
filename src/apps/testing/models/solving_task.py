@@ -3,7 +3,6 @@ from django.db.models import QuerySet, Case, When, BooleanField, Value
 
 from abstractions.abstract_models import AbstractSolvingTask
 from apps.testing.constants import APP_NAME
-from apps.testing.models import Task, SolvingTesting
 from apps.testing.types import TaskType
 
 
@@ -11,13 +10,13 @@ class SolvingTask(AbstractSolvingTask):
     RELATED_NAME = 'solving_task_set'
 
     task = models.ForeignKey(
-        Task,
+        'Task',
         on_delete=models.CASCADE,
         related_name=RELATED_NAME,
         verbose_name='Задача'
     )
     solving_testing = models.ForeignKey(
-        SolvingTesting,
+        'SolvingTesting',
         on_delete=models.CASCADE,
         related_name=RELATED_NAME,
         verbose_name='Решение тестирования'

@@ -18,5 +18,5 @@ class LoginUser(LoginView):
     def get_success_url(self) -> reverse_lazy:
         kwargs = {'pk': self.request.user.pk}
         if self.request.user.is_teacher():
-            return reverse_lazy(f'{APP_NAME}:teacher_detail', kwargs=kwargs)
+            return reverse_lazy(f'{APP_NAME}:teacher')
         return reverse_lazy(f'{APP_NAME}:student_detail', kwargs=kwargs)

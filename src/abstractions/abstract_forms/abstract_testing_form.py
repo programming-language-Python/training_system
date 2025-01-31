@@ -1,20 +1,7 @@
 from django import forms
 
-from apps.user.models import StudentGroup
-
 
 class AbstractTestingForm(forms.ModelForm):
-    student_groups = forms.ModelMultipleChoiceField(
-        label='Группы студентов',
-        required=False,
-        widget=forms.CheckboxSelectMultiple(
-            attrs={
-                'name': 'student_group',
-            }
-        ),
-        queryset=StudentGroup.objects.all()
-    )
-
     class Meta:
         widgets = {
             'title': forms.TextInput(attrs={

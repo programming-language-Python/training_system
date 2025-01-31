@@ -3,11 +3,10 @@ from typing import Type
 from django.forms import inlineformset_factory, ModelForm
 from django.shortcuts import redirect
 
-from apps.testing.types import InlineFormSetFactory
-from mixins import LoginMixin
+from custom_types import InlineFormSetFactory
 
 
-class AbstractFormSetView(LoginMixin):
+class AbstractFormSetView:
     form_set: Type[ModelForm] | Type[inlineformset_factory]
     template_name: str
     answer_options_template_name: str

@@ -1,11 +1,12 @@
-from dataclasses import dataclass, fields
+from dataclasses import dataclass
 from datetime import datetime, time
 from enum import Enum
-from typing import Sequence, Type, TypeAlias, Iterable
+from typing import Sequence, Type, TypeAlias
 
-from django.forms import ModelForm, inlineformset_factory
+from django.forms import ModelForm
 
 from apps.testing.constants import APP_NAME
+from custom_types import InlineFormSetFactory
 
 Id: TypeAlias = int | str
 
@@ -29,22 +30,6 @@ class TaskType(str, Enum):
     def url_js(self) -> str:
         """Возвращает путь к JavaScript-файлу для данного типа."""
         return f'js/{self.en_value}.js'
-
-
-@dataclass
-class InlineFormSetFactory:
-    form: ModelForm
-    form_set: ModelForm | Type[inlineformset_factory]
-    additional_form: ModelForm | None = None
-
-    @property
-    def forms(self) -> Iterable:
-        forms = []
-        for field in fields(self):
-            field_value = getattr(self, field.name)
-            if field_value:
-                forms.append(field_value)
-        return forms
 
 
 @dataclass

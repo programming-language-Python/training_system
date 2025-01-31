@@ -1,16 +1,12 @@
 from django import forms
 
 from abstractions.abstract_forms import AbstractTestingForm
-from apps.testing.constants import MIN_ASSESSMENT_THRESHOLD, MAX_ASSESSMENT_THRESHOLD, MAX_PROBABILITY_OF_GUESSING
+from apps.base_testing.constants import MIN_ASSESSMENT_THRESHOLD, MAX_ASSESSMENT_THRESHOLD
+from apps.testing.constants import MAX_PROBABILITY_OF_GUESSING
 from apps.testing.models import Testing
 
 
 class TestingForm(AbstractTestingForm):
-    def __init__(self, *args, **kwargs):
-        super(TestingForm, self).__init__(*args, **kwargs)
-        student_groups_value = self.fields.pop('student_groups')
-        self.fields['student_groups'] = student_groups_value
-
     class Meta(AbstractTestingForm.Meta):
         CLASS = 'uk-margin-small uk-input uk-width-small'
         model = Testing
@@ -30,4 +26,4 @@ class TestingForm(AbstractTestingForm):
                 'max': MAX_ASSESSMENT_THRESHOLD,
             }),
         }
-        exclude = ['teacher', 'date_of_deletion', 'max_score', ]
+        exclude = ('date_of_deletion', 'max_score', 'journal')

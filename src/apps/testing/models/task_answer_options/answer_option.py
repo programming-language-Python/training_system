@@ -15,7 +15,7 @@ class AnswerOption(AbstractFieldSerialNumber, AbstractFieldDescription):
     )
 
     def get_fields(self):
-        from apps.testing.services import get_model_fields
+        from services import get_model_fields
         return get_model_fields(
             model=self,
             excluded_fields=['id', 'task']

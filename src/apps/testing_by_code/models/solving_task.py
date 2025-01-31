@@ -2,7 +2,6 @@ from django.db import models
 
 from abstractions.abstract_models import AbstractSolvingTask
 from apps.testing_by_code.constants import APP_NAME
-from apps.testing_by_code.models import SolvingTesting, Task
 
 
 class SolvingTask(AbstractSolvingTask):
@@ -14,13 +13,13 @@ class SolvingTask(AbstractSolvingTask):
         verbose_name='Правильный ответ'
     )
     solving_testing = models.ForeignKey(
-        SolvingTesting,
+        'SolvingTesting',
         related_name=RELATED_NAME,
         on_delete=models.CASCADE,
         verbose_name='Тестирование'
     )
     task = models.ForeignKey(
-        Task,
+        'Task',
         related_name=RELATED_NAME,
         on_delete=models.CASCADE,
         verbose_name='Задача'

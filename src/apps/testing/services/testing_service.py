@@ -1,24 +1,13 @@
 from datetime import datetime
-from typing import Sequence, Iterable, Type
+from typing import Sequence, Iterable
 
 from django.shortcuts import redirect
 
-from apps.testing.forms import MaxScoreForm, TestingForm
-from apps.testing.models import SolvingTesting, SolvingTask, Testing, Task, MaxScore
+from apps.testing.models import SolvingTesting, SolvingTask, Testing, Task
 from apps.testing.services import TaskFormService, TaskService
 from apps.testing.types import SolvingTestingData, SolvingTaskEntity, Id
 from apps.testing_by_code.utils.utils import round_up
 from apps.user.models import Student
-
-
-def update_testing(form: Type[Type[TestingForm]], max_score_form: MaxScoreForm):
-    if max_score_form.changed_data:
-        testing = form.save(commit=False)
-        max_score, _ = MaxScore.objects.get_or_create(**max_score_form.cleaned_data)
-        testing.max_score = max_score
-        testing.save()
-    else:
-        form.save()
 
 
 class TestingService:

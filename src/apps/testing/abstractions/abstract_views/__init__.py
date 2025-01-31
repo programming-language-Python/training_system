@@ -1,5 +1,4 @@
 from .abstract_task_view import AbstractTaskView
-from .abstract_form_set_view import AbstractFormSetView
 from .abstract_task_create_or_update_view import AbstractTaskCreateOrUpdateView
 from .abstract_task_create_view import AbstractTaskCreateView
 from .abstract_task_detail_view import AbstractTaskDetailView

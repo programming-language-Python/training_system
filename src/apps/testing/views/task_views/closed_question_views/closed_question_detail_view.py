@@ -2,7 +2,7 @@ from typing import MutableMapping
 
 from apps.testing.abstractions.abstract_views import AbstractTaskDetailView
 from apps.testing.models.task_answer_options import AnswerOption
-from apps.testing.services import get_model_fields
+from services import get_model_fields
 
 
 class ClosedQuestionDetailView(AbstractTaskDetailView):

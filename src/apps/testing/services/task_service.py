@@ -12,7 +12,8 @@ from apps.testing.models import Testing, Task, SolvingTask
 from apps.testing.services import ClosedQuestionService, OpenQuestionService
 from apps.testing.services.closed_question_service import closed_question_set_answer
 from apps.testing.services.open_question_service import open_question_set_answer
-from apps.testing.types import ValidTask, InlineFormSetFactory, TaskType, Id
+from apps.testing.types import ValidTask, TaskType, Id
+from custom_types import InlineFormSetFactory
 
 
 def update_tasks_serial_number(tasks_data: QueryDict) -> None:

@@ -2,7 +2,6 @@ from django.db import models
 
 from abstractions.abstract_fields import AbstractFieldWeight
 from abstractions.abstract_models import AbstractTask
-from apps.testing_by_code.models import Testing, Setting
 
 
 class Task(AbstractFieldWeight, AbstractTask):
@@ -13,13 +12,13 @@ class Task(AbstractFieldWeight, AbstractTask):
         verbose_name='Количество'
     )
     testing = models.ForeignKey(
-        Testing,
+        'Testing',
         related_name=RELATED_NAME,
         on_delete=models.CASCADE,
         verbose_name='Тестирование'
     )
     setting = models.ForeignKey(
-        Setting,
+        'Setting',
         related_name=RELATED_NAME,
         on_delete=models.CASCADE,
         verbose_name='Настройка'

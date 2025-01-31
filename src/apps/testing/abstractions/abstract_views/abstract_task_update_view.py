@@ -4,12 +4,13 @@ from typing import Mapping
 from django.shortcuts import redirect
 from django.views.generic import UpdateView
 
-from apps.testing.abstractions.abstract_views import AbstractFormSetView, AbstractTaskView, \
+from abstractions.abstract_views import AbstractFormSetView
+from apps.testing.abstractions.abstract_views import AbstractTaskView, \
     AbstractTaskCreateOrUpdateView
 from apps.testing.constants import APP_NAME
 from apps.testing.services import TaskService
 from apps.testing.services.answer_option_service import AnswerOptionService
-from apps.testing.types import InlineFormSetFactory
+from custom_types import InlineFormSetFactory
 
 
 class AbstractTaskUpdateView(AbstractTaskView, AbstractTaskCreateOrUpdateView, AbstractFormSetView, UpdateView):

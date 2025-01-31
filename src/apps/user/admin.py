@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as OrigUserAdmin
 
 from . import models
-from .models import EducationalEstablishment, Teacher, Student
+from .models import EducationalEstablishment, Teacher, Student, Discipline, Journal, Semester
 
 
 @admin.register(models.User)
@@ -48,6 +48,9 @@ class StudentGroupAdmin(admin.ModelAdmin):
 admin.site.register(Teacher)
 admin.site.register(Student)
 admin.site.register(EducationalEstablishment)
+admin.site.register(Discipline)
+admin.site.register(Journal)
+admin.site.register(Semester)
 
 admin.site.site_title = 'Управление пользователями'
 admin.site.site_header = 'Управление пользователями'

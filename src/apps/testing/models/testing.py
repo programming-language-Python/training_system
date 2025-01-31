@@ -3,7 +3,8 @@ from django.db import models
 from django.urls import reverse
 
 from abstractions.abstract_models import AbstractTesting
-from apps.testing.constants import MAX_ASSESSMENT_THRESHOLD, MIN_ASSESSMENT_THRESHOLD, APP_NAME
+from apps.base_testing.constants import MAX_ASSESSMENT_THRESHOLD, MIN_ASSESSMENT_THRESHOLD
+from apps.testing.constants import APP_NAME
 
 
 class Testing(AbstractTesting):
@@ -22,11 +23,6 @@ class Testing(AbstractTesting):
             MinValueValidator(MIN_ASSESSMENT_THRESHOLD)
         ],
         verbose_name='Пороговое значение оценки'
-    )
-    max_score = models.ForeignKey(
-        'MaxScore',
-        on_delete=models.CASCADE,
-        verbose_name='Максимальный балл'
     )
 
     def get_absolute_url(self):

@@ -5,13 +5,17 @@ from django.utils.translation import gettext_lazy as _
 
 from abstractions.abstract_models import AbstractTask
 from apps.testing.constants import APP_NAME
-from apps.testing.models import Testing
 from apps.testing.types import TaskType
 from config.settings import MAX_LENGTH
 
 
 class Task(AbstractTask):
     TASKS_TYPES_CHOICES = [(type.value, _(type.value)) for type in TaskType]
+
+    correct_answer = models.CharField(
+        max_length=100,
+        verbose_name='Правильный ответ'
+    )
     type = models.CharField(
         max_length=MAX_LENGTH,
         null=False,
@@ -19,7 +23,7 @@ class Task(AbstractTask):
         verbose_name='Тип'
     )
     testing = models.ForeignKey(
-        Testing,
+        'Testing',
         on_delete=models.CASCADE,
         verbose_name='Тестирование'
     )

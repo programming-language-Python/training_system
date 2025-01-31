@@ -6,13 +6,13 @@ class Discipline(models.Model):
     semesters = models.ManyToManyField(
         'Semester',
         related_name='disciplines',
-        through='Schedule',
+        through='Journal',
         verbose_name='Семестр'
     )
     student_groups = models.ManyToManyField(
         'StudentGroup',
         related_name='disciplines',
-        through='Schedule',
+        through='Journal',
         verbose_name='Группа'
     )
 
