@@ -1,7 +1,7 @@
 from django import forms
 
-from apps.testing.constants import MIN_ASSESSMENT_THRESHOLD, MAX_ASSESSMENT_THRESHOLD
-from apps.testing.models import MaxScore
+from apps.base_testing.constants import MIN_ASSESSMENT_THRESHOLD, MAX_ASSESSMENT_THRESHOLD
+from apps.base_testing.models import MaxScore
 
 
 class MaxScoreForm(forms.ModelForm):

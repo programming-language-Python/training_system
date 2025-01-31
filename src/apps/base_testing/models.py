@@ -3,8 +3,6 @@ from typing import Iterable
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
-from apps.testing.constants import APP_NAME
-
 
 class MaxScore(models.Model):
     five = models.IntegerField(
@@ -41,11 +39,11 @@ class MaxScore(models.Model):
     )
 
     def get_fields(self) -> Iterable:
-        from apps.testing.services import get_model_fields
+        from services import get_model_fields
         return get_model_fields(
             model=self,
             excluded_fields=['id']
         )
 
     class Meta:
-        db_table = f'{APP_NAME}_max-score'
+        db_table = f'base-testing_max-score'
