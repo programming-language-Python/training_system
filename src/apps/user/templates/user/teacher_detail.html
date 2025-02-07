@@ -1,0 +1,43 @@
+{% extends "user/extends/user_detail.html" %}
+
+{% block inner_content %}
+    <h1 class="user__title">
+        <p>Добро пожаловать преподаватель</p>
+        <p>{{ user.get_full_name }}</p>
+    </h1>
+    <h1 class="user__title">Журналы с тестами</h1>
+    <ul class="uk-subnav uk-subnav-pill" uk-switcher="connect: .uk-switcher; animation: uk-animation-fade">
+        <li><a href="#">Настройка тестирований</a></li>
+        <li><a href="#">Результаты тестирований</a></li>
+    </ul>
+    <div class="uk-switcher">
+        <div>
+            <button class="uk-margin-bottom uk-button uk-button-default uk-width-small"
+                    hx-post="{% url testing_setting_journal_url %}?target={% if target %}{{ target }}{% else %}journal_1{% endif %}"
+                    hx-target="#journal_1">
+                Сбросить
+            </button>
+            <div id="journal_1" class="uk-grid-small uk-child-width-expand@s uk-text-center" uk-grid>
+                {% if target %}
+                    {% include 'user/inc/journal/_journal.html' with journal_data=journal_1_data journal_url=testing_setting_journal_url target=target %}
+                {% else %}
+                    {% include 'user/inc/journal/_journal.html' with journal_data=journal_1_data journal_url=testing_setting_journal_url target="journal_1" %}
+                {% endif %}
+            </div>
+        </div>
+        <div>
+            <button class="uk-margin-bottom uk-button uk-button-default uk-width-small"
+                    hx-post="{% url testing_result_journal_url %}?target={% if target %}{{ target }}{% else %}journal_2{% endif %}"
+                    hx-target="#journal_2">
+                Сбросить
+            </button>
+            <div id="journal_2" class="uk-grid-small uk-child-width-expand@s uk-text-center" uk-grid>
+                {% if target %}
+                    {% include 'user/inc/journal/_journal.html' with journal_data=journal_2_data journal_url=testing_result_journal_url target=target %}
+                {% else %}
+                    {% include 'user/inc/journal/_journal.html' with journal_data=journal_2_data journal_url=testing_result_journal_url target="journal_2" %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -83,7 +83,7 @@
                                     </span>
                                         {% endwith %}
                                     </h3>
-                                    {% if is_testing_by_code %}
+                                    {% if solving_testing.is_testing_by_code %}
                                         <h3>
                                             {% get_verbose_name_for_field solving_testing 'earned_weight' %}: {{ solving_testing.earned_weight }}
                                         </h3>
@@ -95,7 +95,7 @@
                                 class="content__task-student-list task-student-list uk-flex uk-flex-column uk-text-center uk-card-body"
                                 id="task-student-list">
                             <ul class="uk-child-width-1-2@m" uk-grid>
-                                {% include solving_task_list_template %}
+                                {% include solving_testing.get_solving_task_list_template %}
                             </ul>
                         </section>
                     </div>

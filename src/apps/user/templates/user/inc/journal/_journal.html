@@ -1,0 +1,11 @@
+<input type="hidden" name="selected_{{ target }}_data" value="{{ selected_journal_data }}"/>
+{% for name, values in journal_data.items %}
+    <div>
+        <div class="uk-card uk-card-default uk-card-body">
+            <h3>{{ name }}</h3>
+            <div>
+                {% include 'user/inc/journal/_items_journal.html' with objects=values.objects model_name=values.model_name %}
+            </div>
+        </div>
+    </div>
+{% endfor %}

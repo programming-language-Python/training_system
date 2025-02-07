@@ -1,9 +1,9 @@
 {% for object in objects %}
     <button class="uk-button uk-button-default uk-width-1-1 {% if objects|length == 1 %}chosen{% endif %}"
-            hx-post="."
+            hx-post="{% url journal_url %}?target={{ target }}"
             hx-vals='{"{{ model_name }}_id": "{{ object.id }}"}'
-            hx-include="[name='selected_journal_data']"
-            hx-target="#journal">
-        {{ object.name }}
+            hx-include="[name='selected_{{ target }}_data']"
+            hx-target="#{{ target }}">
+        {{ object }}
     </button>
 {% endfor %}

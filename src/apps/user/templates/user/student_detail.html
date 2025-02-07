@@ -1,0 +1,22 @@
+{% extends 'user/extends/user_detail.html' %}
+
+{% block inner_content %}
+    <h1 class="user__title">
+        <p>Добро пожаловать студент</p>
+        <p>{{ user.get_full_name }}</p>
+        группы {{ user.student.student_group }}
+    </h1>
+    <h2>Посмотреть результаты тестирований</h2>
+    <button class="uk-margin-bottom uk-button uk-button-default uk-width-small"
+            hx-post="{% url journal_url %}?target={% if target %}{{ target }}{% else %}journal{% endif %}"
+            hx-target="#journal">
+        Сбросить
+    </button>
+    <div id="journal" class="uk-grid-small uk-child-width-expand@s uk-text-center" uk-grid>
+        {% if target %}
+            {% include 'user/inc/journal/_journal.html' with target=target %}
+        {% else %}
+            {% include 'user/inc/journal/_journal.html' with target="journal" %}
+        {% endif %}
+    </div>
+{% endblock %}

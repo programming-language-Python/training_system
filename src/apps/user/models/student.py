@@ -22,19 +22,13 @@ class Student(models.Model):
     def get_absolute_url(self) -> reverse:
         return reverse(f'{APP_NAME}:student_detail', kwargs={'pk': self.pk})
 
-    def get_solving_testing_list_url(self) -> reverse:
-        return reverse(f'{APP_NAME}:student_solving_testing_list', kwargs={'pk': self.pk})
-
-    def get_solving_testing_by_code_list_url(self) -> reverse:
-        return reverse(f'{APP_NAME}:student_solving_testing_by_code_list', kwargs={'pk': self.pk})
-
     def save(self, *args, **kwargs):
         if not self.id:
             self.version_in_group = self.version_in_group if self.version_in_group else 0
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return self.user.username
+        return self.user.get_full_name()
 
     def __unicode__(self):
         return self.user.get_full_name()

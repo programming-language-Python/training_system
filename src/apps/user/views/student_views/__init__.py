@@ -1,3 +1,1 @@
-from .student_detail_view import StudentDetailView
-from .student_solving_testing_list_view import StudentSolvingTestingListView
-from .student_solving_testing_by_code_list_view import StudentSolvingTestingByCodeListView
+from .student_template_view import StudentTemplateView

@@ -1,0 +1,3 @@
+from .testing_setting_journal_view import TestingSettingJournalView
+from .testing_result_journal_view import TestingResultJournalView
+from .student_journal_view import StudentJournalView

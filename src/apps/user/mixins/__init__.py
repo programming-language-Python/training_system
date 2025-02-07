@@ -1,1 +1,0 @@
-from .student_solving_testing_list_mixin import StudentSolvingTestingListMixin

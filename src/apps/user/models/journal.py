@@ -32,4 +32,4 @@ class Journal(models.Model):
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse(f'{APP_NAME}:testing_list', kwargs={'journal_pk': self.pk})
+        return reverse(f'user:testing_list', kwargs={'journal_pk': self.pk})

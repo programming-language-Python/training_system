@@ -29,6 +29,12 @@ class AbstractSolvingTesting(models.Model):
         verbose_name='Студент'
     )
 
+    def get_solving_task_list_template(self) -> str:
+        return f'{self._meta.app_label}/inc/solving_task/_solving_task_list.html'
+
+    def is_testing_by_code(self) -> bool:
+        return True if self._meta.app_label == 'testing_by_code' else False
+
     def get_end_passage(self) -> datetime:
         return self.end_passage
 
