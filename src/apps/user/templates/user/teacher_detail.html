@@ -1,15 +1,16 @@
 {% extends "user/extends/user_detail.html" %}
 
 {% block inner_content %}
-    <h1 class="user__title">
+    <h2 class="user__title">
         <p>Добро пожаловать преподаватель</p>
         <p>{{ user.get_full_name }}</p>
-    </h1>
-    <h1 class="user__title">Журналы с тестами</h1>
+        <p>Журналы с тестами</p>
+    </h2>
     <ul class="uk-subnav uk-subnav-pill" uk-switcher="connect: .uk-switcher; animation: uk-animation-fade">
         <li><a href="#">Настройка тестирований</a></li>
-        <li><a href="#">Результаты тестирований</a></li>
+        <li><a href="#">Решённые тестирования</a></li>
     </ul>
+    <form action="" id="journal-form"></form>
     <div class="uk-switcher">
         <div>
             <button class="uk-margin-bottom uk-button uk-button-default uk-width-small"

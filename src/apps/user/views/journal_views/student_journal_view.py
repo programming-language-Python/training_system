@@ -37,11 +37,12 @@ class StudentJournalView(LoginRequiredMixin, View):
         is_one_journal = journals.count() == 1
         if is_one_journal:
             response = HttpResponse()
-            kwargs = {
-                'student_pk': request.user.student.id,
-                'journal_pk': journals.first().pk
-            }
-            response['HX-Redirect'] = reverse(f'user:solving_testing_list', kwargs=kwargs)
+            kwargs = {'journal_pk': journals.first().pk}
+            if request.POST.get('radio_testing_list', '') == 'testing_list':
+                response['HX-Redirect'] = reverse(f'user:testing_list', kwargs=kwargs)
+            else:
+                kwargs |= {'student_pk': request.user.student.id}
+                response['HX-Redirect'] = reverse(f'user:solving_testing_list', kwargs=kwargs)
             return response
 
         # Обновление данных на основе выбора пользователя
