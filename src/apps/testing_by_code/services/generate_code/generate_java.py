@@ -65,14 +65,13 @@ class GenerateJava(abstractions.Setting, abstractions.Variable):
     def get_operator(self) -> str:
         is_condition = self.setting.is_if_operator
         is_cycle = self.setting.cycle
+        if is_condition and is_cycle:
+            return self._get_random_order_of_operators()
         if is_condition:
             return self.get_condition()
         if is_cycle:
             return self.get_cycle()
-        if is_condition and is_cycle:
-            return self._get_random_order_of_operators()
-        else:
-            return ''
+        return ''
 
     def _get_random_order_of_operators(self) -> str:
         operators = [self.get_condition(), self.get_cycle()]
