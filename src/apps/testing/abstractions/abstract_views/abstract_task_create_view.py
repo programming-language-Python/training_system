@@ -21,7 +21,7 @@ class AbstractTaskCreateView(AbstractTaskView, AbstractTaskCreateOrUpdateView, A
         context = super().get_context_data(**kwargs)
         context |= self._get_answer_option_context_data()
         context |= {
-            'btn_text': 'Создать ответ',
+            'btn_text': 'Создать задачу',
             'task_type': TaskType(self.kwargs['type']),
             'additional_form': self.additional_form,
             'answer_options_template_name': self.answer_options_template_name
