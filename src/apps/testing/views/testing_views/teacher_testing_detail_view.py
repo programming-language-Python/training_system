@@ -12,8 +12,8 @@ from apps.testing.types import TaskType
 from mixins import ContextMixin, LoginMixin
 
 
-class TestingDetailTeacherView(LoginMixin, ContextMixin, DetailView):
-    template_name = 'testing/testing_detail_teacher.html'
+class TeacherTestingDetailView(LoginMixin, ContextMixin, DetailView):
+    template_name = 'testing/teacher_testing_detail.html'
     model = Testing
     APP_NAME = APP_NAME
 

@@ -8,8 +8,7 @@ from abstractions.abstract_views import AbstractFormSetView
 from apps.testing.abstractions.abstract_views import AbstractTaskView, \
     AbstractTaskCreateOrUpdateView
 from apps.testing.constants import APP_NAME
-from apps.testing.services import TaskService
-from apps.testing.services.answer_option_service import AnswerOptionService
+from apps.testing.services import AnswerOptionService, TaskService
 from custom_types import InlineFormSetFactory
 
 

@@ -1,5 +1,5 @@
 from .testing_create_view import TestingCreateView
-from .testing_detail_teacher_view import TestingDetailTeacherView
-from .testing_detail_student_view import TestingDetailStudentView
+from .teacher_testing_detail_view import TeacherTestingDetailView
+from .student_solving_testing_detail_view import StudentSolvingTestingDetailView
 from .testing_update_view import TestingUpdateView
 from .testing_delete_view import TestingDeleteView

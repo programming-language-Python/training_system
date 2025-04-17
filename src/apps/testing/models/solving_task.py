@@ -9,6 +9,7 @@ from apps.testing.types import TaskType
 class SolvingTask(AbstractSolvingTask):
     RELATED_NAME = 'solving_task_set'
 
+    answer = models.JSONField(null=True, blank=True, verbose_name='Ответ')
     task = models.ForeignKey(
         'Task',
         on_delete=models.CASCADE,
@@ -22,10 +23,6 @@ class SolvingTask(AbstractSolvingTask):
         verbose_name='Решение тестирования'
     )
 
-    def set_answer(self, answer: list) -> None:
-        self.answer = ', '.join(answer)
-        self.save()
-
     @property
     def selected_answer_options_template(self) -> str:
         return f'testing/inc/selected_answer_options/_selected_answer_options_{self.task.en_type}.html'
@@ -37,13 +34,17 @@ class SolvingTask(AbstractSolvingTask):
             case TaskType.CLOSED_QUESTION:
                 return task.answer_option_set.all().annotate(
                     is_selected=Case(
-                        When(id__in=self.answer.split(', '), then=Value(True)),
+                        When(id__in=self.answer, then=Value(True)),
                         default=Value(False),
                         output_field=BooleanField()
                     )
                 )
+            case TaskType.SEQUENCING:
+                preserved = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(self.answer)])
+                return task.answer_option_set.filter(pk__in=self.answer).order_by(preserved)
             case TaskType.OPEN_QUESTION:
                 return self.answer
 
     class Meta:
         db_table = f'{APP_NAME}_solving-task'
+        ordering = ('task__serial_number',)

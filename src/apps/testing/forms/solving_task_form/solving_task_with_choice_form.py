@@ -7,7 +7,7 @@ class SolvingTaskWithChoiceForm(SolvingTaskForm):
     answer = forms.MultipleChoiceField(
         label='Варианты ответов',
         required=False,
-        widget=forms.CheckboxSelectMultiple
+        widget=forms.CheckboxSelectMultiple()
     )
 
     class Meta(SolvingTaskForm.Meta):

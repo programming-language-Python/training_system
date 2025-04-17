@@ -1,0 +1,13 @@
+<ul id="answer-options" name="answer-options" uk-sortable="handle: .uk-sortable-handle">
+    {% for answer_option_forms in form %}
+        {% for answer_option_form in answer_option_forms %}
+            <li name="answer-option" class="uk-grid-small" uk-grid>
+                <span name="sort-sign" class="uk-width-small uk-sortable-handle" uk-icon="icon: table"></span>
+                {{ answer_option_form }}
+                <div class="uk-width-small">{{ answer_option_form.serial_number }}</div>
+                <div class="uk-width-expand">{{ answer_option_form.description }}</div>
+                <div class="uk-width-small">{{ answer_option_form.is_correct }}</div>
+            </li>
+        {% endfor %}
+    {% endfor %}
+</ul>

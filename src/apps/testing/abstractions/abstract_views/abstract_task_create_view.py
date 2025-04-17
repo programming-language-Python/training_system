@@ -7,9 +7,7 @@ from django.views.generic import CreateView
 from abstractions.abstract_views import AbstractFormSetView
 from apps.testing.abstractions.abstract_views import AbstractTaskView, \
     AbstractTaskCreateOrUpdateView
-from apps.testing.constants import APP_NAME
-from apps.testing.services import TaskService
-from apps.testing.services.answer_option_service import AnswerOptionService
+from apps.testing.services import AnswerOptionService, TaskService
 from apps.testing.types import ValidTask, TaskType
 from custom_types import InlineFormSetFactory
 
@@ -53,4 +51,4 @@ class AbstractTaskCreateView(AbstractTaskView, AbstractTaskCreateOrUpdateView, A
         )
         task_service = TaskService()
         task_service.create(valid_task)
-        return redirect(f'{APP_NAME}:testing_detail', pk=self.kwargs['testing_pk'])
+        return redirect(f'testing:teacher_testing_detail', pk=self.kwargs['testing_pk'])

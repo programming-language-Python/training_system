@@ -1,18 +1,8 @@
 from django.core.handlers.wsgi import WSGIRequest
-
-from apps.testing.services import TestingService
-from apps.testing.views.testing_views import TestingDetailTeacherView, TestingDetailStudentView
+from django.shortcuts import redirect
 
 
-def show_testing_detail_view(request: WSGIRequest, pk: int):
+def redirect_testing_detail_view(request: WSGIRequest, testing_pk: int):
     if request.user.is_teacher():
-        return TestingDetailTeacherView.as_view()(request, pk=pk)
-    else:
-        student = request.user.student
-        testing_service = TestingService(testing_pk=pk, student=student)
-        solving_testing_data = testing_service.start_testing()
-        return TestingDetailStudentView.as_view(
-            testing_service=testing_service,
-            form_list=solving_testing_data.task_forms,
-            initial_dict=solving_testing_data.task_form_data
-        )(request)
+        return redirect(f'testing:teacher_testing_detail', pk=testing_pk)
+    return redirect(f'testing:student_testing_detail', testing_pk=testing_pk)

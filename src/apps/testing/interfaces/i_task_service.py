@@ -1,8 +1,14 @@
-from typing import Protocol, Iterable
+from typing import Protocol, Iterable, Type
 
-from apps.testing.models.task_answer_options import AnswerOption
+from django.forms import ModelForm
+
+from apps.testing.types import Id
 
 
 class ITaskService(Protocol):
-    def get_answer_options(self) -> Iterable[AnswerOption]:
-        pass
+    def get_weight(self, answer: Iterable[Id] | str) -> int:
+        raise NotImplementedError
+
+    @property
+    def solving_form(self) -> Type[ModelForm]:
+        raise NotImplementedError

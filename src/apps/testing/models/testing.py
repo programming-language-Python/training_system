@@ -4,7 +4,6 @@ from django.urls import reverse
 
 from abstractions.abstract_models import AbstractTesting
 from apps.base_testing.constants import MAX_ASSESSMENT_THRESHOLD, MIN_ASSESSMENT_THRESHOLD
-from apps.testing.constants import APP_NAME
 
 
 class Testing(AbstractTesting):
@@ -26,7 +25,7 @@ class Testing(AbstractTesting):
     )
 
     def get_absolute_url(self):
-        return reverse(f'{APP_NAME}:testing_detail', kwargs={'pk': self.pk})
+        return reverse(f'testing:testing_detail', kwargs={'testing_pk': self.pk})
 
     def is_solving_testing_set(self) -> bool:
         return self.testing_solving_testing_set.exists()
