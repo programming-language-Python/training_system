@@ -25,6 +25,7 @@ class SolvingTestingListView(TemplateView):
     def _get_testings(self):
         models = [SolvingTesting, SolvingTestingByCode]
         orm_filter = {
+            'end_passage__isnull': False,
             'testing__journal': self.kwargs['journal_pk'],
             'student': self.kwargs['student_pk'],
         }
