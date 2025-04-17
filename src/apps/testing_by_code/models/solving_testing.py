@@ -5,7 +5,7 @@ from django.db import models
 
 from abstractions.abstract_models.abstract_solving_testing import AbstractSolvingTesting
 from apps.testing_by_code.constants import APP_NAME
-from apps.testing_by_code.utils.utils import round_up
+from utils import round_up
 
 
 class SolvingTesting(AbstractSolvingTesting):

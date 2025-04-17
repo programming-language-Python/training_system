@@ -2,10 +2,6 @@ import re
 from typing import Mapping
 
 
-def round_up(num: [int, float]) -> int:
-    return int(num + (0.5 if num > 0 else -0.5))
-
-
 def write_to_file(name: str, text: str) -> None:
     with open(name, 'w') as file:
         file.write(text)
