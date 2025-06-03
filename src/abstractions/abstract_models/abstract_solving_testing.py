@@ -29,6 +29,9 @@ class AbstractSolvingTesting(models.Model):
         verbose_name='Студент'
     )
 
+    def __str__(self):
+        return self.testing.title
+
     def get_solving_task_list_template(self) -> str:
         return f'{self._meta.app_label}/inc/solving_task/_solving_task_list.html'
 
