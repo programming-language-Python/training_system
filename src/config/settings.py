@@ -52,8 +52,6 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'pwa',
     'django_ckeditor_5',
-    'crispy_forms',
-    'formtools'
 ]
 
 MIDDLEWARE = [
