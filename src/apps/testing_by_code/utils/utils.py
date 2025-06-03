@@ -2,11 +2,6 @@ import re
 from typing import Mapping
 
 
-def write_to_file(name: str, text: str) -> None:
-    with open(name, 'w') as file:
-        file.write(text)
-
-
 def add_tabs(text: str) -> str:
     return '\n'.join(f'\t{word}' for word in text.split('\n'))
 
