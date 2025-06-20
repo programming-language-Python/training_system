@@ -8,10 +8,11 @@
 
 {% block content %}
     {% include "inc/_testing_settings.html" %}
-    <form id="solving-testing-form" action="{% url 'testing:student_testing_detail' testing_pk %}" method="post">
+    <form id="solving-testing-form" action="{% url 'testing:student_testing_detail' testing.pk %}" method="post">
         {% csrf_token %}
-        {% include "testing/inc/testing/_timer.html" %}
-        <button name="complete" type="submit" value="true">Завершить тестирование</button>
+        {% if testing.task_lead_time %}
+            {% include "testing/inc/testing/_timer.html" %}
+        {% endif %}
         <input name="current_page" type="hidden" value="{{ page_obj.number }}">
         {% for solving_task in solving_tasks %}
             <p>Задача №{{ solving_task.task.serial_number }}</p>
@@ -52,5 +53,8 @@
                 </ul>
             </nav>
         {% endif %}
+        <button class="uk-button uk-button-primary" name="complete" type="submit" value="true">
+            Завершить тестирование
+        </button>
     </form>
 {% endblock %}

@@ -4,7 +4,7 @@ from django.db.models import QuerySet
 from django.http import HttpRequest, HttpResponse
 from django.views.generic import ListView
 
-from apps.testing.models import SolvingTask
+from apps.testing.models import SolvingTask, Testing
 from apps.testing.services import TestingService
 from apps.testing.types import TaskType
 from mixins import LoginMixin
@@ -22,10 +22,14 @@ class StudentSolvingTestingDetailView(LoginMixin, ListView):
         current_page = int(self.request.GET.get('page', 1))
         index_solving_task = current_page - 1
         solving_task = self.get_queryset()[index_solving_task]
-        context['form'] = solving_task.task.service.get_solving_form(
-            solving_testing_pk=self.testing_service.solving_testing.pk,
-        )
-        context['testing_pk'] = self.kwargs['testing_pk']
+        testing = Testing.objects.get(pk=self.kwargs['testing_pk'])
+        context |= {
+            'form': solving_task.task.service.get_solving_form(
+                solving_testing_pk=self.testing_service.solving_testing.pk,
+            ),
+            'testing': testing,
+            'quantity_task': testing.task_set.all().count(),
+        }
         return context
 
     def dispatch(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:

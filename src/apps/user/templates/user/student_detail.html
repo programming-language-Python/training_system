@@ -1,4 +1,35 @@
 {% extends 'user/extends/user_detail.html' %}
+{% load static %}
+
+{% block head_script %}
+    <script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script type="text/javascript" language="javascript"
+            src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" language="javascript"
+            src="https://cdn.datatables.net/1.11.5/js/dataTables.uikit.min.js"></script>
+    <script type="text/javascript" class="init">
+        $(document).ready(function () {
+            $('.uk-table').DataTable({
+                "language": {
+                    "search": "Поиск:"
+                },
+                //~ dom: "<'bottom'flp><'clear'>i",
+                serverSide: false,
+                ordering: true,
+                searching: true,
+                //~ data:           data,
+                deferRender: false,
+                scrollY: 400,
+                scrollCollapse: false,
+                scroller: false,
+                stateSave: false,
+                paging: false,
+                info: false,
+                order: [[0, "desc"]]
+            });
+        });
+    </script>
+{% endblock %}
 
 {% block inner_content %}
     <h2 class="user__title">
@@ -6,27 +37,52 @@
         <p>{{ user.get_full_name }}</p>
         группы {{ user.student.student_group }}
     </h2>
-    <h2>Посмотреть результаты тестирований</h2>
-    <button class="uk-margin-bottom uk-button uk-button-default uk-width-small"
-            hx-post="{% url journal_url %}?target={% if target %}{{ target }}{% else %}journal{% endif %}"
-            hx-target="#journal">
-        Сбросить
-    </button>
-    <div class="uk-margin">
-        <form action="" id="journal-form"></form>
-        <div class="uk-form-controls uk-form-controls-text">
-            <label><input form="journal-form" class="uk-radio" type="radio" name="radio_testing_list"
-                          value="testing_list" checked>Доступные
-                тестирования</label>
-            <label><input form="journal-form" class="uk-radio" type="radio" name="radio_testing_list"
-                          value="solving_testing_list">Решённые тестирования</label>
-        </div>
-    </div>
-    <div id="journal" class="uk-grid-small uk-child-width-expand@s uk-text-center" uk-grid>
-        {% if target %}
-            {% include 'user/inc/journal/_journal.html' with target=target %}
-        {% else %}
-            {% include 'user/inc/journal/_journal.html' with target="journal" %}
-        {% endif %}
-    </div>
+
+    <h2>Доступные тестирования</h2>
+    <table class="uk-table uk-table-small uk-table-divider uk-table-hover">
+        <thead>
+        <tr>
+            <th class="uk-text-center">Семестр</th>
+            <th class="uk-text-center">Дисциплина</th>
+            <th class="uk-text-center">Преподаватель</th>
+            <th class="uk-text-center">Наименование</th>
+            <th class="uk-text-center">Дата добавления</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for testing in testings %}
+            <tr onclick="document.location = '{{ testing.get_absolute_url }}';">
+                {% with testing.journal as journal %}
+                    <td>{{ testing.journal.semester }}</td>
+                    <td>{{ testing.journal.discipline }}</td>
+                    <td>{{ testing.journal.teacher }}</td>
+                {% endwith %}
+                <td>{{ testing.title }}</td>
+                <td><span
+                        style="display: none">{{ testing.date_of_creation|date:"Ymd" }}</span>{{ testing.date_of_creation }}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Завершённые тестирования</h2>
+    <table class="uk-table uk-table-small uk-table-divider uk-table-hover" uk-accordion="multiple: true">
+        <thead>
+        <tr>
+            <th>Семестр</th>
+            <th>Дисциплина</th>
+            <th>Преподаватель</th>
+            <th>Наименование</th>
+            <th>Время начала</th>
+            <th>Время окончания</th>
+            <th>Оценка</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for solving_testing in solving_testings %}
+            {% include 'user/inc/solving_testing/_student_solving_testing_detail.html' %}
+        {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

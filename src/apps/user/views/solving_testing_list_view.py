@@ -22,17 +22,17 @@ class SolvingTestingListView(TemplateView):
         }
         return context
 
-    def _get_testings(self):
+    def _get_testings(self) -> list:
         models = [SolvingTesting, SolvingTestingByCode]
         orm_filter = {
             'end_passage__isnull': False,
-            'testing__journal': self.kwargs['journal_pk'],
             'student': self.kwargs['student_pk'],
         }
         testings = [model.objects.filter(**orm_filter) for model in models]
+        sorting_field = 'start_passage'
         sorted_testings = sorted(
             chain(*testings),
-            key=attrgetter('start_passage'),
+            key=attrgetter(sorting_field),
             reverse=True,
         )
         return sorted_testings
