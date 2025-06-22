@@ -1,4 +1,4 @@
-from typing import Type
+from typing import Type, Iterable
 
 from django.apps import apps
 from django.forms import inlineformset_factory, ModelForm
@@ -6,8 +6,8 @@ from django.http import QueryDict
 from django.shortcuts import get_object_or_404
 
 from apps.testing.constants import APP_NAME
-from apps.testing.models import Testing
-from apps.testing.types import ValidTask
+from apps.testing.models import Testing, SolvingTask
+from apps.testing.types import ValidTask, Id
 from custom_types import InlineFormSetFactory
 
 
@@ -59,3 +59,9 @@ class TaskService:
             task.service.update(cleaned_data=task_forms.additional_form.cleaned_data)
         except AttributeError:
             pass
+
+    @staticmethod
+    def save_answer(solving_task: SolvingTask, answer: str | Iterable[Id]) -> None:
+        solving_task.answer = answer
+        solving_task.score = solving_task.task.service.get_score(answer)
+        solving_task.save()

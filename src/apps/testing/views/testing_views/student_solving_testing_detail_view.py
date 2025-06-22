@@ -5,7 +5,7 @@ from django.http import HttpRequest, HttpResponse
 from django.views.generic import ListView
 
 from apps.testing.models import SolvingTask, Testing
-from apps.testing.services import TestingService
+from apps.testing.services import TestingService, TaskService
 from apps.testing.types import TaskType
 from mixins import LoginMixin
 
@@ -51,10 +51,11 @@ class StudentSolvingTestingDetailView(LoginMixin, ListView):
         solving_task = self.get_queryset()[index_solving_task]
 
         if solving_task.task.task_type == TaskType.OPEN_QUESTION:
-            solving_task.answer = self.request.POST.get('answer')
+            answer = self.request.POST.get('answer')
         else:
-            solving_task.answer = self.request.POST.getlist('answer')
-        solving_task.save()
+            answer = self.request.POST.getlist('answer')
+        task_service = TaskService()
+        task_service.save_answer(solving_task, answer)
 
         is_last_page = int(self.request.POST.get('current_page')) == context['paginator'].num_pages
         if is_last_page:

@@ -1,12 +1,11 @@
 from datetime import datetime
-from typing import Iterable
 
-from django.db.models import QuerySet
+from django.db.models import QuerySet, Sum
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import redirect
 
 from apps.testing.models import SolvingTesting, SolvingTask, Testing
-from apps.testing.types import SolvingTaskEntity, Id
+from apps.testing.types import SolvingTaskEntity
 from apps.user.models import Student
 from utils import round_up
 
@@ -62,15 +61,7 @@ class TestingService:
         return redirect('user:home')
 
     def _get_assessment(self) -> float:
-        earned_weight = self._get_earned_weight()
-        assessment = round_up(earned_weight / self.solving_testing.solving_task_set.count() * 5)
+        solving_tasks = self.solving_testing.solving_task_set
+        earned_score = solving_tasks.aggregate(Sum('score'))['score__sum']
+        assessment = round_up(earned_score / solving_tasks.count() * 5)
         return assessment
-
-    def _get_earned_weight(self) -> int:
-        answer: str | Iterable[Id]
-        earned_weight = 0
-        for solving_task in self.solving_testing.solving_task_set.all():
-            earned_weight += solving_task.task.service.get_weight(
-                answer=solving_task.answer
-            )
-        return earned_weight
