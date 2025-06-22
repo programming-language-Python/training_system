@@ -11,7 +11,7 @@ class SequencingService(AbstractTaskWithChoiceService):
         form.base_fields['answer'].choices = self._get_answer_field_choices()
         return self.initialize_solving_form(form, solving_testing_pk)
 
-    def get_weight(self, answer: Iterable[Id]) -> int:
+    def get_score(self, answer: Iterable[Id]) -> int:
         user_answer = list(map(int, answer))
         correct_answers = list(
             self.task.answer_option_set.filter(

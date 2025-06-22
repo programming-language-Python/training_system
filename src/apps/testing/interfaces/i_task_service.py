@@ -6,7 +6,7 @@ from apps.testing.types import Id
 
 
 class ITaskService(Protocol):
-    def get_weight(self, answer: Iterable[Id] | str) -> int:
+    def get_score(self, answer: Iterable[Id] | str) -> int:
         raise NotImplementedError
 
     @property

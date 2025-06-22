@@ -10,6 +10,7 @@ class SolvingTask(AbstractSolvingTask):
     RELATED_NAME = 'solving_task_set'
 
     answer = models.JSONField(null=True, blank=True, verbose_name='Ответ')
+    score = models.FloatField(default=0.0, verbose_name='Балл')
     task = models.ForeignKey(
         'Task',
         on_delete=models.CASCADE,

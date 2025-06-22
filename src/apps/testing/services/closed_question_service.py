@@ -19,7 +19,7 @@ class ClosedQuestionService(AbstractTaskWithChoiceService):
         closed_question.is_partially_correct_execution = cleaned_data['is_partially_correct_execution']
         closed_question.save()
 
-    def get_weight(self, answer: Iterable[Id]) -> int:
+    def get_score(self, answer: Iterable[Id]) -> int:
         answer_options = self.task.answer_option_set
         quantity_correct_answers = answer_options.filter(
             is_correct=True

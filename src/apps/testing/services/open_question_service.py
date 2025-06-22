@@ -5,7 +5,7 @@ from apps.testing.forms.solving_task_form import SolvingTaskForm
 
 
 class OpenQuestionService(AbstractTaskService):
-    def get_weight(self, answer: str) -> int:
+    def get_score(self, answer: str) -> int:
         is_correct_answer = self.task.open_question_answer_option_set.filter(
             correct_answer=answer
         ).exists()
