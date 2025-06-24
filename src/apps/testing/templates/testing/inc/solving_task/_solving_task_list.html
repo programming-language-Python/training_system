@@ -25,7 +25,11 @@
                     {{ solving_task.task.description|safe }}
                 </p>
                 <h4>Ответ студента:</h4>
-                {% include solving_task.selected_answer_options_template %}
+                {% if solving_task.selected_answer_options %}
+                    {% include solving_task.selected_answer_options_template %}
+                {% else %}
+                    <p class="error">Ответ не выбран</p>
+                {% endif %}
             </div>
         </div>
     </div>

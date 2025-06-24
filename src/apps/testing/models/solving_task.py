@@ -29,7 +29,9 @@ class SolvingTask(AbstractSolvingTask):
         return f'testing/inc/selected_answer_options/_selected_answer_options_{self.task.en_type}.html'
 
     @property
-    def selected_answer_options(self) -> str | QuerySet:
+    def selected_answer_options(self) -> None | str | QuerySet:
+        if not self.answer:
+            return None
         task = self.task
         match task.type:
             case TaskType.CLOSED_QUESTION:

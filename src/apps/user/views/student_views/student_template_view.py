@@ -2,6 +2,7 @@ from itertools import chain
 from operator import attrgetter
 from typing import Mapping
 
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.views.generic import TemplateView
 
 from apps.testing.models import SolvingTesting, Testing
@@ -11,12 +12,32 @@ from mixins import LoginMixin
 
 class StudentTemplateView(LoginMixin, TemplateView):
     template_name = 'user/student_detail.html'
+    paginate_by = 10
 
     def get_context_data(self, **kwargs) -> Mapping:
         context = super().get_context_data(**kwargs)
+
+        testings = self._get_testings()
+        testings_paginator = Paginator(testings, self.paginate_by)
+        testings_page_number = self.request.GET.get('page_testings', 1)
+        testings_page = self._get_page(
+            paginator=testings_paginator,
+            number=testings_page_number
+        )
+
+        solving_testings = self._get_solving_testings()
+        solving_paginator = Paginator(solving_testings, self.paginate_by)
+        solving_page_number = self.request.GET.get('page_solving', 1)
+        solving_page = self._get_page(
+            paginator=solving_paginator,
+            number=solving_page_number
+        )
+
         context |= {
-            'testings': self._get_testings(),
-            'solving_testings': self._get_solving_testings(),
+            'testings': testings_page,
+            'solving_testings': solving_page,
+            'testings_paginator': testings_paginator,
+            'solving_paginator': solving_paginator,
         }
         return context
 
@@ -30,7 +51,13 @@ class StudentTemplateView(LoginMixin, TemplateView):
                 f'{class_name}_solving_testing_set__end_passage__isnull': True,
                 'journal__student_group': self.request.user.student.student_group
             }
-            testings.append(model.objects.filter(**orm_filter))
+            testings.append(
+                model.objects.filter(**orm_filter)
+                .select_related('journal')
+                .select_related('journal__semester')
+                .select_related('journal__discipline')
+                .select_related('journal__teacher')
+            )
         sorted_testings = sorted(
             chain(*testings),
             key=attrgetter(sorting_field),
@@ -44,7 +71,13 @@ class StudentTemplateView(LoginMixin, TemplateView):
             'end_passage__isnull': False,
             'student': self.request.user.student,
         }
-        testings = [model.objects.filter(**orm_filter) for model in models]
+        testings = [model.objects.filter(**orm_filter)
+                    .select_related('testing')
+                    .select_related('testing__journal')
+                    .select_related('testing__journal__semester')
+                    .select_related('testing__journal__discipline')
+                    .select_related('testing__journal__teacher')
+                    for model in models]
         sorting_field = 'start_passage'
         sorted_testings = sorted(
             chain(*testings),
@@ -52,3 +85,13 @@ class StudentTemplateView(LoginMixin, TemplateView):
             reverse=True,
         )
         return sorted_testings
+
+    @staticmethod
+    def _get_page(paginator: Paginator, number: int) -> Paginator:
+        try:
+            page = paginator.page(number)
+        except PageNotAnInteger:
+            page = paginator.page(1)
+        except EmptyPage:
+            page = paginator.page(paginator.num_pages)
+        return page
