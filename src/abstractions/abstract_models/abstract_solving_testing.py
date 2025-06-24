@@ -41,7 +41,8 @@ class AbstractSolvingTesting(models.Model):
     def get_end_passage(self) -> datetime:
         return self.end_passage
 
-    def get_duration(self) -> timedelta:
+    @property
+    def duration(self) -> timedelta:
         return self.end_passage - datetime.now()
 
     def is_time_up(self) -> bool:
