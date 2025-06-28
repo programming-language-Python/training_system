@@ -48,7 +48,7 @@ class StudentTemplateView(LoginMixin, TemplateView):
         for model in models:
             class_name = model._meta.app_label
             orm_filter = {
-                f'{class_name}_solving_testing_set__end_passage__isnull': True,
+                f'{class_name}_solving_testing_set__assessment__isnull': True,
                 'journal__student_group': self.request.user.student.student_group
             }
             testings.append(
@@ -68,7 +68,7 @@ class StudentTemplateView(LoginMixin, TemplateView):
     def _get_solving_testings(self) -> list:
         models = [SolvingTesting, SolvingTestingByCode]
         orm_filter = {
-            'end_passage__isnull': False,
+            'assessment__isnull': False,
             'student': self.request.user.student,
         }
         testings = [model.objects.filter(**orm_filter)
