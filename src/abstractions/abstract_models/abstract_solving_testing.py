@@ -38,18 +38,9 @@ class AbstractSolvingTesting(models.Model):
     def is_testing_by_code(self) -> bool:
         return True if self._meta.app_label == 'testing_by_code' else False
 
-    def get_end_passage(self) -> datetime:
-        return self.end_passage
-
     @property
     def duration(self) -> timedelta:
         return self.end_passage - datetime.now()
-
-    def is_time_up(self) -> bool:
-        if self.end_passage is None:
-            return False
-        else:
-            return self.end_passage <= datetime.now()
 
     def set_end_passage(self, quantity_tasks: int) -> None:
         task_lead_time = self.testing.get_task_lead_time()

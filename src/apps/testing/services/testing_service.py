@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from django.db.models import QuerySet, Sum
-from django.http import HttpResponseRedirect, Http404
+from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 
 from apps.testing.models import SolvingTesting, SolvingTask, Testing
@@ -24,9 +24,17 @@ class TestingService:
             student=student
         )
 
+    def get_solving_testing(self) -> SolvingTesting:
+        return self.solving_testing
+
+    def is_time_up(self) -> bool:
+        end_passage = self.solving_testing.end_passage
+        if end_passage is None:
+            return False
+        else:
+            return end_passage <= datetime.now()
+
     def start_testing(self) -> HttpResponseRedirect | QuerySet[SolvingTask]:
-        if self.solving_testing.is_time_up():
-            raise Http404
         if self.is_created:
             self._create_solving_tasks()
             quantity_tasks = SolvingTask.objects.filter(
