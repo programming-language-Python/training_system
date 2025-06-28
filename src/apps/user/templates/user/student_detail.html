@@ -10,80 +10,80 @@
     </h2>
 
     <h2>Доступные тестирования</h2>
-    <table class="uk-table uk-table-small uk-table-divider uk-table-hover">
-        <thead>
-        <tr>
-            <th class="uk-text-center">Семестр</th>
-            <th class="uk-text-center">Дисциплина</th>
-            <th class="uk-text-center">Преподаватель</th>
-            <th class="uk-text-center">Наименование</th>
-            <th class="uk-text-center">Дата добавления</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for testing in testings %}
-            <tr onclick="document.location = '{{ testing.get_absolute_url }}';">
-                {% with testing.journal as journal %}
-                    <td>{{ journal.semester }}</td>
-                    <td>{{ journal.discipline }}</td>
-                    <td>{{ journal.teacher }}</td>
-                {% endwith %}
-                <td>{{ testing.title }}</td>
-                <td><span
-                        style="display: none">{{ testing.date_of_creation|date:"Ymd" }}</span>{{ testing.date_of_creation }}
-                </td>
+    {% if testings %}
+        <table class="uk-table uk-table-small uk-table-divider uk-table-hover">
+            <thead>
+            <tr>
+                <th class="uk-text-center">Семестр</th>
+                <th class="uk-text-center">Дисциплина</th>
+                <th class="uk-text-center">Преподаватель</th>
+                <th class="uk-text-center">Наименование</th>
+                <th class="uk-text-center">Дата добавления</th>
             </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-    {% if testings.has_other_pages %}
-        <div>
-            {% if testings.has_previous %}
-                <a href="?page_testings=
-                        
-                        {{ testings.previous_page_number }}{% if request.GET.page_solving %}&page_solving={{ request.GET.page_solving }}{% endif %}">Назад</a>
-            {% endif %}
-            <span>Страница {{ testings.number }} из {{ testings_paginator.num_pages }}</span>
-            {% if testings.has_next %}
-                <a href="?page_testings=
-                        
-                        {{ testings.next_page_number }}{% if request.GET.page_solving %}&page_solving={{ request.GET.page_solving }}{% endif %}">Вперёд</a>
-            {% endif %}
-        </div>
+            </thead>
+            <tbody>
+            {% for testing in testings %}
+                <tr onclick="document.location = '{{ testing.get_absolute_url }}';">
+                    {% with testing.journal as journal %}
+                        <td>{{ journal.semester }}</td>
+                        <td>{{ journal.discipline }}</td>
+                        <td>{{ journal.teacher }}</td>
+                    {% endwith %}
+                    <td>{{ testing.title }}</td>
+                    <td><span
+                            style="display: none">{{ testing.date_of_creation|date:"Ymd" }}</span>{{ testing.date_of_creation }}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% if testings.has_other_pages %}
+            <div>
+                {% if testings.has_previous %}
+                    <a href="?page_testings={{ testings.previous_page_number }}{% if request.GET.page_solving %}&page_solving={{ request.GET.page_solving }}{% endif %}">Назад</a>
+                {% endif %}
+                <span>Страница {{ testings.number }} из {{ testings_paginator.num_pages }}</span>
+                {% if testings.has_next %}
+                    <a href="?page_testings={{ testings.next_page_number }}{% if request.GET.page_solving %}&page_solving={{ request.GET.page_solving }}{% endif %}">Вперёд</a>
+                {% endif %}
+            </div>
+        {% endif %}
+    {% else %}
+        <p>Нет доступных тестирований</p>
     {% endif %}
 
     <h2>Завершённые тестирования</h2>
-    <table class="uk-table uk-table-small uk-table-divider uk-table-hover" uk-accordion="multiple: true">
-        <thead>
-        <tr>
-            <th>Семестр</th>
-            <th>Дисциплина</th>
-            <th>Преподаватель</th>
-            <th>Наименование</th>
-            <th>Время начала</th>
-            <th>Время окончания</th>
-            <th>Оценка</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for solving_testing in solving_testings %}
-            {% include 'user/inc/solving_testing/_student_solving_testing_detail.html' %}
-        {% endfor %}
-        </tbody>
-    </table>
-    {% if solving_testings.has_other_pages %}
-        <div>
-            {% if solving_testings.has_previous %}
-                <a href="?page_solving=
-                        
-                        {{ solving_testings.previous_page_number }}{% if request.GET.page_testings %}&page_testings={{ request.GET.page_testings }}{% endif %}">Назад</a>
-            {% endif %}
-            <span>Страница {{ solving_testings.number }} из {{ solving_paginator.num_pages }}</span>
-            {% if solving_testings.has_next %}
-                <a href="?page_solving=
-                        
-                        {{ solving_testings.next_page_number }}{% if request.GET.page_testings %}&page_testings={{ request.GET.page_testings }}{% endif %}">Вперёд</a>
-            {% endif %}
-        </div>
+    {% if solving_testings %}
+        <table class="uk-table uk-table-small uk-table-divider uk-table-hover" uk-accordion="multiple: true">
+            <thead>
+            <tr>
+                <th>Семестр</th>
+                <th>Дисциплина</th>
+                <th>Преподаватель</th>
+                <th>Наименование</th>
+                <th>Время начала</th>
+                <th>Время окончания</th>
+                <th>Оценка</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for solving_testing in solving_testings %}
+                {% include 'user/inc/solving_testing/_student_solving_testing_detail.html' %}
+            {% endfor %}
+            </tbody>
+        </table>
+        {% if solving_testings.has_other_pages %}
+            <div>
+                {% if solving_testings.has_previous %}
+                    <a href="?page_solving={{ solving_testings.previous_page_number }}{% if request.GET.page_testings %}&page_testings={{ request.GET.page_testings }}{% endif %}">Назад</a>
+                {% endif %}
+                <span>Страница {{ solving_testings.number }} из {{ solving_paginator.num_pages }}</span>
+                {% if solving_testings.has_next %}
+                    <a href="?page_solving={{ solving_testings.next_page_number }}{% if request.GET.page_testings %}&page_testings={{ request.GET.page_testings }}{% endif %}">Вперёд</a>
+                {% endif %}
+            </div>
+        {% endif %}
+    {% else %}
+        <p>Нет доступных тестирований</p>
     {% endif %}
 {% endblock %}
