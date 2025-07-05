@@ -2,3 +2,4 @@ from .abstract_form_set_view import AbstractFormSetView
 from .abstarct_testing_create_view import AbstractTestingCreateView
 from .abstarct_testing_update_view import AbstractTestingUpdateView
 from .abstract_testing_delete_view import AbstractTestingDeleteView
+from .abstract_student_solving_testing_view import AbstractStudentSolvingTestingDetailView

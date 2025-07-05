@@ -1,37 +1,19 @@
-from typing import Mapping
+from django.db.models import Sum, F
 
-from apps.testing_by_code.models import Task, Testing, SolvingTesting, SolvingTask
+from abstractions.abstract_services import AbstractTestingService
+from apps.testing_by_code.models import Task, SolvingTesting, SolvingTask
 from apps.testing_by_code.services.generate_code.generate_java import GenerateJava
 from apps.testing_by_code.services.run_code.run_java.run_java import RunJava
 from apps.testing_by_code.types import Setting
-from apps.user.models import Student
+from utils import round_up
 
 
-class TestingService:
-    student: Student
-    testing: Testing
-    solving_testing: SolvingTesting
-
-    def __init__(self, student: Student, testing: Testing) -> None:
-        self.student = student
-        self.testing = testing
-
-    def start(self) -> Mapping[str, SolvingTesting]:
-        self.solving_testing, is_created = SolvingTesting.objects.get_or_create(
-            testing=self.testing,
-            student=self.student,
+class TestingService(AbstractTestingService):
+    def _get_or_create_solving_testing(self) -> tuple[SolvingTesting, bool]:
+        return SolvingTesting.objects.get_or_create(
+            testing_id=self.testing_pk,
+            student_id=self.student_pk,
         )
-        if is_created:
-            self._create_solving_tasks()
-
-        return {
-            'testing_title': self.testing.title,
-            'solving_testing': self.solving_testing
-        }
-
-    def _create_solving_tasks(self) -> None:
-        for task in self.testing.task_set.all():
-            self._create_solving_task(task)
 
     def _create_solving_task(self, task: Task) -> None:
         if task.count > 1:
@@ -63,3 +45,17 @@ class TestingService:
             solving_testing=self.solving_testing,
             task=task
         )
+
+    def _calculate_assessment(self) -> int:
+        earned_weight = self._calculate_earned_weight()
+        testing = self.solving_testing.testing
+        assessment = round_up(earned_weight / testing.get_total_weight() * 5)
+        self.solving_testing.earned_weight = earned_weight
+        return assessment
+
+    def _calculate_earned_weight(self) -> int:
+        return self.solving_testing.solving_task_set.select_related('task').filter(
+            answer=F('correct_answer')
+        ).aggregate(
+            Sum('task__weight')
+        )['task__weight__sum'] or 0

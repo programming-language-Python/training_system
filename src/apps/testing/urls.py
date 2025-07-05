@@ -14,9 +14,9 @@ from .views.testing_views.testing_detail_view import redirect_testing_detail_vie
 app_name = APP_NAME
 urlpatterns = [
     path('journal/<journal_pk>/create', TestingCreateView.as_view(), name='testing_create'),
-    path('<testing_pk>/redirect_detail', redirect_testing_detail_view, name='testing_detail'),
+    path('<pk>/redirect_detail', redirect_testing_detail_view, name='testing_detail'),
     path('<pk>/detail', TeacherTestingDetailView.as_view(), name='teacher_testing_detail'),
-    path('<testing_pk>/solving_task_list', StudentSolvingTestingDetailView.as_view(), name='student_testing_detail'),
+    path('<pk>/solving_task_list', StudentSolvingTestingDetailView.as_view(), name='student_testing_detail'),
 
     path('update/<pk>', TestingUpdateView.as_view(), name='testing_update'),
     path('delete/<pk>', TestingDeleteView.as_view(), name='testing_delete'),

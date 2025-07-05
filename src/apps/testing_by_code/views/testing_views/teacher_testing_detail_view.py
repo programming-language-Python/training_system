@@ -13,6 +13,7 @@ from mixins import LoginMixin, ContextMixin
 class TeacherTestingDetailView(LoginMixin, ContextMixin, DetailView):
     model = Testing
     APP_NAME = APP_NAME
+    template_name = 'testing_by_code/teacher_testing_detail.html'
 
     def get_context_data(self, *, object_list=None, **kwargs) -> Mapping[str, SolvingTesting]:
         context = super().get_context_data(**kwargs)

@@ -1,0 +1,6 @@
+{% extends "student_solving_testing_detail.html" %}
+{% load static %}
+
+{% block description %}
+    {{ solving_task.task.description|safe }}
+{% endblock %}

@@ -9,23 +9,13 @@
         {% include 'inc/_testing_detail_buttons.html' %}
     {% else %}
         <h2>
-            Тест {{ testing_title }}
+            Тест {{ solving_testing.testing.title }}
         </h2>
     {% endif %}
 </section>
 <section class='content__task-form task-form uk-margin' id='task-form'></section>
-<h3 class='task-form__count-tasks'>
-    {% with 'Количество задач: ' as text %}
-        {% if user.is_teacher %}
-            {% if quantity_task %}
-                {{ text }}{{ quantity_task }}
-            {% endif %}
-        {% else %}
-            {#            <button form='solving-testing-form' class='uk-button uk-button-primary' type='submit'#}
-            {#                    name='complete-testing'#}
-            {#                    value='complete-testing'>Завершить тестирование#}
-            {#            </button>#}
-            {{ text }}{{ quantity_task }}
-        {% endif %}
-    {% endwith %}
-</h3>
+{% if quantity_task %}
+    <h3 class='task-form__count-tasks'>
+        Количество задач: {{ quantity_task }}
+    </h3>
+{% endif %}

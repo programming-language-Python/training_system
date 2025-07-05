@@ -1,0 +1,9 @@
+{% extends "student_solving_testing_detail.html" %}
+{% load static %}
+
+{% block description %}
+    <h4>
+        Определить выводимое на экран значение переменной <br> по результатам выполнения программы на Java:
+    </h4>
+    <pre onmousedown="return false" class="uk-text-justify"><code>{{ solving_task.code }}</code></pre>
+{% endblock %}

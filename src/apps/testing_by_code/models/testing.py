@@ -11,6 +11,9 @@ class Testing(AbstractTesting):
     def get_absolute_url(self) -> reverse:
         return reverse('testing_by_code:testing_detail', kwargs={'pk': self.pk})
 
+    def get_student_absolute_url(self) -> reverse:
+        return reverse(f'testing_by_code:student_testing_detail', kwargs={'pk': self.pk})
+
     def get_total_weight(self) -> int:
         return self.task_set.annotate(
             total_task_weight=F('weight') * F('count')
