@@ -38,4 +38,4 @@ class AbstractTestingUpdateView(LoginMixin, AbstractFormSetView, UpdateView):
             form=inline_form_set_factory.form,
             max_score_form=inline_form_set_factory.form_set
         )
-        return redirect(f'{self.APP_NAME}:testing_detail', testing_pk=self.kwargs['pk'])
+        return redirect(f'{self.APP_NAME}:testing_detail', pk=self.kwargs['pk'])
