@@ -4,7 +4,7 @@
             <div class="task-student-list__header header uk-card-header">
                 <div class="uk-grid-small uk-flex-middle" uk-grid>
                     <div class="uk-width-expand">
-                        {% if solving_task.is_correctly_resolved %}
+                        {% if solving_task.score > 0 %}
                             <h3 class="check uk-card-title uk-margin-remove-bottom" uk-icon="check">
                                 Задача №{{ solving_task.task.serial_number }}
                             </h3>
