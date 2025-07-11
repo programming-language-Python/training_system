@@ -6,7 +6,7 @@ from apps.testing_by_code.forms import SettingForm, TaskForm
 from apps.testing_by_code.models import Task
 
 from apps.testing_by_code.services.decorators import is_teacher
-from apps.testing_by_code.services.task_service import TaskService, delete, increase_count
+from apps.testing_by_code.services.task_service import TaskService
 
 
 @login_required
@@ -42,10 +42,12 @@ def update_task(request, pk: int):
 @login_required
 @user_passes_test(is_teacher, login_url='user:home', redirect_field_name=None)
 def duplicate_task(request, pk: int):
-    task = get_object_or_404(Task, pk=pk)
     is_POST = request.method == 'POST'
     if is_POST:
-        duplicated_task = increase_count(task)
+        duplicated_task = get_object_or_404(Task, pk=pk)
+        duplicated_task.pk = None
+        duplicated_task.serial_number = duplicated_task.testing.task_set.count() + 1
+        duplicated_task.save()
         return redirect('testing_by_code:task_detail', pk=duplicated_task.pk)
     return HttpResponseNotAllowed(['POST', ])
 
@@ -57,7 +59,11 @@ def delete_task(request, pk: int):
     is_POST = request.method == 'POST'
     if is_POST:
         task = get_object_or_404(Task, id=pk)
-        delete(task)
+        task.delete()
+        tasks = task.testing.task_set.all()
+        for index, task in enumerate(tasks, start=1):
+            task.serial_number = index
+            task.save()
         return HttpResponse('')
     return HttpResponseNotAllowed(['POST', ])
 

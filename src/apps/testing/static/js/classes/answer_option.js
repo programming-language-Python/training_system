@@ -1,4 +1,4 @@
-import {setSerialNumbers} from '../functions/set_serial_numbers.js';
+import {setSerialNumbers} from '/static/js/set_serial_numbers.js';
 
 export class AnswerOption {
     triggerEvents() {
@@ -7,13 +7,21 @@ export class AnswerOption {
         setSerialNumbers();
         $('#add-answer').click(() => this.add());
         $answerOptions.on('click', '[data-name="delete"]', (event) => this.delete(event));
-        $answerOptions.on('DOMSubtreeModified', () => {
-            setSerialNumbers();
-            let $answerOptions = $('[name="answer-option"]');
-            for (let i = 0; i < $answerOptions.length; i++) {
-                this.setAttributes($($answerOptions[i]), i);
-            }
+
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                setSerialNumbers();
+                let $answerOptions = $('[name="answer-option"]');
+                for (let i = 0; i < $answerOptions.length; i++) {
+                    this.setAttributes($($answerOptions[i]), i);
+                }
+            });
         });
+
+        observer.observe($answerOptions[0], {
+            childList: true,
+        });
+
         $('#quantity-add-answer-options').change(() => {
             this.setQuantityAnswerOptionsAfterAdding();
         });

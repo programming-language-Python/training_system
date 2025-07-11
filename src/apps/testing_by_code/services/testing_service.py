@@ -16,16 +16,6 @@ class TestingService(AbstractTestingService):
         )
 
     def _create_solving_task(self, task: Task) -> None:
-        if task.count > 1:
-            self._create_for_recurring_tasks(task)
-        else:
-            self._create_for_non_repetitive_tasks(task)
-
-    def _create_for_recurring_tasks(self, task: Task) -> None:
-        for i in range(task.count):
-            self._create_for_non_repetitive_tasks(task)
-
-    def _create_for_non_repetitive_tasks(self, task: Task) -> None:
         task_setting = task.setting
         setting = Setting(
             is_if_operator=task_setting.is_if_operator,

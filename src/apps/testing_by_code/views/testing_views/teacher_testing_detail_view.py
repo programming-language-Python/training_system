@@ -37,6 +37,6 @@ class TeacherTestingDetailView(LoginMixin, ContextMixin, DetailView):
             forms = context
             testing = get_object_or_404(Testing, pk=kwargs['pk'])
             task_service = TaskService(user, forms, testing)
-            task_service.add()
-            return redirect('testing_by_code:task_detail', pk=task_service.get_pk())
+            task_service.create()
+            return redirect('testing_by_code:task_detail', pk=task_service.pk)
         return render(request, 'testing_by_code/task_form.html', context)

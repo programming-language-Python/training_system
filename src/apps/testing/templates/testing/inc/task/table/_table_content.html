@@ -1,4 +1,4 @@
-<ul id="tasks" {% if not is_solving_testing %} uk-sortable="handle: .uk-sortable-handle" {% endif %}>
+<ul id="task-list" {% if not is_solving_testing %} uk-sortable="handle: .uk-sortable-handle" {% endif %}>
     {% for task in tasks %}
         <li class="uk-grid-small {% if is_solving_testing %} uk-child-width-1-3 {% else %} uk-child-width-1-5 {% endif %}"
             uk-grid>

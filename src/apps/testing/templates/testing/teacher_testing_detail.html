@@ -1,10 +1,15 @@
 {% extends "base.html" %}
 {% load static %}
+
 {% block head_script %}
     <script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
-    <script type="module" src="{% static 'js/serial_number.js' %}"></script>
 {% endblock %}
+
 {% block content %}
     {% include 'inc/_testing_settings.html' %}
     {% include 'testing/inc/task/_teacher_task_list.html' %}
+{% endblock %}
+
+{% block script %}
+    <script type="module" src="{% static 'js/serial_number.js' %}"></script>
 {% endblock %}

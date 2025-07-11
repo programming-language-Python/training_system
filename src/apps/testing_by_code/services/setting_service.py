@@ -1,7 +1,7 @@
-from django.db.models import Manager, QuerySet
+from django.db.models import QuerySet
 
 from apps.testing_by_code.forms import SettingForm
-from apps.testing_by_code.models import Setting
+from apps.testing_by_code.models import Setting, Task
 from apps.testing_by_code.services.filter_setting import FilterSetting
 
 
@@ -32,16 +32,13 @@ class SettingService:
         self.setting_form.save_m2m()
 
     @staticmethod
-    def update(task: Manager, setting: Manager) -> Manager:
+    def update(task: Task, setting: Setting) -> Task:
         task.setting = setting
         task.save(update_fields=['setting'])
         return task
 
     def get(self):
         return self.setting
-
-    def get_pk(self):
-        return self.setting.pk
 
     def get_form(self):
         return self.setting_form

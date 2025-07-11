@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models import Sum, F
+from django.db.models import Sum
 from django.urls import reverse
 
 from abstractions.abstract_models.abstract_testing import AbstractTesting
@@ -15,10 +15,8 @@ class Testing(AbstractTesting):
         return reverse(f'testing_by_code:student_testing_detail', kwargs={'pk': self.pk})
 
     def get_total_weight(self) -> int:
-        return self.task_set.annotate(
-            total_task_weight=F('weight') * F('count')
-        ).aggregate(
-            total_weight=Sum('total_task_weight')
+        return self.task_set.aggregate(
+            total_weight=Sum('weight')
         )['total_weight']
 
     def is_solving_testing_set(self) -> bool:

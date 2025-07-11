@@ -1,7 +1,7 @@
 from django.http import HttpRequest
 
 from abstractions.abstract_views import AbstractStudentSolvingTestingDetailView
-from apps.testing_by_code.forms.solving_task_form import SolvingTaskForm
+from apps.testing_by_code.forms import SolvingTaskForm
 from apps.testing_by_code.models import SolvingTask
 from apps.testing_by_code.services import TestingService
 

@@ -9,6 +9,6 @@ export function setSerialNumbers() {
 export function fitBlockToContentSize() {
     let $serialNumbers = document.querySelectorAll('[data-is-fit-block-to-content-size="True"]');
     $serialNumbers.forEach((elem) => {
-        elem.style.width = ((elem.value.length + 1) * 5) + 'px';
+        elem.style.width = ((elem.value.length + 1.5) * 5) + 'px';
     });
 }

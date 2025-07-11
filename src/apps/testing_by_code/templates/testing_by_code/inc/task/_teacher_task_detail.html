@@ -1,6 +1,8 @@
 {% load model_manipulation %}
 
 <div class="task" hx-target="this">
+    <input form="serial-number-update-form" name="pk" type="hidden" value="{{ task.pk }}">
+    <span name="sort-sign" class="uk-width-small uk-sortable-handle">
     {% with task.setting as setting %}
         <div>
             <div class="task__card uk-card uk-card-default uk-card-body">
@@ -8,7 +10,10 @@
                     <div class="uk-grid-small uk-flex-middle" uk-grid>
                         <div class="uk-width-expand">
                             <h3 class="uk-card-title uk-margin-remove-bottom">
-                                Задача №<span class="task-number">{{ task_number }}</span> (вес {{ task.weight }})
+                                Задача №<input form="serial-number-update-form" class="uk-card-title serial-number"
+                                               name="serial-number" data-name="serial-number"
+                                               data-is-fit-block-to-content-size="True" type="text"
+                                               value="{{ task.serial_number }}"> (вес {{ task.weight }})
                             </h3>
                         </div>
                     </div>
@@ -109,7 +114,8 @@
                     </button>
                     <button class="btn-duplicate"
                             hx-post="{% url 'testing_by_code:duplicate_task' task.pk %}"
-                            hx-swap="beforebegin"
+                            hx-target="#task-list"
+                            hx-swap="beforeend"
                             uk-icon="copy"
                             uk-tooltip="Дублировать">
                     </button>
@@ -123,4 +129,5 @@
             </div>
         </div>
     {% endwith %}
+    </span>
 </div>

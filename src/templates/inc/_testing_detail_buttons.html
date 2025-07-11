@@ -10,6 +10,7 @@
     {% endif %}
     <div class="uk-margin-small-top">
         <form action="{% url testing_delete_url testing.pk %}">
+            {% csrf_token %}
             <button type="submit" class="uk-width-1-5 uk-button uk-button-danger">
                 Удалить тестирование
             </button>
@@ -22,6 +23,14 @@
             {% else %}
                 {% include 'testing_by_code/inc/testing/_add_task_button.html' %}
             {% endif %}
+        </div>
+        <div class="uk-margin-small-top">
+            <form id="serial-number-update-form"
+                  action="{% url 'testing_by_code:update_tasks_serial_number' testing.id %}"
+                  method="post">
+                {% csrf_token %}
+                <button class="uk-button uk-button-primary" type="submit">Обновить нумерацию задач</button>
+            </form>
         </div>
     {% endif %}
 </div>

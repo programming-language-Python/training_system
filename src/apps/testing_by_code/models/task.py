@@ -20,6 +20,6 @@ class Task(AbstractFieldWeight, AbstractTask):
         verbose_name='Настройка'
     )
 
-    class Meta:
+    class Meta(AbstractTask.Meta):
         verbose_name = 'Задача'
         verbose_name_plural = 'Задачи'
