@@ -1,3 +1,4 @@
+import secrets
 from random import choice, randint, uniform
 from typing import Mapping
 
@@ -19,16 +20,20 @@ def get_number() -> [int, float]:
         return get_float()
 
 
-def get_N_digits() -> int:
-    return randint(MIN_DIGIT, MAX_N_DIGIT_NUMBER)
+def get_N_digits(quantity_digit: int | None = None) -> int:
+    if quantity_digit is None:
+        quantity_digit = randint(1, 9)
+    min_number = 10 ** (quantity_digit - 1)
+    max_number = (10 ** quantity_digit) - 1
+    return secrets.randbelow(max_number - min_number + 1) + min_number
 
 
 def get_number_in_range(end: int, start: int = 0) -> int:
     return randint(start, end)
 
 
-def get_digit():
-    return randint(MIN_DIGIT, MAX_DIGIT)
+def get_digit(min_digit: int = MIN_DIGIT, max_digit: int = MAX_DIGIT) -> int:
+    return randint(min_digit, max_digit)
 
 
 def get_random_dictionary_key(dictionary: Mapping) -> str:

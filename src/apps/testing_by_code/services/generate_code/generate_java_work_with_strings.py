@@ -11,13 +11,11 @@ from apps.testing_by_code.utils.utils import remove_empty_paragraphs
 class GenerateJavaWorkWithStrings:
     variable_1: str
     variable_2: str
-    number: int
 
     def __init__(self):
         variable = Variable()
         self.variable_1 = variable.get_random()
         self.variable_2 = variable.get_random()
-        self.number = get_N_digits()
 
     def execute(self):
         methods = [
@@ -34,7 +32,9 @@ class GenerateJavaWorkWithStrings:
         return remove_empty_paragraphs(code)
 
     def generate_replace(self) -> str:
-        string = self.get_string()
+        string = self.get_string(
+            value=get_N_digits(quantity_digit=6)
+        )
         find = get_digit()
         replace = get_digit()
         body = f'String {self.variable_2} = {self.variable_1}' \
@@ -42,38 +42,41 @@ class GenerateJavaWorkWithStrings:
         print_ = self.variable_2
         return get_string_template(string, body, print_)
 
-    def get_string(self) -> str:
-        return f'String {self.variable_1} = "{self.number}";'
+    def get_string(self, value: int) -> str:
+        return f'String {self.variable_1} = "{value}";'
 
     def generate_compare_to(self) -> str:
-        string = self.get_string()
-        body = f'String {self.variable_2} = "{get_N_digits()}";'
+        string = self.get_string(value=get_N_digits(quantity_digit=6))
+        body = f'String {self.variable_2} = "{get_N_digits(quantity_digit=6)}";'
         print_ = f'{self.variable_1}.compareTo({self.variable_2})'
         return get_string_template(string, body, print_)
 
     def generate_length(self) -> str:
-        string = self.get_string()
+        string = self.get_string(value=get_N_digits())
         body = f'int {self.variable_2} = {self.variable_1}.length();'
         print_ = self.variable_2
         return get_string_template(string, body, print_)
 
     def generate_char_at(self) -> str:
-        string = self.get_string()
-        max_index = len(str(self.number)) - 1
+        value = get_N_digits()
+        string = self.get_string(value)
+        max_index = len(str(value)) - 1
         random_digit = get_number_in_range(end=max_index)
         print_ = f'{self.variable_1}.charAt({random_digit})'
         return get_string_template_without_body(string, print_)
 
     def generate_substring(self) -> str:
-        string = self.get_string()
-        argument = get_digit()
+        value = get_N_digits()
+        string = self.get_string(value)
+        max_index = len(str(value)) - 1
+        argument = get_digit(max_digit=max_index)
         body = f'String {self.variable_2} = {self.variable_1}' \
                f'.substring({argument});'
         print_ = self.variable_2
         return get_string_template(string, body, print_)
 
     def generate_index_of(self) -> str:
-        string = self.get_string()
+        string = self.get_string(value=get_N_digits(quantity_digit=6))
         argument = get_digit()
         body = f'int {self.variable_2} = {self.variable_1}' \
                f'.indexOf("{argument}");'
@@ -81,7 +84,7 @@ class GenerateJavaWorkWithStrings:
         return get_string_template(string, body, print_)
 
     def generate_last_index_of(self) -> str:
-        string = self.get_string()
+        string = self.get_string(value=get_N_digits(quantity_digit=6))
         argument = get_digit()
         body = f'int {self.variable_2} = {self.variable_1}' \
                f'.lastIndexOf("{argument}");'

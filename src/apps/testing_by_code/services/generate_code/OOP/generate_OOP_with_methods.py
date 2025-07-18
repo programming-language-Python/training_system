@@ -15,9 +15,7 @@ class GenerateOOPWithMethods(abstractions.OOP, IOop):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        # TODO Расскоментить
         self.numeric_data_type = choice(NUMERIC_DATA_TYPES)
-        # self.numeric_data_type = 'float'
         self.method_1 = self.get_random()
         self.method_2 = self.get_random()
         self.class_example_variable = self.get_random()

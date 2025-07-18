@@ -17,8 +17,11 @@ class GenerateOOPWithReturn(abstractions.OOP, IOop):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.variable_type_1 = choice(INTEGER_DATA_TYPES)
-        self.variable_type_2 = choice(INTEGER_DATA_TYPES)
+        integer_data_types = INTEGER_DATA_TYPES.copy()
+        variable_type_1 = choice(integer_data_types)
+        integer_data_types.remove(variable_type_1)
+        self.variable_type_1 = variable_type_1
+        self.variable_type_2 = choice(integer_data_types)
         self.variable = self.get_random()
         self.method_type = choice(INTEGER_DATA_TYPES)
         self.method = self.get_random()
