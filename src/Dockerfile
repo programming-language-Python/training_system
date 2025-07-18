@@ -20,7 +20,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 FROM python:3.11-slim
  
 ENV JAVA_HOME=/opt/java/openjdk
-COPY --from=eclipse-temurin:17-jdk $JAVA_HOME $JAVA_HOME
+COPY --from=eclipse-temurin:24-jdk $JAVA_HOME $JAVA_HOME
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
 RUN useradd -m -r appuser && \
