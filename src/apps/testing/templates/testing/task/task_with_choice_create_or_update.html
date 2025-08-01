@@ -4,9 +4,9 @@
 {% block start_head_link %}
     {{ form.media }}
 {% endblock %}
-{% block head_script %}
-    <script type="module" src="{% static task_type.url_js %}"></script>
-{% endblock %}
 {% block content %}
     {% include "testing/inc/task/_content.html" %}
+{% endblock %}
+{% block script %}
+    <script type="module" src="{% static task_type.url_js %}"></script>
 {% endblock %}

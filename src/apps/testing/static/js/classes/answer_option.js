@@ -19,6 +19,7 @@ export class AnswerOption {
         });
 
         observer.observe($answerOptions[0], {
+            attributes: true,
             childList: true,
         });
 
