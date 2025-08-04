@@ -16,17 +16,5 @@
         {% endif %}
     </div>
     <h2>Варианты ответов</h2>
-    <ul class="uk-background-default" uk-sticky>
-        <li class="uk-grid-small" uk-grid>
-            <div class="uk-width-small">Изменить порядок</div>
-            <div class="uk-width-small">Порядковый номер</div>
-            <div class="uk-width-expand">Описание</div>
-            <div class="uk-width-small">Правильный вариант</div>
-            <div class="uk-width-small">Удалить</div>
-        </li>
-    </ul>
-    <ul id="answer-options" name="answer-options"
-        uk-sortable="handle: .uk-sortable-handle">
-        {% include answer_options_template_name %}
-    </ul>
+    {% include table_answer_options_template_name %}
 </form>

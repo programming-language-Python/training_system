@@ -22,6 +22,7 @@ class AbstractTaskUpdateView(AbstractTaskView, AbstractTaskCreateOrUpdateView, A
         context |= {
             'btn_text': 'Обновить задачу',
             'task_type': self.object.task_type,
+            'table_answer_options_template_name': self.table_answer_options_template_name,
             'answer_options_template_name': self.answer_options_template_name
         }
         return context

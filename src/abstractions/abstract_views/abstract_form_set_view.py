@@ -1,7 +1,9 @@
-from typing import Type
+from typing import Type, MutableMapping
 
 from django.forms import inlineformset_factory, ModelForm
+from django.http import HttpResponse
 from django.shortcuts import redirect
+from django.template.loader import render_to_string
 
 from custom_types import InlineFormSetFactory
 
@@ -9,7 +11,21 @@ from custom_types import InlineFormSetFactory
 class AbstractFormSetView:
     form_set: Type[ModelForm] | Type[inlineformset_factory]
     template_name: str
+    table_answer_options_template_name: str
     answer_options_template_name: str
+
+    def get(self, request, *args, **kwargs):
+        if 'pk' in kwargs:
+            # Для UpdateView
+            self.object = self.get_object()
+        else:
+            # Для CreateView
+            self.object = None
+        if request.GET.get('quantity-answer-options-add'):
+            context = self.get_context_data()
+            html = render_to_string(self.answer_options_template_name, context, request=request)
+            return HttpResponse(html)
+        return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs) -> redirect:
         forms = self._get_forms()

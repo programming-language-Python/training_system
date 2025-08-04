@@ -22,6 +22,7 @@ class AbstractTaskCreateView(AbstractTaskView, AbstractTaskCreateOrUpdateView, A
             'btn_text': 'Создать задачу',
             'task_type': TaskType(self.kwargs['type']),
             'additional_form': self.additional_form,
+            'table_answer_options_template_name': self.table_answer_options_template_name,
             'answer_options_template_name': self.answer_options_template_name
         }
         return context
