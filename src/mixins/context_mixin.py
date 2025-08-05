@@ -19,5 +19,6 @@ class ContextMixin:
         return {
             'is_solving_testing': is_solving_testing,
             'testing_update_url': f'{self.APP_NAME}:testing_update',
-            'testing_delete_url': f'{self.APP_NAME}:testing_delete'
+            'testing_delete_url': f'{self.APP_NAME}:testing_delete',
+            'update_serial_number_tasks_url': f'{self.APP_NAME}:update_serial_number_tasks',
         }

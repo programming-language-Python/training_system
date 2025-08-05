@@ -1,24 +1,11 @@
 from typing import Type, Iterable
 
-from django.apps import apps
 from django.forms import inlineformset_factory, ModelForm
-from django.http import QueryDict
 from django.shortcuts import get_object_or_404
 
-from apps.testing.constants import APP_NAME
 from apps.testing.models import Testing, SolvingTask
 from apps.testing.types import ValidTask, Id
 from custom_types import InlineFormSetFactory
-
-
-def update_tasks_serial_number(tasks_data: QueryDict) -> None:
-    class_names = tasks_data.getlist('class-name')
-    task_pks = tasks_data.getlist('pk')
-    serial_numbers = tasks_data.getlist('serial-number')
-    tasks = zip(class_names, task_pks, serial_numbers)
-    for class_name, pk, serial_number in tasks:
-        model = apps.get_model(app_label=APP_NAME, model_name=class_name)
-        model.objects.filter(pk=pk).update(serial_number=serial_number)
 
 
 class TaskService:

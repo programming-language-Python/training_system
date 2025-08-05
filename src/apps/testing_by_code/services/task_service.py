@@ -3,19 +3,10 @@ from typing import Mapping
 from django.contrib.auth.models import User
 from django.db.models import Manager
 from django.forms import Form
-from django.http import QueryDict
 
 from apps.testing_by_code.models import Task, Testing
 
 from apps.testing_by_code.services.setting_service import SettingService
-
-
-def update_tasks_serial_number(tasks_data: QueryDict) -> None:
-    task_pks = tasks_data.getlist('pk')
-    serial_numbers = tasks_data.getlist('serial-number')
-    tasks = zip(task_pks, serial_numbers)
-    for pk, serial_number in tasks:
-        Task.objects.filter(pk=pk).update(serial_number=serial_number)
 
 
 class TaskService:

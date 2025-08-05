@@ -1,7 +1,7 @@
 from django.urls import path
 
 from .constants import APP_NAME
-from .views.task_views import TaskDeleteView
+from .views.task_views import TaskDeleteView, update_serial_number_tasks_view
 from .views.task_views.closed_question_views import ClosedQuestionCreateView, ClosedQuestionUpdateView, \
     ClosedQuestionDetailView
 from .views.task_views.open_question_views import OpenQuestionCreateView, OpenQuestionUpdateView, OpenQuestionDetailView
@@ -41,6 +41,7 @@ urlpatterns = [
          name='task_sequencing_detail'),
     path('task/sequencing/update/<pk>', SequencingUpdateView.as_view(),
          name='task_sequencing_update'),
+    path('<pk>/update_serial_number_tasks/', update_serial_number_tasks_view, name='update_serial_number_tasks'),
 
     path('task/delete/<pk>', TaskDeleteView.as_view(), name='task_delete'),
 ]

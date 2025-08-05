@@ -1,1 +1,2 @@
 from .task_delete_view import TaskDeleteView
+from .update_serial_number_tasks_view import update_serial_number_tasks_view

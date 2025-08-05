@@ -2,7 +2,7 @@ from django.urls import path
 
 from .views.solving_testing_views import StudentSolvingTestingDetailView
 from .views.task_views import TaskDetailView, update_task, duplicate_task, delete_task, add_task_form, \
-    update_tasks_serial_number_view
+    update_serial_number_tasks_view
 from .views.testing_views import TestingCreateView, TestingUpdateView, \
     TestingDeleteView, TeacherTestingDetailView
 from .views.testing_views.testing_detail_view import redirect_testing_detail_view
@@ -21,5 +21,5 @@ urlpatterns = [
     path('task/<pk>/duplicate/', duplicate_task, name='duplicate_task'),
     path('task/<pk>/delete/', delete_task, name='delete_task'),
     path('add_task_form/', add_task_form, name='add_task_form'),
-    path('<pk>/update_tasks_serial_number/', update_tasks_serial_number_view, name='update_tasks_serial_number'),
+    path('<pk>/update_serial_number_tasks/', update_serial_number_tasks_view, name='update_serial_number_tasks'),
 ]
