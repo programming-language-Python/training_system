@@ -15,9 +15,6 @@ class AbstractTask(AbstractFieldSerialNumber, AbstractFieldDescription):
         verbose_name='Время выполнения'
     )
 
-    def get_class_name(self) -> str:
-        return self.__class__.__name__
-
     def get_absolute_url(self) -> reverse:
         raise NotImplementedError('Не реализован метод get_absolute_url')
 
