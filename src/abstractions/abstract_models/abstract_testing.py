@@ -74,6 +74,9 @@ class AbstractTesting(AbstractFieldTitle):
             if is_empty_task_lead_time:
                 fields_data[field.verbose_name] = 'не задано'
                 continue
+            if field.name == 'date_of_creation':
+                fields_data[field.verbose_name] = self.date_of_creation.strftime('%H:%M:%S %d.%m.%Y')
+                continue
             if field.name == 'student_groups':
                 fields_data[field.verbose_name] = self.student_groups.values('name')
             elif field.name not in exclude and not isinstance(field, exclude_types):
