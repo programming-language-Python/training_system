@@ -1,10 +1,4 @@
 <section class="content__testing-task-list testing-task-list">
-    {% if tasks and not is_solving_testing %}
-        <form id="serial-number-update-form" method="post">
-            {% csrf_token %}
-            <button class="uk-button uk-button-primary" type="submit">Обновить нумерацию задач</button>
-        </form>
-    {% endif %}
     {% if tasks %}
         {% include "testing/inc/task/table/_table_headers.html" %}
         {% include "testing/inc/task/table/_table_content.html" %}
