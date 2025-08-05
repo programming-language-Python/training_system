@@ -22,11 +22,13 @@
                                 {{ text }}
                             </a>
                         </div>
-                        <div>
-                            <a href="{{ testing.get_deletion_url }}" class="uk-button uk-button-text">
-                                Удалить
-                            </a>
-                        </div>
+                        {% if not testing.is_solving_testing_set %}
+                            <div>
+                                <a href="{{ testing.get_deletion_url }}" class="uk-button uk-button-text">
+                                    Удалить
+                                </a>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
