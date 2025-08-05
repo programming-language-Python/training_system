@@ -17,9 +17,16 @@
                         {% include "inc/_student_groups.html" with student_groups=testing.student_groups.all %}
                     {% endif %}
                     <div class="uk-card-footer">
-                        <a href="{{ testing.get_absolute_url }}" class="uk-button uk-button-text">
-                            {{ text }}
-                        </a>
+                        <div>
+                            <a href="{{ testing.get_absolute_url }}" class="uk-button uk-button-text">
+                                {{ text }}
+                            </a>
+                        </div>
+                        <div>
+                            <a href="{{ testing.get_deletion_url }}" class="uk-button uk-button-text">
+                                Удалить
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>

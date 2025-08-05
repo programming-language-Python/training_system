@@ -27,6 +27,9 @@ class Testing(AbstractTesting):
     def get_absolute_url(self):
         return reverse(f'testing:testing_detail', kwargs={'pk': self.pk})
 
+    def get_deletion_url(self) -> reverse:
+        return reverse(f'testing:testing_delete', kwargs={'pk': self.pk})
+
     def get_student_absolute_url(self) -> reverse:
         return reverse(f'testing:student_testing_detail', kwargs={'pk': self.pk})
 
