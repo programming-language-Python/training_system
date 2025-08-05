@@ -6,7 +6,7 @@ class ContextMixin:
             'testing_list_url': f'{self.APP_NAME}:testing_list'
         }
         if is_teacher:
-            text = 'Настроить тестирование'
+            text = 'Настроить'
             context |= {
                 'testing_create_url': f'{self.APP_NAME}:testing_create'
             }
