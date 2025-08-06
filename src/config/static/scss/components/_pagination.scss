@@ -1,0 +1,9 @@
+.uk-pagination > * > * {
+  display: unset;
+}
+
+button {
+  color: var(--darkreader-text-999999, #a8a095);
+  background: none;
+  border: none;
+}

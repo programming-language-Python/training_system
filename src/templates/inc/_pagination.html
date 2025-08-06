@@ -1,0 +1,34 @@
+{% if page_obj.has_other_pages %}
+    <nav aria-label="Pagination">
+        <ul class="uk-pagination uk-flex-center" uk-margin>
+            {% if page_obj.has_previous %}
+                <li>
+                    <button name="page" type="submit"
+                            value="{{ page_obj.previous_page_number }}"><span
+                            uk-pagination-previous></span></button>
+                </li>
+            {% endif %}
+
+            {% for p in page_obj.paginator.page_range %}
+                {% if page_obj.number == p %}
+                    <li class="uk-active"><span aria-current="page">{{ p }}</span></li>
+                {% elif p > page_obj.number|add:-3 and p < page_obj.number|add:3 %}
+                    <li>
+                        <button name="page" type="submit" value="{{ p }}">{{ p }}</button>
+                    </li>
+                {% endif %}
+            {% endfor %}
+            {% if page_obj.has_next %}
+                <li>
+                    <button name="page" type="submit" value="{{ page_obj.next_page_number }}"><span
+                            uk-pagination-next></span></button>
+                </li>
+            {% else %}
+                <li>
+                    <button name="complete" type="submit" value="true"><span
+                            uk-pagination-next></span></button>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+{% endif %}

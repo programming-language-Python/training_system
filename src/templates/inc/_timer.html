@@ -1,16 +1,16 @@
-<div class="uk-grid-small uk-child-width-auto uk-margin" id="timer" uk-grid
+<div class="timer uk-position-relative uk-position-center uk-grid-small uk-child-width-auto" id="timer" uk-grid
      uk-countdown="date: {{ end_passage }}" data-end-passage="{{ end_passage }}">
-    <input type="hidden" id="duration" value="{{ duration }}">
-    <div>Оставшееся время выполнения тестирования</div>
+    <input form="solving-testing-form" type="hidden" id="duration" value="{{ duration }}">
+    <div>Оставшееся время</div>
     <div>
-        <div class="uk-countdown-number uk-countdown-hours"></div>
+        <div class="uk-countdown-hours"></div>
     </div>
-    <div class="uk-countdown-separator">:</div>
+    <div>:</div>
     <div>
-        <div class="uk-countdown-number uk-countdown-minutes"></div>
+        <div class="uk-countdown-minutes"></div>
     </div>
-    <div class="uk-countdown-separator">:</div>
+    <div>:</div>
     <div>
-        <div class="uk-countdown-number uk-countdown-seconds"></div>
+        <div class="uk-countdown-seconds"></div>
     </div>
 </div>
