@@ -1,11 +1,11 @@
 from django.db.models import Sum, F
 
 from abstractions.abstract_services import AbstractTestingService
+from apps.base_testing.services import MaxScoreService
 from apps.testing_by_code.models import Task, SolvingTesting, SolvingTask
 from apps.testing_by_code.services.generate_code.generate_java import GenerateJava
 from apps.testing_by_code.services.run_code.run_java.run_java import RunJava
 from apps.testing_by_code.types import Setting
-from utils import round_up
 
 
 class TestingService(AbstractTestingService):
@@ -37,11 +37,14 @@ class TestingService(AbstractTestingService):
         )
 
     def _calculate_assessment(self) -> int:
+        max_score_service = MaxScoreService(
+            max_score=self.solving_testing.testing.max_score
+        )
         earned_weight = self._calculate_earned_weight()
         testing = self.solving_testing.testing
-        assessment = round_up(earned_weight / testing.get_total_weight() * 5)
+        percentage_execution = earned_weight / testing.get_total_weight() * 100
         self.solving_testing.earned_weight = earned_weight
-        return assessment
+        return max_score_service.get_assessment(percentage_execution)
 
     def _calculate_earned_weight(self) -> int:
         return self.solving_testing.solving_task_set.select_related('task').filter(

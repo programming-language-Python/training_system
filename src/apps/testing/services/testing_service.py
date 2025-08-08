@@ -1,9 +1,9 @@
 from django.db.models import Sum
 
 from abstractions.abstract_services import AbstractTestingService
+from apps.base_testing.services import MaxScoreService
 from apps.testing.models import SolvingTesting, SolvingTask
 from apps.testing.types import SolvingTaskEntity
-from utils import round_up
 
 
 class TestingService(AbstractTestingService):
@@ -23,5 +23,8 @@ class TestingService(AbstractTestingService):
     def _calculate_assessment(self) -> int:
         solving_tasks = self.solving_testing.solving_task_set
         earned_score = solving_tasks.aggregate(Sum('score'))['score__sum']
-        assessment = round_up(earned_score / solving_tasks.count() * 5)
-        return assessment
+        max_score_service = MaxScoreService(
+            max_score=self.solving_testing.testing.max_score
+        )
+        percentage_execution = earned_score / solving_tasks.count() * 100
+        return max_score_service.get_assessment(percentage_execution)
