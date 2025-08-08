@@ -1,14 +1,17 @@
 from typing import Iterable, Mapping
 
 from apps.testing.abstractions.abstract_services import AbstractTaskWithChoiceService
-from apps.testing.forms.solving_task_form import SolvingTaskWithChoiceForm
+from apps.testing.forms.solving_task_form import SolvingTaskWithChoiceForm, SolvingTaskWithRadioForm
 from apps.testing.types import Id
 
 
 class ClosedQuestionService(AbstractTaskWithChoiceService):
 
     def get_solving_form(self, solving_testing_pk: int):
-        form = SolvingTaskWithChoiceForm
+        if self.task.closed_question_set.is_several_correct_answers:
+            form = SolvingTaskWithChoiceForm
+        else:
+            form = SolvingTaskWithRadioForm
         form.base_fields['answer'].choices = self._get_answer_field_choices()
         return self.initialize_solving_form(form, solving_testing_pk)
 

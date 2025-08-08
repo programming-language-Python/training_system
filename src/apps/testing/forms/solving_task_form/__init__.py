@@ -1,3 +1,4 @@
 from .solving_task_form import SolvingTaskForm
 from .solving_task_with_choice_form import SolvingTaskWithChoiceForm
 from .solving_sequencing_form import SolvingSequencingForm
+from .solving_task_with_radio_form import SolvingTaskWithRadioForm
