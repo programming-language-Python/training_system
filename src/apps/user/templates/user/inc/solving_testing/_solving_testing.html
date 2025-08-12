@@ -38,8 +38,7 @@
                                         {% elif assessment == 5 %}
                                             five
                                         {% endif %}">
-                                            {% get_verbose_name_for_field solving_testing 'assessment' %} в %:
-                                            {{ solving_testing.get_assessment_in_percentage }}%
+                                            Выполнено: {{ solving_testing.get_percentage_execution }}%
                                     </span>
                                     {% endwith %}
                                 </h3>
