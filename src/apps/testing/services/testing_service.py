@@ -1,5 +1,3 @@
-from django.db.models import Sum
-
 from abstractions.abstract_services import AbstractTestingService
 from apps.base_testing.services import MaxScoreService
 from apps.testing.models import SolvingTesting, SolvingTask
@@ -21,10 +19,8 @@ class TestingService(AbstractTestingService):
         return SolvingTask.objects.get_or_create(**solving_task_data)
 
     def _calculate_assessment(self) -> int:
-        solving_tasks = self.solving_testing.solving_task_set
-        earned_score = solving_tasks.aggregate(Sum('score'))['score__sum']
         max_score_service = MaxScoreService(
             max_score=self.solving_testing.testing.max_score
         )
-        percentage_execution = earned_score / solving_tasks.count() * 100
+        percentage_execution = self.solving_testing.get_percentage_execution()
         return max_score_service.get_assessment(percentage_execution)
