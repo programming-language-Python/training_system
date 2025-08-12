@@ -1,6 +1,5 @@
-from apps.testing.abstractions.abstract_views import AbstractTaskUpdateView, \
-    AbstractTaskWithChoiceCreateOrUpdateView
+from apps.testing.abstractions.abstract_views import AbstractTaskUpdateView, AbstractSequencingCreateOrUpdateView
 
 
-class SequencingUpdateView(AbstractTaskWithChoiceCreateOrUpdateView, AbstractTaskUpdateView):
+class SequencingUpdateView(AbstractSequencingCreateOrUpdateView, AbstractTaskUpdateView):
     pass

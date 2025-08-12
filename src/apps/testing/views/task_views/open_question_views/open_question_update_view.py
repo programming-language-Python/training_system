@@ -1,9 +1,5 @@
-from apps.testing.abstractions.abstract_views import AbstractTaskUpdateView
-from apps.testing.forms.answer_options_forms_set import OpenQuestionAnswerOptionFormSet
+from apps.testing.abstractions.abstract_views import AbstractTaskUpdateView, AbstractOpenQuestionCreateOrUpdateView
 
 
-class OpenQuestionUpdateView(AbstractTaskUpdateView):
-    form_set = OpenQuestionAnswerOptionFormSet
-    template_name = 'testing/task/open_question/open_question_create_or_update.html'
-    table_answer_options_template_name = 'testing/inc/task/answer_options/_table_open_question_answer_options.html'
-    answer_options_template_name = 'testing/inc/task/answer_options/_open_question_answer_options.html'
+class OpenQuestionUpdateView(AbstractOpenQuestionCreateOrUpdateView, AbstractTaskUpdateView):
+    pass

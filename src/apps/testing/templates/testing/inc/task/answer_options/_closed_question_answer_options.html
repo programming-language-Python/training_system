@@ -1,0 +1,4 @@
+{{ answer_option_form_set.management_form }}
+{% for answer_option_form in answer_option_form_set %}
+    {% include 'testing/inc/task/answer_options/_answer_option_with_choice.html' %}
+{% endfor %}

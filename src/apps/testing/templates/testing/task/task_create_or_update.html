@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block start_head_link %}
+    {{ form.media }}
+{% endblock %}
+{% block content %}
+    <h1>{{ task_type.value }}</h1>
+
+    {% if form_errors %}
+        <span class="error">Ошибка в настройке задачи: {{ form_errors }}</span>
+    {% endif %}
+    {% if form_set_errors %}
+        <span class="error">Ошибка вариантах ответа: {{ form_set_errors }}</span>
+    {% endif %}
+    {% if additional_form_errors %}
+        <span class="error">Ошибка в дополнительной форме: {{ additional_form_errors }}</span>
+    {% endif %}
+
+    <form
+            id="add-answer-option-form"
+            method="get"
+            hx-get="{{ task.get_absolute_url }}"
+            hx-target="#answer-options"
+            hx-swap="innerHTML"
+    >
+        <label for="quantity-answer-options-add">Добавить пустые варианты ответа</label>
+        <input class="uk-input uk-width-auto" id="quantity-answer-options-add" name="quantity-answer-options-add"
+               type="number" value="1" min="1" max="8">
+        <button class="uk-button uk-button-primary" type="submit">Добавить вариант ответа</button>
+    </form>
+
+    <form class="form" enctype="multipart/form-data" method="post">
+        {% csrf_token %}
+        <div class="uk-margin">
+            {# создать или обновить ответ #}
+            <button name="btn-submit" class="uk-button uk-button-primary" type="submit" id="btn-submit">
+                {{ btn_text }}
+            </button>
+        </div>
+        <div>
+            {{ form.as_p }}
+            {% if additional_form %}
+                {{ additional_form.as_p }}
+            {% endif %}
+        </div>
+        <h2>Варианты ответов</h2>
+        {% include table_answer_options_template_name %}
+    </form>
+{% endblock %}

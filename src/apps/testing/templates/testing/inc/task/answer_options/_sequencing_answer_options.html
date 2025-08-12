@@ -1,0 +1,13 @@
+{{ answer_option_form_set.management_form }}
+<h4>Правильные варианты</h4>
+<ul id="correct-options" class="uk-list uk-list-divider" uk-sortable="handle: .uk-sortable-handle">
+    {% for answer_option_form in forms_with_correct_options_answers %}
+        {% include 'testing/inc/task/answer_options/_answer_option_with_choice.html' %}
+    {% endfor %}
+</ul>
+<h4>Неправильные варианты</h4>
+<ul id="incorrect-options" class="uk-list uk-list-divider" uk-sortable="handle: .uk-sortable-handle">
+    {% for answer_option_form in forms_with_incorrect_options_answers %}
+        {% include 'testing/inc/task/answer_options/_answer_option_with_choice.html' %}
+    {% endfor %}
+</ul>
