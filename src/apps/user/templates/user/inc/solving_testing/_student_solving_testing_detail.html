@@ -1,12 +1,17 @@
 {% load static %}
 {% load model_manipulation %}
-<tr href="#testing{{ solving_testing.pk }}" uk-toggle>
+<tr {% if solving_testing.testing.is_review_of_result_by_student %}
+    href="#testing{{ solving_testing.pk }}"
+    uk-toggle
+{% endif %}>
     <td>{{ solving_testing.testing.journal.semester }}</td>
     <td>{{ solving_testing.testing.journal.discipline }}</td>
     <td>{{ solving_testing.testing.journal.teacher }}</td>
     <td>
         {{ solving_testing.testing.title }}
-        <img class="icon" src="{% static 'img/eye.svg' %}" alt="dots icon">
+        {% if solving_testing.testing.is_review_of_result_by_student %}
+            <img class="icon" src="{% static 'img/eye.svg' %}" alt="dots icon">
+        {% endif %}
     </td>
     <td>{{ solving_testing.start_passage }}</td>
     <td>{{ solving_testing.end_passage }}</td>
@@ -26,4 +31,6 @@
     {% endwith %}
     </td>
 </tr>
-{% include 'user/inc/solving_testing/_solving_testing.html' %}
+{% if solving_testing.testing.is_review_of_result_by_student %}
+    {% include 'user/inc/solving_testing/_solving_testing.html' %}
+{% endif %}
