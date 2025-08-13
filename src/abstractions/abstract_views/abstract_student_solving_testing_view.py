@@ -27,7 +27,8 @@ class AbstractStudentSolvingTestingDetailView(LoginMixin, ListView, ABC):
 
         is_time_up = self.testing_service.is_time_up()
         is_assessment = self.testing_service.get_solving_testing().assessment
-        if is_time_up and not is_assessment:
+        is_end_testing = is_time_up and not is_assessment
+        if is_end_testing:
             current_page = request.GET.get('page')
             if current_page:
                 solving_task = self._get_current_solving_task(current_page)
