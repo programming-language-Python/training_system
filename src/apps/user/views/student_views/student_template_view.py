@@ -48,6 +48,7 @@ class StudentTemplateView(LoginMixin, TemplateView):
         for model in models:
             class_name = model._meta.app_label
             orm_filter = {
+                f'is_published': True,
                 f'{class_name}_solving_testing_set__assessment__isnull': True,
                 'journal__student_group': self.request.user.student.student_group
             }
