@@ -1,6 +1,7 @@
 <form class="uk-margin" action="{% url 'user:testing_list' journal_pk %}">
     <label>
-        <input class="uk-input uk-width-1-4" name="search" type="text" placeholder="Поиск" required>
+        <input class="uk-input uk-width-1-4" name="search" type="text" placeholder="Поиск" value="{{ search }}"
+               required>
     </label>
     <button class="uk-search-toggle" uk-search-icon type="submit" uk-tooltip="Поиск"></button>
 </form>
