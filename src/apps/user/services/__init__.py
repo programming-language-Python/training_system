@@ -1,1 +1,1 @@
-from .find_testing import find_solved_testings
+from get_sorted_testings import get_sorted_testings
