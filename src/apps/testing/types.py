@@ -37,18 +37,3 @@ class ValidTask:
     task_forms: InlineFormSetFactory
     type: TaskType
     testing_pk: int
-
-
-@dataclass
-class SolvingTestingData:
-    task_forms: Sequence[Type[ModelForm]]
-    task_form_data: Sequence['SolvingTaskEntity']
-
-
-@dataclass
-class SolvingTaskEntity:
-    answer: str
-    start_passage: datetime
-    lead_time: time
-    task: Id
-    solving_testing: Id
