@@ -10,20 +10,10 @@ class AbstractSolvingTask(models.Model):
         max_length=100,
         verbose_name='Ответ'
     )
-    start_passage = models.DateTimeField(
+    time_left = models.TimeField(
         blank=True,
         null=True,
-        verbose_name='Начало прохождения'
-    )
-    end_passage = models.DateTimeField(
-        blank=True,
-        null=True,
-        verbose_name='Конец прохождения'
-    )
-    lead_time = models.TimeField(
-        blank=True,
-        null=True,
-        verbose_name='Время выполнения'
+        verbose_name='Оставшееся время'
     )
 
     def get_fields(self) -> Iterable:

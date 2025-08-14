@@ -33,6 +33,12 @@ class AbstractTesting(AbstractFieldTitle):
         default=None,
         verbose_name='Дата удаления'
     )
+    lead_time = models.TimeField(
+        blank=True,
+        null=True,
+        default=None,
+        verbose_name='Время выполнения тестирования'
+    )
     task_lead_time = models.TimeField(
         blank=True,
         null=True,
