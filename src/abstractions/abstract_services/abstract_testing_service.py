@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import TypeVar, Generic
+from typing import TypeVar
 
 from django.db.models import QuerySet
 from django.http import HttpResponseRedirect
