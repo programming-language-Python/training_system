@@ -9,8 +9,10 @@ $(document).ready(function () {
 function blockOrUnlockTaskLeadTime(valueLeadTime) {
     let $taskLeadTime = $('#id_task_lead_time');
     if (valueLeadTime) {
-        $taskLeadTime.prop('disabled', true);
+        $taskLeadTime.prop('readonly', true);
+        $taskLeadTime.addClass('block');
     } else {
-        $taskLeadTime.prop('disabled', false);
+        $taskLeadTime.prop('readonly', false);
+        $taskLeadTime.removeClass('block');
     }
 }
