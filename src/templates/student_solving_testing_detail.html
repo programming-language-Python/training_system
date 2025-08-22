@@ -10,7 +10,7 @@
     <form id="solving-testing-form" action="{{ testing.get_student_absolute_url }}" method="post">
         {% csrf_token %}
         <input name="current_page" type="hidden" value="{{ page_obj.number }}">
-        {% if testing.task_lead_time %}
+        {% if testing.lead_time %}
             {% include "inc/_timer.html" %}
         {% endif %}
         <button class="uk-button uk-button-primary" name="complete" type="submit" value="true">
@@ -18,8 +18,11 @@
         </button>
         {% for solving_task in solving_tasks %}
             <p>Задача №{{ solving_task.task.serial_number }}</p>
+            {% if form.time_left.value %}
+                {{ form.time_left.label_tag }}{{ form.time_left }}
+            {% endif %}
             {% block description %}{% endblock %}
-            {{ form }}
+            {{ form.answer.label_tag }}{{ form.answer }}
         {% endfor %}
         {% include "inc/_pagination.html" %}
     </form>
@@ -27,4 +30,7 @@
 
 {% block script %}
     <script type="text/javascript" src="{% static 'js/timer.js' %}"></script>
+    {% if form.time_left.value %}
+        <script type="text/javascript" src="{% static 'js/timer_task.js' %}"></script>
+    {% endif %}
 {% endblock %}

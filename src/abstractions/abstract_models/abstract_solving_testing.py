@@ -42,25 +42,19 @@ class AbstractSolvingTesting(models.Model):
     def duration(self) -> timedelta:
         return self.end_passage - datetime.now()
 
-    def set_end_passage(self, quantity_tasks: int) -> None:
-        task_lead_time = self.testing.get_task_lead_time()
-        is_task_lead_time = task_lead_time is not None
-        if self.end_passage is None and is_task_lead_time:
-            time_delta = timedelta(
-                hours=task_lead_time.hour,
-                minutes=task_lead_time.minute,
-                seconds=task_lead_time.second
+    def set_end_passage(self) -> None:
+        if self.end_passage is None and self.testing.lead_time:
+            lead_time = self.testing.lead_time
+            lead_time_delta = timedelta(
+                hours=lead_time.hour,
+                minutes=lead_time.minute,
+                seconds=lead_time.second,
+                microseconds=lead_time.microsecond
             )
-            duration = time_delta * quantity_tasks
-            self.end_passage = self.start_passage + duration
+            self.end_passage = self.start_passage + lead_time_delta
             super(AbstractSolvingTesting, self).save()
         else:
             pass
-
-    def get_end_passage_iso_format(self) -> str:
-        if self.end_passage is None:
-            return ''
-        return self.end_passage.isoformat()
 
     class Meta:
         abstract = True

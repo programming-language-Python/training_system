@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
-from typing import Mapping
-from django.db.models import QuerySet
+from typing import Mapping, Type
+from django.db.models import QuerySet, Model
+from django.forms import ModelForm
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect
 from django.views.generic import ListView
@@ -51,17 +52,16 @@ class AbstractStudentSolvingTestingDetailView(LoginMixin, ListView, ABC):
         context = super().get_context_data(**kwargs)
 
         current_page = int(self.request.GET.get('page', 1))
+        current_solving_task = self._get_current_solving_task(current_page)
         solving_testing = self.testing_service.get_solving_testing()
         testing = solving_testing.testing
 
         context |= {
-            'form': self._get_solving_task_form(
-                solving_task=self._get_current_solving_task(current_page)
-            ),
+            'form': self._get_initialized_solving_task_form(solving_task=current_solving_task),
             'testing': testing,
             'quantity_task': testing.task_set.count(),
         }
-        if testing.task_lead_time:
+        if testing.lead_time:
             context |= {
                 'end_passage': solving_testing.end_passage.strftime('%Y-%m-%dT%H:%M:%S'),
                 'duration': solving_testing.duration.seconds,
@@ -69,10 +69,10 @@ class AbstractStudentSolvingTestingDetailView(LoginMixin, ListView, ABC):
         return context
 
     @abstractmethod
-    def _get_solving_task_form(self, solving_task) -> object:
+    def _get_initialized_solving_task_form(self, solving_task: Type[Model]) -> Type[ModelForm]:
         pass
 
-    def _get_current_solving_task(self, current_page: int) -> object:
+    def _get_current_solving_task(self, current_page: int) -> Type[Model]:
         index_solving_task = current_page - 1
         return self.get_queryset()[index_solving_task]
 

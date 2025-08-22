@@ -34,8 +34,7 @@ class AbstractTestingService(ABC):
         self.solving_testing, is_created = self._get_or_create_solving_testing()
         if is_created:
             self._create_solving_tasks()
-            quantity_tasks = self.solving_testing.solving_task_set.count()
-            self.solving_testing.set_end_passage(quantity_tasks)
+            self.solving_testing.set_end_passage()
 
     def _create_solving_tasks(self) -> None:
         for task in self.solving_testing.testing.task_set.all():

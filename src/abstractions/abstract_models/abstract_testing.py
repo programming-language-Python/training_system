@@ -64,9 +64,6 @@ class AbstractTesting(AbstractFieldTitle):
     def __str__(self):
         return self.title
 
-    def get_task_lead_time(self):
-        return self.task_lead_time
-
     def get_fields_data(self) -> Mapping[str, str]:
         exclude = ['id', 'teacher', 'date_of_deletion', 'max_score', 'journal', ]
         exclude_types = (OneToOneRel, ManyToOneRel, ManyToManyRel)
@@ -76,8 +73,9 @@ class AbstractTesting(AbstractFieldTitle):
             if is_boolean_field:
                 fields_data[field.verbose_name] = 'да' if field.value_to_string(self) == 'True' else 'нет'
                 continue
-            is_empty_task_lead_time = field.name == 'task_lead_time' and not field.value_to_string(self)
-            if is_empty_task_lead_time:
+            is_field_time = field.name == 'lead_time' or field.name == 'task_lead_time'
+            is_empty_time = is_field_time and not field.value_to_string(self)
+            if is_empty_time:
                 fields_data[field.verbose_name] = 'не задано'
                 continue
             if field.name == 'date_of_creation':

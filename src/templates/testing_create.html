@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block head_script %}
+    <script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
+{% endblock %}
+
 {% block content %}
     <form class="form" method="post" center>
         {% csrf_token %}
@@ -13,4 +17,8 @@
             </button>
         </div>
     </form>
+{% endblock %}
+
+{% block script %}
+    <script type="text/javascript" src="{% static 'js/testing.js' %}"></script>
 {% endblock %}

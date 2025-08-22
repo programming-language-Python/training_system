@@ -10,6 +10,20 @@ class SolvingTaskForm(forms.ModelForm):
         widget=forms.TextInput()
     )
 
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        instance.score = instance.task.service.get_score(self.cleaned_data['answer'])
+        instance.save()
+        return instance
+
     class Meta:
         model = SolvingTask
-        fields = ('answer',)
+        fields = ('time_left', 'answer',)
+        widgets = {
+            'time_left': forms.TextInput(attrs={
+                'class': 'uk-margin-small uk-input uk-width-small',
+                'type': 'text',
+                'tabindex': '1',
+                'readonly': True
+            })
+        }

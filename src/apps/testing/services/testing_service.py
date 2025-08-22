@@ -1,7 +1,6 @@
 from abstractions.abstract_services import AbstractTestingService
 from apps.base_testing.services import MaxScoreService
-from apps.testing.models import SolvingTesting, SolvingTask
-from apps.testing.types import SolvingTaskEntity
+from apps.testing.models import SolvingTesting, SolvingTask, Task
 
 
 class TestingService(AbstractTestingService):
@@ -11,12 +10,20 @@ class TestingService(AbstractTestingService):
             student_id=self.student_pk,
         )
 
-    def _create_solving_task(self, task) -> SolvingTaskEntity:
+    def _create_solving_task(self, task: Task) -> None:
         solving_task_data = {
             'task': task,
             'solving_testing': self.solving_testing
         }
-        return SolvingTask.objects.get_or_create(**solving_task_data)
+        solving_task, is_created = SolvingTask.objects.get_or_create(**solving_task_data)
+        testing = self.solving_testing.testing
+        is_set_time = is_created and not testing.lead_time
+        if is_set_time:
+            if testing.task_lead_time:
+                solving_task.time_left = testing.task_lead_time
+            else:
+                solving_task.time_left = task.lead_time
+            solving_task.save()
 
     def _calculate_assessment(self) -> int:
         max_score_service = MaxScoreService(

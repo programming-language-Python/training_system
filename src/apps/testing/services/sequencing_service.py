@@ -1,4 +1,4 @@
-from typing import Iterable
+from typing import Iterable, Type
 
 from apps.testing.abstractions.abstract_services import AbstractTaskWithChoiceService
 from apps.testing.forms.solving_task_form import SolvingSequencingForm
@@ -6,10 +6,9 @@ from apps.testing.types import Id
 
 
 class SequencingService(AbstractTaskWithChoiceService):
-    def get_solving_form(self, solving_testing_pk: int):
-        form = SolvingSequencingForm
-        form.base_fields['answer'].choices = self._get_answer_field_choices()
-        return self.initialize_solving_form(form, solving_testing_pk)
+    @property
+    def solving_form(self) -> Type[SolvingSequencingForm]:
+        return SolvingSequencingForm
 
     def get_score(self, answer: Iterable[Id]) -> int:
         user_answer = list(map(int, answer))

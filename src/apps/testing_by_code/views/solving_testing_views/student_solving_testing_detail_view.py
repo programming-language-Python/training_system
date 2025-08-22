@@ -19,5 +19,5 @@ class StudentSolvingTestingDetailView(AbstractStudentSolvingTestingDetailView):
         if solving_task_form.is_valid():
             solving_task_form.save()
 
-    def _get_solving_task_form(self, solving_task: SolvingTask):
+    def _get_initialized_solving_task_form(self, solving_task: SolvingTask):
         return SolvingTaskForm(instance=solving_task)

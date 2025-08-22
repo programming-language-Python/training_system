@@ -20,7 +20,7 @@
             {% endfor %}
             {% if page_obj.has_next %}
                 <li>
-                    <button name="page" type="submit" value="{{ page_obj.next_page_number }}"><span
+                    <button id="next-page" name="page" type="submit" value="{{ page_obj.next_page_number }}"><span
                             uk-pagination-next></span></button>
                 </li>
             {% else %}

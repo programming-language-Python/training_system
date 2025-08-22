@@ -7,9 +7,13 @@ from apps.testing.forms.solving_task_form import SolvingTaskForm
 
 
 class AbstractTaskWithChoiceService(AbstractTaskService):
-    def initialize_solving_form(self, form, solving_testing_pk: int) -> Type[SolvingTaskForm]:
-        student_answer = self.task.solving_task_set.get(solving_testing__pk=solving_testing_pk).answer
-        form.base_fields['answer'].initial = student_answer
+    def initialize_solving_form(self, solving_testing_pk: int) -> Type[SolvingTaskForm]:
+        solving_task = self.task.solving_task_set.get(solving_testing__pk=solving_testing_pk)
+        form = self.solving_form(initial={
+            'answer': solving_task.answer,
+            'time_left': solving_task.time_left,
+        })
+        form.base_fields['answer'].choices = self._get_answer_field_choices()
         return form
 
     def _get_answer_field_choices(self):

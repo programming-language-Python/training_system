@@ -11,11 +11,16 @@ class OpenQuestionService(AbstractTaskService):
         ).exists()
         return 1 if is_correct_answer else 0
 
-    def get_solving_form(self, solving_testing_pk: int):
-        return self.initialize_solving_form(form=SolvingTaskForm, solving_testing_pk=solving_testing_pk)
+    @property
+    def solving_form(self) -> Type[SolvingTaskForm]:
+        return SolvingTaskForm
 
-    def initialize_solving_form(self, form, solving_testing_pk: int) -> Type[SolvingTaskForm]:
-        student_answer = self.task.solving_task_set.get(solving_testing__pk=solving_testing_pk).answer
+    def initialize_solving_form(self, solving_testing_pk: int) -> Type[SolvingTaskForm]:
+        solving_task = self.task.solving_task_set.get(solving_testing__pk=solving_testing_pk)
+        form = self.solving_form(initial={
+            'time_left': solving_task.time_left
+        })
+        student_answer = solving_task.answer
         if student_answer:
             form.base_fields['answer'].initial = student_answer.replace('"', '')
         return form
