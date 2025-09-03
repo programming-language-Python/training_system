@@ -15,93 +15,83 @@
                                                data-is-fit-block-to-content-size="True" type="text"
                                                value="{{ task.serial_number }}"> (вес {{ task.weight }})
                             </h3>
+                            {% get_verbose_name_for_field task 'lead_time' %}: {{ task.lead_time }}
                         </div>
                     </div>
                 </div>
                 <div class="task__body body uk-card-body">
-                    <h4>Структура программы:</h4>
-                    <div class="uk-text-justify">
+                <span>
+                    {% get_verbose_name_for_field task 'description' %}: {{ task.description|truncatechars:40|safe }}
+                </span>
+                    <h5>Структура программы</h5>
+                    <div>
                         <div>
-                            <div class="uk-margin">
+                            <div>
                                 <span>
                                     {% get_verbose_name_for_field setting 'is_if_operator' %}:
                                 </span>
-                                <div>
-                                    {% if setting.is_if_operator %}
-                                        Да
-                                    {% else %}
-                                        Нет
-                                    {% endif %}
-                                </div>
+                                {% if setting.is_if_operator %}
+                                    Да
+                                {% else %}
+                                    Нет
+                                {% endif %}
                             </div>
-                            <div class="uk-margin">
+                            <div>
                                 <span>
                                     {% get_verbose_name_for_field setting 'condition_of_if_operator' %}:
                                 </span>
-                                <div>
-                                    {{ setting.condition_of_if_operator }}
-                                </div>
+                                {{ setting.condition_of_if_operator }}
                             </div>
-                            <div class="uk-margin">
+                            <div>
                                 <span>
                                     {% get_verbose_name_for_field setting 'cycle' %}:
                                 </span>
-                                <div>
-                                    {% with setting.cycle.all as cycles %}
-                                        {% if cycles %}
-                                            {{ cycles|join:', ' }}
-                                        {% else %}
-                                            Не выбрано
-                                        {% endif %}
-                                    {% endwith %}
-                                </div>
+                                {% with setting.cycle.all as cycles %}
+                                    {% if cycles %}
+                                        {{ cycles|join:', ' }}
+                                    {% else %}
+                                        Нет
+                                    {% endif %}
+                                {% endwith %}
                             </div>
-                            <div class="uk-margin">
+                            <div>
                                 <span>
                                     {% get_verbose_name_for_field setting 'cycle_condition' %}:
                                 </span>
-                                <div>
-                                    {{ setting.cycle_condition }}
-                                </div>
+                                {{ setting.cycle_condition }}
                             </div>
-                            <div class="uk-margin">
+                            <div>
                                 <span>
                                     {% get_verbose_name_for_field setting 'operator_nesting' %}:
                                 </span>
-                                <div>
-                                    {% with setting.operator_nesting.all as operators_nesting %}
-                                        {% if operators_nesting %}
-                                            {{ operators_nesting|join:', ' }}
-                                        {% else %}
-                                            Не выбрано
-                                        {% endif %}
-                                    {% endwith %}
-                                </div>
+                                {% with setting.operator_nesting.all as operators_nesting %}
+                                    {% if operators_nesting %}
+                                        {{ operators_nesting|join:', ' }}
+                                    {% else %}
+                                        Нет
+                                    {% endif %}
+                                {% endwith %}
                             </div>
                         </div>
-                        <div class="uk-margin">
+                        <div>
                                 <span>
                                     {% get_verbose_name_for_field setting 'is_OOP' %}:
                                 </span>
-                            <div>
-                                {% if setting.is_OOP %}
-                                    Есть
-                                {% else %}
-                                    Нет
-                                {% endif %}
-                            </div>
+                            {% if setting.is_OOP %}
+                                Есть
+                            {% else %}
+                                Нет
+                            {% endif %}
                         </div>
-                        <div class="uk-margin">
+                        <div>
                                 <span>
                                     {% get_verbose_name_for_field setting 'is_strings' %}:
                                 </span>
-                            <div>
-                                {% if setting.is_strings %}
-                                    Есть
-                                {% else %}
-                                    Нет
-                                {% endif %}
-                            </div>
+                            {% if setting.is_strings %}
+                                Есть
+                            {% else %}
+                                Нет
+                            {% endif %}
                         </div>
                     </div>
                 </div>

@@ -29,7 +29,7 @@ def update_task(request, pk: int):
         forms = context
         testing = task.testing
         task_service = TaskService(user, forms, testing)
-        updated_task = task_service.update(task)
+        updated_task = task_service.update()
         return redirect('testing_by_code:task_detail', pk=updated_task.pk)
     if not is_POST:
         return HttpResponseNotAllowed(['POST', ])

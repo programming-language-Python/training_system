@@ -6,7 +6,7 @@ from django.forms import Form
 
 from apps.testing_by_code.models import Task, Testing
 
-from apps.testing_by_code.services.setting_service import SettingService
+from apps.testing_by_code.services import SettingService
 
 
 class TaskService:
@@ -31,19 +31,17 @@ class TaskService:
 
     def create(self) -> Manager[Task]:
         self.setting_service.set()
-        self.task = self.task.create(
-            serial_number=self.testing.task_set.count() + 1,
-            weight=self.weight,
-            testing=self.testing,
-            setting=self.setting_service.get()
-        )
+        task_form = self.task_form.save(commit=False)
+        task_form.serial_number = self.testing.task_set.count() + 1
+        task_form.testing = self.testing
+        task_form.setting = self.setting_service.get()
+        task_form.save()
+        self.task = task_form
         return self.task
 
-    def update(self, task: Task) -> Task:
-        is_changed_data_task_form = self.task_form.changed_data
+    def update(self) -> Task:
         is_changed_data_setting_form = self.setting_service.get_form().changed_data
-        if is_changed_data_task_form:
-            task = self._update_weight(task)
+        task = self.task_form.save()
         if is_changed_data_setting_form:
             task = self._update_if_setting_changed(task)
         return task

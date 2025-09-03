@@ -1,8 +1,14 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block start_head_link %}
+    <link href="{% static 'django_ckeditor_5/dist/styles.css' %}" rel="stylesheet">
+{% endblock %}
+
 {% block head_script %}
     <script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
+    <script src="{% static 'django_ckeditor_5/dist/bundle.js' %}"></script>
+    <script src="{% static 'django_ckeditor_5/dist/translations/ru.js' %}"></script>
 {% endblock %}
 
 {% block content %}

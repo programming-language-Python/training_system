@@ -1,5 +1,11 @@
 <div hx-target="this" hx-swap="outerHTML">
-    <form id="task-form" method="POST">
+    <form id="task-form"
+            {% if task %}
+          hx-post="{% url 'testing_by_code:update_task' task.pk %}"
+            {% else %}
+          hx-post="."
+            {% endif %}
+          method="POST">
         {% csrf_token %}
         <div>
             <div class="task__card uk-card uk-card-default uk-card-body">
@@ -13,21 +19,22 @@
                                 {{ task_form.weight.label }} {{ task_form.weight }}
                                 {{ task_form.weight.errors }}
                             </h3>
+                            {{ task_form.lead_time.label }} {{ task_form.lead_time }}
                         </div>
                     </div>
                 </div>
                 <div class="task__body body uk-card-body">
-                    <h4>Структура программы:</h4>
+                    <h4>{{ task_form.description.label }}</h4>
+                    {{ task_form.description }}
+                    <h5>Структура программы</h5>
                     <div>
                         {% for field in setting_form %}
-                            <div class="uk-margin">
+                            <div>
                                 <span>
                                     {{ field.label }}:
                                 </span>
-                                <div>
-                                    {{ field }}
-                                    {{ field.errors }}
-                                </div>
+                                {{ field }}
+                                {{ field.errors }}
                             </div>
                         {% endfor %}
                     </div>
@@ -36,7 +43,6 @@
                     {% if task %}
                         <button name="btn-update"
                                 type="submit"
-                                hx-post="{% url 'testing_by_code:update_task' task.pk %}"
                                 uk-icon="refresh"
                                 uk-tooltip="Обновить">
                         </button>
@@ -47,7 +53,6 @@
                         </button>
                     {% else %}
                         <button id="btn-add" type="submit"
-                                hx-post="."
                                 hx-swap="outerHTML"
                                 uk-icon="plus"
                                 uk-tooltip="Добавить">
