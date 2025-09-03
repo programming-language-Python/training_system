@@ -2,8 +2,15 @@ from django.contrib import admin
 
 from .models import Task, Setting, Testing, Cycle, OperatorNesting, SolvingTesting, SolvingTask
 
+
+@admin.register(Task)
+class TaskAdmin(admin.ModelAdmin):
+    list_display = ('id', 'serial_number', 'lead_time', 'testing',)
+    search_fields = ('id', 'serial_number', 'lead_time', 'testing__title',)
+    save_on_top = True
+
+
 admin.site.register(Testing)
-admin.site.register(Task)
 admin.site.register(Setting)
 admin.site.register(Cycle)
 admin.site.register(OperatorNesting)
