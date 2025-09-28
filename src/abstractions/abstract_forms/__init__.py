@@ -1,1 +1,2 @@
 from .abstract_testing_form import AbstractTestingForm
+from .abstract_solving_task_form import AbstractSolvingTaskForm

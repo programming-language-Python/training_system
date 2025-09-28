@@ -1,6 +1,7 @@
 from abstractions.abstract_services import AbstractTestingService
 from apps.base_testing.services import MaxScoreService
 from apps.testing.models import SolvingTesting, SolvingTask, Task
+from services import set_lead_time_for_solving_task
 
 
 class TestingService(AbstractTestingService):
@@ -15,15 +16,9 @@ class TestingService(AbstractTestingService):
             'task': task,
             'solving_testing': self.solving_testing
         }
-        solving_task, is_created = SolvingTask.objects.get_or_create(**solving_task_data)
         testing = self.solving_testing.testing
-        is_set_time = is_created and not testing.lead_time
-        if is_set_time:
-            if testing.task_lead_time:
-                solving_task.time_left = testing.task_lead_time
-            else:
-                solving_task.time_left = task.lead_time
-            solving_task.save()
+        solving_task = SolvingTask.objects.create(**solving_task_data)
+        set_lead_time_for_solving_task(testing, solving_task)
 
     def _calculate_assessment(self) -> int:
         max_score_service = MaxScoreService(

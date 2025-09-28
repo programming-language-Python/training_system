@@ -1,15 +1,7 @@
-from django import forms
-
+from abstractions.abstract_forms import AbstractSolvingTaskForm
 from apps.testing_by_code.models import SolvingTask
 
 
-class SolvingTaskForm(forms.ModelForm):
-    answer = forms.CharField(
-        label='Ответ',
-        required=False,
-        widget=forms.TextInput()
-    )
-
-    class Meta:
+class SolvingTaskForm(AbstractSolvingTaskForm):
+    class Meta(AbstractSolvingTaskForm.Meta):
         model = SolvingTask
-        fields = ('answer',)

@@ -20,4 +20,9 @@ class StudentSolvingTestingDetailView(AbstractStudentSolvingTestingDetailView):
             solving_task_form.save()
 
     def _get_initialized_solving_task_form(self, solving_task: SolvingTask):
-        return SolvingTaskForm(instance=solving_task)
+        return SolvingTaskForm(
+            initial={
+                'time_left': solving_task.time_left
+            },
+            instance=solving_task
+        )

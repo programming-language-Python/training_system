@@ -6,6 +6,7 @@ from apps.testing_by_code.models import Task, SolvingTesting, SolvingTask
 from apps.testing_by_code.services.generate_code.generate_java import GenerateJava
 from apps.testing_by_code.services.run_code.run_java.run_java import RunJava
 from apps.testing_by_code.types import Setting
+from services import set_lead_time_for_solving_task
 
 
 class TestingService(AbstractTestingService):
@@ -29,12 +30,14 @@ class TestingService(AbstractTestingService):
         generate_java = GenerateJava(setting=setting)
         code = generate_java.execute()
         run_java = RunJava(code)
-        SolvingTask.objects.create(
+        testing = self.solving_testing.testing
+        solving_task = SolvingTask.objects.create(
             code=code,
             correct_answer=run_java.execute(),
             solving_testing=self.solving_testing,
             task=task
         )
+        set_lead_time_for_solving_task(testing, solving_task)
 
     def _calculate_assessment(self) -> int:
         max_score_service = MaxScoreService(
