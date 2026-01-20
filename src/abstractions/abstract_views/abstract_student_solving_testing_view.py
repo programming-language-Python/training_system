@@ -56,8 +56,9 @@ class AbstractStudentSolvingTestingDetailView(LoginMixin, ListView, ABC):
         solving_testing = self.testing_service.get_solving_testing()
         testing = solving_testing.testing
 
+        form = self._get_initialized_solving_task_form(solving_task=current_solving_task)
         context |= {
-            'form': self._get_initialized_solving_task_form(solving_task=current_solving_task),
+            'form': form,
             'testing': testing,
             'quantity_task': testing.task_set.count(),
         }

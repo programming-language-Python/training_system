@@ -9,7 +9,7 @@ class AbstractSolvingTaskForm(forms.ModelForm):
     )
 
     class Meta:
-        fields = ('time_left', 'answer',)
+        fields = ('answer',)
         widgets = {
             'time_left': forms.TextInput(attrs={
                 'class': 'uk-margin-small uk-input uk-width-small',

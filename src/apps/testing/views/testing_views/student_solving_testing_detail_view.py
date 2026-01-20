@@ -13,9 +13,10 @@ class StudentSolvingTestingDetailView(AbstractStudentSolvingTestingDetailView):
         self.testing_service = TestingService(testing_pk, student_pk)
 
     def _get_initialized_solving_task_form(self, solving_task: SolvingTask.objects):
-        return solving_task.task.service.initialize_solving_form(
+        solving_form = solving_task.task.service.initialize_solving_form(
             solving_testing_pk=self.testing_service.solving_testing.pk,
         )
+        return solving_form
 
     def _save_answer(self, request: HttpRequest, solving_task) -> None:
         form = solving_task.task.service.solving_form(request.POST, instance=solving_task)
