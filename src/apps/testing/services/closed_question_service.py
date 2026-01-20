@@ -25,13 +25,16 @@ class ClosedQuestionService(AbstractTaskWithChoiceService):
         answer_options = self.task.answer_option_set
         correct_answer_set = set(map(str, answer_options.filter(is_correct=True).values_list('id', flat=True)))
         answer_set = set(answer)
-        if self.task.closed_question_set.is_partially_correct_execution:
+        closed_question_set = self.task.closed_question_set
+        if closed_question_set.is_partially_correct_execution and closed_question_set.is_several_correct_answers:
             quantity_answers_coincidences = len(correct_answer_set & answer_set)
             quantity_correct_answers = len(correct_answer_set)
             quantity_answers_non_coincidences = len(answer_set - correct_answer_set)
             score = quantity_answers_coincidences / (quantity_correct_answers + quantity_answers_non_coincidences)
+        elif closed_question_set.is_several_correct_answers:
+            score = 1 if answer_set == correct_answer_set else 0
         else:
-            score = 1 if correct_answer_set == answer_set else 0
+            score = 1 if answer in correct_answer_set else 0
         return score
 
     @property
