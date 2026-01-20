@@ -22,7 +22,7 @@
                 {{ form.time_left.label_tag }}{{ form.time_left }}
             {% endif %}
             {% block description %}{% endblock %}
-            {{ form.answer.label_tag }}{{ form.answer }}
+            {{ form }}
         {% endfor %}
         {% include "inc/_pagination.html" %}
     </form>
@@ -33,4 +33,5 @@
     {% if form.time_left.value %}
         <script type="text/javascript" src="{% static 'js/timer_task.js' %}"></script>
     {% endif %}
+    <script type="module" src="{% static 'js/solving_sequencing_form.js' %}"></script>
 {% endblock %}
