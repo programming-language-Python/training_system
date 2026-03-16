@@ -44,14 +44,14 @@ jobs:
         DJANGO_SETTINGS_MODULE: config.settings   # <‑ ваш тестовый settings
         DATABASE_URL: postgres://user:pass@localhost:5432/test_db
       run: |
-        python manage.py migrate --noinput
+        python src/manage.py migrate --noinput
 
     - name: Run tests
       env:
         DJANGO_SETTINGS_MODULE: config.settings
         DATABASE_URL: postgres://user:pass@localhost:5432/test_db
       run: |
-        coverage run --source='.' manage.py test
+        coverage run --source='.' src/manage.py test
         coverage report --omit=*/migrations/*
 
 #    - name: Upload coverage report
