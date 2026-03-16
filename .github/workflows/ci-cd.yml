@@ -44,7 +44,12 @@ jobs:
         DJANGO_SETTINGS_MODULE: config.settings   # <‑ ваш тестовый settings
         DJANGO_SECRET_KEY: django1234
         DEBUG: True
-        DATABASE_URL: postgres://user:pass@localhost:5432/test_db
+        DATABASE_ENGINE: postgresql_psycopg2
+        DATABASE_NAME: training_system_v2
+        DATABASE_USERNAME: test_db
+        DATABASE_PASSWORD: test_db
+        DATABASE_PORT: 5432
+#        DATABASE_URL: postgres://user:pass@localhost:5432/test_db
       run: |
         python src/manage.py makemigrations --noinput
         python src/manage.py migrate --noinput
