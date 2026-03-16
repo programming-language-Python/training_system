@@ -42,6 +42,8 @@ jobs:
     - name: Apply migrations
       env:
         DJANGO_SETTINGS_MODULE: config.settings   # <‑ ваш тестовый settings
+        DJANGO_SECRET_KEY: django1234
+        DEBUG: True
         DATABASE_URL: postgres://user:pass@localhost:5432/test_db
       run: |
         python src/manage.py makemigrations --noinput
