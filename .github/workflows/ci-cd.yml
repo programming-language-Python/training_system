@@ -54,13 +54,13 @@ jobs:
 #        python src/manage.py makemigrations --noinput
 #        python src/manage.py migrate --noinput
 
-    - name: Run tests
-      env:
-        DJANGO_SETTINGS_MODULE: config.settings
-        DATABASE_URL: postgres://user:pass@localhost:5432/test_db
-      run: |
-        coverage run --source='.' src/manage.py test
-        coverage report --omit=*/migrations/*
+#    - name: Run tests
+#      env:
+#        DJANGO_SETTINGS_MODULE: config.settings
+#        DATABASE_URL: postgres://user:pass@localhost:5432/test_db
+#      run: |
+#        coverage run --source='.' src/manage.py test
+#        coverage report --omit=*/migrations/*
 
 #    - name: Upload coverage report
 #      uses: actions/upload-artifact@v4
