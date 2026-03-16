@@ -44,6 +44,7 @@ jobs:
         DJANGO_SETTINGS_MODULE: config.settings   # <‑ ваш тестовый settings
         DATABASE_URL: postgres://user:pass@localhost:5432/test_db
       run: |
+        python src/manage.py makemigrations --noinput
         python src/manage.py migrate --noinput
 
     - name: Run tests
