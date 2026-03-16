@@ -44,7 +44,7 @@ jobs:
         DJANGO_SETTINGS_MODULE: config.settings   # <‑ ваш тестовый settings
         DJANGO_SECRET_KEY: django1234
         DEBUG: True
-        DATABASE_ENGINE: postgresql_psycopg2
+        DATABASE_ENGINE: django.db.backends.sqlite3
         DATABASE_NAME: training_system_v2
         DATABASE_USERNAME: test_db
         DATABASE_PASSWORD: test_db
