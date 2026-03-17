@@ -1,17 +1,14 @@
-# .github/workflows/ci-cd.yml
 name: CI/CD
 
 on:
   push:
-    branches: [ dev,]   # <-- меняйте под свои ветки
-#  pull_request:
-#    branches: [ main, develop ]
+    branches: [ dev,]
 
 jobs:
   test:
     runs-on: ubuntu-latest
     services:
-      postgres:                          # если используете PostgreSQL
+      postgres:
         image: postgres:13
         env:
           POSTGRES_USER: user
@@ -39,20 +36,20 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r src/requirements.txt
 
-#    - name: Apply migrations
-#      env:
-#        DJANGO_SETTINGS_MODULE: config.settings   # <‑ ваш тестовый settings
-#        DJANGO_SECRET_KEY: django1234
-#        DEBUG: True
-##        DATABASE_ENGINE: django.db.backends.sqlite3
-#        DATABASE_NAME: db.sqlite3
-#        DATABASE_USERNAME: test_db
-#        DATABASE_PASSWORD: test_db
-##        DATABASE_PORT: 5432
-##        DATABASE_URL: postgres://user:pass@localhost:5432/test_db
-#      run: |
-#        python src/manage.py makemigrations --noinput
-#        python src/manage.py migrate --noinput
+    - name: Apply migrations
+      env:
+        DJANGO_SETTINGS_MODULE: config.settings   # <‑ ваш тестовый settings
+        DJANGO_SECRET_KEY: django1234
+        DEBUG: True
+        DATABASE_ENGINE: postgresql_psycopg2
+        DATABASE_NAME: db
+        DATABASE_USERNAME: test_db
+        DATABASE_PASSWORD: test_db
+        DATABASE_PORT: 5432
+#        DATABASE_URL: postgres://user:pass@localhost:5432/test_db
+      run: |
+        python src/manage.py makemigrations --noinput
+        python src/manage.py migrate --noinput
 
 #    - name: Run tests
 #      env:
