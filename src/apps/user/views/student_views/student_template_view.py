@@ -49,11 +49,15 @@ class StudentTemplateView(LoginMixin, TemplateView):
             class_name = model._meta.app_label
             orm_filter = {
                 f'is_published': True,
-                f'{class_name}_solving_testing_set__assessment__isnull': True,
                 'journal__student_group': self.request.user.student.student_group
+            }
+            orm_exclude = {
+                f'{class_name}_solving_testing_set__student': self.request.user.student,
+                f'{class_name}_solving_testing_set__assessment__isnull': False
             }
             testings.append(
                 model.objects.filter(**orm_filter)
+                .exclude(**orm_exclude)
                 .select_related('journal')
                 .select_related('journal__semester')
                 .select_related('journal__discipline')
