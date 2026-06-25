@@ -36,3 +36,5 @@ class ClosedQuestion(models.Model):
 
     class Meta:
         db_table = f'{APP_NAME}_closed-question'
+        verbose_name = 'Закрытый вопрос'
+        verbose_name_plural = 'Закрытые вопросы'

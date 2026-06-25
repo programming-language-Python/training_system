@@ -60,3 +60,7 @@ class Task(AbstractTask):
 
     def get_deletion_url(self) -> reverse:
         return reverse(f'{APP_NAME}:task_delete', kwargs={'pk': self.pk})
+
+    class Meta:
+        verbose_name = 'Задача'
+        verbose_name_plural = 'Задачи'

@@ -23,3 +23,5 @@ class AnswerOption(AbstractFieldSerialNumber, AbstractFieldDescription):
 
     class Meta:
         ordering = ['serial_number', ]
+        verbose_name = 'Вариант ответа'
+        verbose_name_plural = 'Варианты ответов'

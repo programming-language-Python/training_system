@@ -16,3 +16,5 @@ class OpenQuestionAnswerOption(models.Model):
 
     class Meta:
         db_table = f'{APP_NAME}_open-question-answer-option'
+        verbose_name = 'Вариант ответа открытого вопроса'
+        verbose_name_plural = 'Варианты ответов открытых вопросов'
